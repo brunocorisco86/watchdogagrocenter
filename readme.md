@@ -63,11 +63,16 @@ Para subir o site Flask de desenvolvimento local:
 ```bash
 python3 src/dashboard/app.py
 ```
-O painel estará disponível em [http://localhost:5000](http://localhost:5000). Você pode forçar um teste manual clicando no botão **`> RUN_CHECK`** no console simulado.
+O painel estará disponível em [http://localhost:5080](http://localhost:5080). Você pode forçar um teste manual clicando no botão **`> RUN_CHECK`** no console simulado.
 
 Para testar o script de watchdog de forma direta no terminal:
 ```bash
 python3 src/watchdog/watchdog_cli.py
+```
+
+Para executar a suíte de testes unitários e testes de integração de rede (Pytest):
+```bash
+PYTHONPATH=. ./venv/bin/pytest -v
 ```
 
 ---
