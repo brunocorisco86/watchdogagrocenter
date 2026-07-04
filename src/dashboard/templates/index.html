@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>C.Vale - Watchdog Agrocenter Dashboard</title>
+    <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;700&family=Outfit:wght@300;400;600;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <div class="stars-container"></div>
+    
+    <div class="app-container">
+        <!-- Header -->
+        <header class="main-header">
+            <div class="brand">
+                <span class="brand-logo">[C.VALE]</span>
+                <div class="brand-text">
+                    <h1>Watchdog Agrocenter</h1>
+                    <p>Sistemas de Alta Disponibilidade & Monitoramento</p>
+                </div>
+            </div>
+            <div class="system-status">
+                <span class="status-indicator-dot {% if kpis.active_incident %}status-down-pulse{% else %}status-up-pulse{% endif %}"></span>
+                <span class="status-label">
+                    {% if kpis.active_incident %}
+                        SISTEMA EM ALERTA (OFFLINE)
+                    {% else %}
+                        SISTEMA OPERACIONAL
+                    {% endif %}
+                </span>
+            </div>
+        </header>
+
+        <!-- KPI Grid -->
+        <section class="kpi-grid">
+            <div class="kpi-card" data-kpi="availability">
+                <div class="kpi-icon">📈</div>
+                <div class="kpi-content">
+                    <h3>Disponibilidade</h3>
+                    <div class="kpi-value">{{ kpis.availability }}%</div>
+                    <p>Histórico geral acumulado</p>
+                </div>
+            </div>
+            
+            <div class="kpi-card" data-kpi="latency">
+                <div class="kpi-icon">⚡</div>
+                <div class="kpi-content">
+                    <h3>Tempo Médio</h3>
+                    <div class="kpi-value">{{ kpis.avg_response_time }} ms</div>
+                    <p>Latência média de resposta</p>
+                </div>
+            </div>
+
+            <div class="kpi-card" data-kpi="checks">
+                <div class="kpi-icon">🔍</div>
+                <div class="kpi-content">
+                    <h3>Verificações</h3>
+                    <div class="kpi-value">{{ kpis.total_checks }}</div>
+                    <p>Verificações executadas</p>
+                </div>
+            </div>
+
+            <div class="kpi-card {% if kpis.active_incident %}kpi-alert{% endif %}" data-kpi="incidents">
+                <div class="kpi-icon">⚠️</div>
+                <div class="kpi-content">
+                    <h3>Incidentes</h3>
+                    <div class="kpi-value">{{ kpis.total_incidents }}</div>
+                    <p>{% if kpis.active_incident %}1 ativo no momento{% else %}0 incidentes ativos{% endif %}</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Terminal Section -->
+        <main class="dashboard-main">
+            <!-- Mini Terminal Nerd -->
+            <div class="terminal-wrapper">
+                <div class="terminal-header">
+                    <div class="terminal-buttons">
+                        <span class="t-btn close"></span>
+                        <span class="t-btn minimize"></span>
+                        <span class="t-btn expand"></span>
+                    </div>
+                    <div class="terminal-title">cvale-watchdog@pi3b:~ - bash</div>
+                    <div class="terminal-actions">
+                        <button id="btn-trigger" class="term-action-btn">
+                            <span class="btn-text">> RUN_CHECK</span>
+                            <span class="btn-loader hidden"></span>
+                        </button>
+                    </div>
+                </div>
+                <div class="terminal-body" id="terminal-body">
+                    <div class="term-line output-system">Initializing C.Vale Watchdog Shell...</div>
+                    <div class="term-line output-system">Alpine Linux v3.19.0 (armv7l) - Raspberry Pi 3B</div>
+                    <div class="term-line output-system">Target URL: <a href="{{ url }}" target="_blank">{{ url }}</a></div>
+                    <div class="term-line output-prompt">pi@cvale-watchdog:~$ watchdog --status</div>
+                    <div class="term-line output-system">---------------------------------------------</div>
+                    <div class="term-line output-system">Active Incident: {% if kpis.active_incident %}ID: {{ kpis.active_incident.id }} | Erros consecutivos: {{ kpis.active_incident.consecutive_failures }} | Desde: {{ kpis.active_incident.start_timestamp }}{% else %}Nenhum incidente ativo.{% endif %}</div>
+                    <div class="term-line output-system">---------------------------------------------</div>
+                    
+                    {% for log in logs %}
+                        <div class="term-line {% if log.is_healthy %}output-success{% else %}output-error{% endif %}">
+                            [{{ log.timestamp }}] - HTTP {{ log.status_code }} - {{ log.response_time_ms }}ms - {% if log.is_healthy %}OK{% else %}ERRO: {{ log.error_message }}{% endif %}
+                        </div>
+                    {% endfor %}
+                    <div class="term-line blink-cursor">>_</div>
+                </div>
+            </div>
+        </main>
+
+        <!-- Footer -->
+        <footer class="main-footer">
+            <p>Watchdog Agrocenter v1.0.0 &bull; C.Vale Cooperativa Agroindustrial</p>
+            <p>Desenvolvido para Raspberry Pi (Alpine Linux) | Baixo Consumo de Recursos</p>
+        </footer>
+    </div>
+
+    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+</body>
+</html>

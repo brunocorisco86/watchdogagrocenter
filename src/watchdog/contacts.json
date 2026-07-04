@@ -1,0 +1,12 @@
+[
+  {
+    "name": "Administrador de Redes C.Vale",
+    "email": "admin.rede@cvale.com.br",
+    "enabled": true
+  },
+  {
+    "name": "Suporte Técnico Agrocenter",
+    "email": "suporte.agrocenter@cvale.com.br",
+    "enabled": true
+  }
+]

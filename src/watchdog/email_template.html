@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Alerta Watchdog Agrocenter</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f4f6f9;
+            color: #333333;
+            margin: 0;
+            padding: 0;
+            -webkit-font-smoothing: antialiased;
+        }
+        .container {
+            max-width: 600px;
+            margin: 40px auto;
+            background-color: #ffffff;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.08);
+            border: 1px solid #e1e8ed;
+        }
+        .header {
+            background-color: #0047AB; /* Azul Cobalto */
+            color: #ffffff;
+            padding: 30px;
+            text-align: center;
+        }
+        .header h1 {
+            margin: 0;
+            font-size: 24px;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+        }
+        .header p {
+            margin: 5px 0 0 0;
+            font-size: 14px;
+            opacity: 0.9;
+        }
+        .content {
+            padding: 30px;
+        }
+        .alert-status {
+            background-color: #fff3cd;
+            border-left: 4px solid #ffc107;
+            color: #856404;
+            padding: 15px;
+            border-radius: 4px;
+            margin-bottom: 25px;
+            font-weight: bold;
+        }
+        .alert-status.critical {
+            background-color: #f8d7da;
+            border-left: 4px solid #dc3545;
+            color: #721c24;
+        }
+        .alert-status.resolved {
+            background-color: #d4edda;
+            border-left: 4px solid #28a745;
+            color: #155724;
+        }
+        .details-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 25px;
+        }
+        .details-table th, .details-table td {
+            padding: 12px 15px;
+            text-align: left;
+            border-bottom: 1px solid #e1e8ed;
+        }
+        .details-table th {
+            background-color: #f8fafc;
+            color: #0047AB;
+            font-weight: 600;
+            width: 35%;
+        }
+        .details-table td {
+            color: #4a5568;
+        }
+        .footer {
+            background-color: #f8fafc;
+            color: #718096;
+            text-align: center;
+            padding: 20px;
+            font-size: 12px;
+            border-top: 1px solid #e1e8ed;
+        }
+        .footer a {
+            color: #0047AB;
+            text-decoration: none;
+        }
+        .badge {
+            display: inline-block;
+            padding: 4px 8px;
+            font-size: 12px;
+            font-weight: bold;
+            border-radius: 4px;
+            text-transform: uppercase;
+        }
+        .badge-danger {
+            background-color: #dc3545;
+            color: #ffffff;
+        }
+        .badge-success {
+            background-color: #28a745;
+            color: #ffffff;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Cabeçalho -->
+        <div class="header">
+            <h1>C.VALE - Watchdog Agrocenter</h1>
+            <p>Monitoramento de Infraestrutura e Tecnologia Habilitadora</p>
+        </div>
+
+        <!-- Conteúdo -->
+        <div class="content">
+            <div class="alert-status {alert_class}">
+                {alert_summary}
+            </div>
+
+            <p>Prezado(a) Administrador(a),</p>
+            <p>O sistema de monitoramento automático detectou uma alteração de integridade no serviço Agrocenter. Abaixo estão os detalhes técnicos coletados pelo Watchdog:</p>
+
+            <table class="details-table">
+                <tr>
+                    <th>Serviço</th>
+                    <td>Agrocenter (C.Vale)</td>
+                </tr>
+                <tr>
+                    <th>URL Monitorada</th>
+                    <td><a href="{agrocenter_url}" target="_blank">{agrocenter_url}</a></td>
+                </tr>
+                <tr>
+                    <th>Status do Incidente</th>
+                    <td><span class="badge {badge_class}">{incident_status}</span></td>
+                </tr>
+                <tr>
+                    <th>Código HTTP</th>
+                    <td>{status_code}</td>
+                </tr>
+                <tr>
+                    <th>Tempo de Resposta</th>
+                    <td>{response_time_ms} ms</td>
+                </tr>
+                <tr>
+                    <th>Data/Hora (UTC)</th>
+                    <td>{timestamp}</td>
+                </tr>
+                <tr>
+                    <th>Falhas Consecutivas</th>
+                    <td>{consecutive_failures} de {max_failures}</td>
+                </tr>
+                <tr>
+                    <th>Descrição do Erro</th>
+                    <td><code>{error_message}</code></td>
+                </tr>
+            </table>
+
+            <p>Por favor, verifique se há problemas de conectividade, firewall, integridade dos servidores ou bancos de dados associados.</p>
+        </div>
+
+        <!-- Rodapé -->
+        <div class="footer">
+            <p>Este é um e-mail automático enviado pelo Watchdog Agrocenter.</p>
+            <p>Hospedado localmente no Alpine Linux (Raspberry Pi 3B - Dev-LAN)</p>
+            <p>&copy; 2026 C.Vale Cooperativa Agroindustrial. Todos os direitos reservados.</p>
+        </div>
+    </div>
+</body>
+</html>
