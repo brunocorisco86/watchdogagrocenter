@@ -1,6 +1,6 @@
 import os
 import sys
-from flask import Flask, render_code, render_template, jsonify, redirect, url_for
+from flask import Flask, render_template, jsonify, redirect, url_for
 from dotenv import load_dotenv
 
 # Adiciona o diretório raiz ao path para poder importar src
