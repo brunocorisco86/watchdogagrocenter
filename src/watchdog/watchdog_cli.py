@@ -58,28 +58,43 @@ def test_http_service(url, timeout):
         elapsed_ms = int((time.time() - start_time) * 1000)
         
         # Validar Premissas de Saúde:
-        # 1. Status HTTP deve ser menor que 400
+        # 1. Validação de Metadados de Cabeçalhos HTTP
+        content_type = response.headers.get('Content-Type', '')
+        if 'text/html' not in content_type:
+            return False, response.status_code, elapsed_ms, f"Tipo de conteúdo inválido nos metadados HTTP: '{content_type}' (esperado text/html)"
+
+        # 2. Status HTTP deve ser menor que 400
         if response.status_code >= 400:
             return False, response.status_code, elapsed_ms, f"Erro HTTP Status Code: {response.status_code}"
             
         content_lower = response.text.lower()
         
-        # 2. Verificar páginas de erro disfarçadas ou bloqueios (ex: Cloudflare, erro SQL)
-        cloudflare_indicators = ["cloudflare", "ray id", "ddos protection", "checking your browser"]
-        for indicator in cloudflare_indicators:
-            if indicator in content_lower:
-                return False, response.status_code, elapsed_ms, "Bloqueio ou página de desafio Cloudflare detectada"
+        # 3. Verificar páginas de erro disfarçadas, bloqueios de CDNs (Cloudflare / Akamai)
+        cdn_block_indicators = ["cloudflare", "ray id", "ddos protection", "checking your browser", "access denied", "reference #", "akamai"]
+        for indicator in cdn_block_indicators:
+            if indicator in content_lower and "loading..." not in content_lower: # 'loading...' é legítimo do React
+                # Se for um erro real do Akamai (Access Denied / Reference #)
+                if "access denied" in content_lower or "reference #" in content_lower:
+                    return False, response.status_code, elapsed_ms, "Bloqueio ou acesso negado pela CDN (Akamai / WAF)"
                 
+        # 4. Verificar falhas de backend/banco de dados expostas na resposta
         db_error_indicators = ["database connection failed", "sql error", "driver error", "internal server error", "fatal error"]
         for indicator in db_error_indicators:
             if indicator in content_lower:
                 return False, response.status_code, elapsed_ms, f"Erro de banco/sistema exposto na resposta: '{indicator}'"
                 
-        # 3. Premissa de Presença: Deve conter referências à C.Vale ou Agrocenter para atestar que é o portal correto
-        expected_keywords = ["c.vale", "cvale", "agrocenter", "login", "portal", "entrar"]
+        # 5. Premissa de Presença e Assinatura do Portal (React + C.Vale Agrocenter)
+        # O site da C.Vale Agrocenter em React possui tags exclusivas como content="Agro Center", eaware.io, e assets específicos do logo
+        expected_keywords = [
+            'content="agro center"',
+            'eaware.io',
+            'assets/images/geral/simbolo.png',
+            'loading...',
+            'agrocenter'
+        ]
         has_keyword = any(kw in content_lower for kw in expected_keywords)
         if not has_keyword:
-            return False, response.status_code, elapsed_ms, "Conteúdo retornado não condiz com o portal Agrocenter (possível falha de DNS ou redirecionamento)"
+            return False, response.status_code, elapsed_ms, "Conteúdo retornado não condiz com o portal Agrocenter (possível falha de DNS ou sequestro de rota)"
 
         return True, response.status_code, elapsed_ms, ""
         
