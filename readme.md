@@ -24,7 +24,10 @@ Watchdog minimalista, resiliente e de baixo consumo de recursos, projetado para 
 
 ## 📂 Estrutura do Repositório
 
-- [idea.md](file:///home/brunoconter/Documentos/1_C.VALE/2%20-%20PROJETOS/11_WATCHDOG_AGROCENTER/idea.md) - Arquitetura, fluxo de processos e MER.
+- [COMMISSIONING.md](file:///home/brunoconter/Documentos/1_C.VALE/2%20-%20PROJETOS/11_WATCHDOG_AGROCENTER/COMMISSIONING.md) - Manual passo a passo de implantação e comissionamento.
+- [ARCHITECTURE.md](file:///home/brunoconter/Documentos/1_C.VALE/2%20-%20PROJETOS/11_WATCHDOG_AGROCENTER/ARCHITECTURE.md) - Detalhamento da arquitetura física e lógica.
+- [CHANGELOG.md](file:///home/brunoconter/Documentos/1_C.VALE/2%20-%20PROJETOS/11_WATCHDOG_AGROCENTER/CHANGELOG.md) - Histórico de versões e lançamentos.
+- [idea.md](file:///home/brunoconter/Documentos/1_C.VALE/2%20-%20PROJETOS/11_WATCHDOG_AGROCENTER/idea.md) - Fluxo de processos original e MER.
 - [src/watchdog/](file:///home/brunoconter/Documentos/1_C.VALE/2%20-%20PROJETOS/11_WATCHDOG_AGROCENTER/src/watchdog/) - Código-fonte do monitor, banco de dados e envio de notificações.
 - [src/dashboard/](file:///home/brunoconter/Documentos/1_C.VALE/2%20-%20PROJETOS/11_WATCHDOG_AGROCENTER/src/dashboard/) - Aplicação Web Flask com o mini-terminal nerd de monitoramento.
 - [scripts/](file:///home/brunoconter/Documentos/1_C.VALE/2%20-%20PROJETOS/11_WATCHDOG_AGROCENTER/scripts/) - Scripts de instalação no Alpine Linux e execução no cron.
@@ -77,24 +80,18 @@ PYTHONPATH=. ./venv/bin/pytest -v
 
 ---
 
-## 🍓 Comissionamento no Raspberry Pi 3B (Alpine Linux)
+## 🍓 Implantação e Comissionamento (Raspberry Pi 3B)
 
-O Alpine Linux é escolhido para produção devido ao seu consumo de memória extremamente reduzido e arquitetura read-only opcional que protege o cartão SD do Raspberry Pi.
+Para implantar e ativar o Watchdog Agrocenter em produção usando um Raspberry Pi 3B com Alpine Linux (ou qualquer outra distribuição Linux), consulte o nosso manual de comissionamento completo passo a passo:
 
-1. Clone este repositório no Raspberry Pi:
-   ```bash
-   git clone <URL_DO_SEU_REPOSITORIO> /home/brunoconter/watchdog-agrocenter
-   cd /home/brunoconter/watchdog-agrocenter
-   ```
-2. Configure o arquivo `.env` com os dados de produção.
-3. Configure os contatos de e-mail em `src/watchdog/contacts.json`.
-4. Entre no diretório de scripts e execute o script de comissionamento automatizado como root:
-   ```bash
-   cd scripts
-   chmod +x setup_alpine.sh run_watchdog.sh
-   sudo ./setup_alpine.sh
-   ```
-5. O script irá configurar as dependências, criar o venv, instalar o requirements, iniciar o daemon de cron e adicionar a tarefa para rodar o watchdog a cada 5 minutos.
+👉 **[COMMISSIONING.md](file:///home/brunoconter/Documentos/1_C.VALE/2%20-%20PROJETOS/11_WATCHDOG_AGROCENTER/COMMISSIONING.md)**
+
+O manual aborda:
+- Requisitos de Hardware e Instalação Diskless do Alpine Linux.
+- Diagnóstico interativo de alertas (`verify_notifications.py`).
+- Execução isolada da suíte de testes (`run_tests.sh`).
+- Provisionamento automatizado via script (`setup_alpine.sh`).
+- Explicações e detalhes dos agendamentos Crontab.
 
 ---
 

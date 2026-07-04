@@ -1,6 +1,6 @@
 import sqlite3
 import os
-from datetime import datetime
+from datetime import datetime, timedelta
 
 class DatabaseManager:
     def __init__(self, db_path):
@@ -48,10 +48,11 @@ class DatabaseManager:
             INSERT INTO monitor_logs (timestamp, status_code, response_time_ms, is_healthy, error_message, check_type)
             VALUES (?, ?, ?, ?, ?, ?)
         '''
-        now = datetime.now().isoformat()
+        now = datetime.now().isoformat().replace('T', ' ')
         with self._get_connection() as conn:
             conn.execute(query, (now, status_code, response_time_ms, int(is_healthy), error_message, check_type))
             conn.commit()
+        self.prune_logs()
 
     def get_latest_logs(self, limit=50):
         query = 'SELECT * FROM monitor_logs ORDER BY timestamp DESC LIMIT ?'
@@ -73,7 +74,7 @@ class DatabaseManager:
             INSERT INTO incidents (start_timestamp, consecutive_failures, telegram_sent, email_sent, status)
             VALUES (?, 1, 0, 0, 'ACTIVE')
         '''
-        now = datetime.now().isoformat()
+        now = datetime.now().isoformat().replace('T', ' ')
         with self._get_connection() as conn:
             cursor = conn.cursor()
             cursor.execute(query, (now,))
@@ -100,59 +101,62 @@ class DatabaseManager:
 
     def resolve_incident(self, incident_id):
         query = "UPDATE incidents SET status = 'RESOLVED', end_timestamp = ? WHERE id = ?"
-        now = datetime.now().isoformat()
+        now = datetime.now().isoformat().replace('T', ' ')
         with self._get_connection() as conn:
             conn.execute(query, (now, incident_id))
             conn.commit()
 
     def prune_logs(self):
         """Deleta os logs mais antigos que 1 dia para economizar memória"""
-        query = "DELETE FROM monitor_logs WHERE timestamp < datetime('now', 'localtime', '-1 day')"
+        limit_time = (datetime.now() - timedelta(days=1)).isoformat().replace('T', ' ')
+        query = "DELETE FROM monitor_logs WHERE timestamp < ?"
         with self._get_connection() as conn:
-            conn.execute(query)
+            conn.execute(query, (limit_time,))
             conn.commit()
 
     def get_latency_history_6h(self):
         """Retorna os registros de latência das últimas 6 horas para série temporal"""
+        limit_time = (datetime.now() - timedelta(hours=6)).isoformat().replace('T', ' ')
         query = """
             SELECT timestamp, response_time_ms, is_healthy 
             FROM monitor_logs 
-            WHERE timestamp >= datetime('now', 'localtime', '-6 hours') 
+            WHERE timestamp >= ? 
             ORDER BY timestamp ASC
         """
         with self._get_connection() as conn:
             cursor = conn.cursor()
-            cursor.execute(query)
+            cursor.execute(query, (limit_time,))
             return [dict(row) for row in cursor.fetchall()]
 
     def get_kpis(self, period_filter='30d'):
         """Retorna estatísticas filtradas por período para exibir no dashboard"""
         filter_map = {
-            '1h': '-1 hour',
-            '6h': '-6 hours',
-            '1d': '-1 day',
-            '1w': '-7 days',
-            '30d': '-30 days'
+            '1h': timedelta(hours=1),
+            '6h': timedelta(hours=6),
+            '1d': timedelta(days=1),
+            '1w': timedelta(days=7),
+            '30d': timedelta(days=30)
         }
-        period_str = filter_map.get(period_filter, '-30 days')
+        delta = filter_map.get(period_filter, timedelta(days=30))
+        limit_time = (datetime.now() - delta).isoformat().replace('T', ' ')
 
         with self._get_connection() as conn:
             cursor = conn.cursor()
             
             # Total de verificações no período
-            cursor.execute("SELECT COUNT(*) FROM monitor_logs WHERE timestamp >= datetime('now', 'localtime', ?)", (period_str,))
+            cursor.execute("SELECT COUNT(*) FROM monitor_logs WHERE timestamp >= ?", (limit_time,))
             total_checks = cursor.fetchone()[0]
 
             # Verificações bem sucedidas vs falhas no período
-            cursor.execute("SELECT COUNT(*) FROM monitor_logs WHERE is_healthy = 1 AND timestamp >= datetime('now', 'localtime', ?)", (period_str,))
+            cursor.execute("SELECT COUNT(*) FROM monitor_logs WHERE is_healthy = 1 AND timestamp >= ?", (limit_time,))
             healthy_checks = cursor.fetchone()[0]
             
             # Tempo médio de resposta no período
-            cursor.execute("SELECT AVG(response_time_ms) FROM monitor_logs WHERE is_healthy = 1 AND timestamp >= datetime('now', 'localtime', ?)", (period_str,))
+            cursor.execute("SELECT AVG(response_time_ms) FROM monitor_logs WHERE is_healthy = 1 AND timestamp >= ?", (limit_time,))
             avg_response_time = cursor.fetchone()[0] or 0.0
 
             # Incidentes totais iniciados no período
-            cursor.execute("SELECT COUNT(*) FROM incidents WHERE start_timestamp >= datetime('now', 'localtime', ?)", (period_str,))
+            cursor.execute("SELECT COUNT(*) FROM incidents WHERE start_timestamp >= ?", (limit_time,))
             total_incidents = cursor.fetchone()[0]
 
             # Incidente ativo (sempre o último ativo, indepentende de filtro)
@@ -171,9 +175,9 @@ class DatabaseManager:
                 SELECT error_message, COUNT(*) as count 
                 FROM monitor_logs 
                 WHERE is_healthy = 0 AND error_message IS NOT NULL AND error_message != ''
-                  AND timestamp >= datetime('now', 'localtime', ?)
+                  AND timestamp >= ?
                 GROUP BY error_message
-            """, (period_str,))
+            """, (limit_time,))
             error_rows = cursor.fetchall()
             error_distribution = []
             for row in error_rows:

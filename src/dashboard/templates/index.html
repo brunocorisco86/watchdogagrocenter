@@ -174,6 +174,52 @@
                     {% endif %}
                 </div>
             </div>
+
+            <!-- Terminal 3 (Mini-Terminal de Arquitetura em ASCII Art) -->
+            <div class="terminal-wrapper full-width-terminal" style="margin-top: 1.5rem;">
+                <div class="terminal-header">
+                    <span class="terminal-title">[TERMINAL 3: MAPEAMENTO DA ARQUITETURA LÓGICA E FLUXO DO SISTEMA]</span>
+                    <div class="terminal-buttons">
+                        <span class="term-btn close"></span>
+                        <span class="term-btn minimize"></span>
+                        <span class="term-btn expand"></span>
+                    </div>
+                </div>
+                <div class="terminal-body" id="terminal-arch-body" style="font-size: 0.75rem; line-height: 1.2rem; overflow-x: auto; white-space: pre;">
+                    <div class="term-line output-system">pi@cvale-watchdog:~$ arch --view-logic</div>
+                    <div class="term-line output-success">Carregando mapa lógico C.Vale Watchdog v1.0.0...</div>
+                    <pre class="ascii-art-block" style="color: var(--blue-glow); font-family: var(--font-mono); margin: 0.5rem 0;">
+┌─────────────────────────┐     ┌────────────────────────────────────────────────────────┐
+│  CRONTAB (A cada 5m)    │ ──► │  watchdog_cli.py (Resiliência & Validador de Premissas)│
+└─────────────────────────┘     └───────────────────────────┬────────────────────────────┘
+                                                            │
+                     ┌──────────────────────────────────────┴──────────────────────────────────────┐
+                     ▼                                                                             ▼
+        [1. Conectividade ISP]                                                          [2. Resolvedor de DNS]
+    Se local estiver offline, grava log                                            Se local falhar, consulta socket UDP
+   "ISP Offline" e suspende os alertas.                                          (1.1.1.1/8.8.8.8) e faz bypass HTTPS por IP.
+                     │                                                                             │
+                     └──────────────────────────────────────┬──────────────────────────────────────┘
+                                                            ▼
+                                               [3. HTTPS GET & Metadados]
+                                            Garante Status 200 + Content-Type
+                                           e valida assinaturas HTML do portal.
+                                                            │
+                     ┌──────────────────────────────────────┴──────────────────────────────────────┐
+                     ▼                                                                             ▼
+              [Sucesso: OK]                                                                 [Falha detectada]
+      Loga SQLite e, se havia incidente                                            Inicia incidente ou incrementa falhas.
+        ativo, marca resolvido e alerta.                                           Atingindo 5 falhas, dispara escalação.
+                     │                                                                             │
+                     ▼                                                                             ▼
+         ┌───────────────────────┐                                                     ┌───────────────────────┐
+         │ Notificação Telegram  │                                                     │ Notificações E-mail   │
+         │  (Admin + Adicionais) │                                                     │ (Múltiplos Contatos)  │
+         └───────────────────────┘                                                     └───────────────────────┘
+                    </pre>
+                    <div class="term-line output-system">pi@cvale-watchdog:~$ <span class="blink-cursor">_</span></div>
+                </div>
+            </div>
         </main>
 
         <!-- Painel de Gerenciamento de Contatos e Alertas (Nova Feature) -->
