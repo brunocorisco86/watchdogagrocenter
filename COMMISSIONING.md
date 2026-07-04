@@ -74,11 +74,17 @@ O arquivo [src/watchdog/contacts.json](src/watchdog/contacts.json) armazena os d
   {
     "name": "Bruno Conter (C.Vale)",
     "email": "bruno.conter@cvale.com.br",
+    "telegram_id": "1959691903",
+    "level": 1,
+    "department": "TI",
     "enabled": true
   },
   {
     "name": "Bruno Corisco (Gmail)",
     "email": "brunocorisco@gmail.com",
+    "telegram_id": null,
+    "level": 2,
+    "department": "NEGOCIO",
     "enabled": true
   }
 ]
@@ -124,7 +130,7 @@ sudo ./scripts/setup_alpine.sh
 
 ## ⏰ 5. Agendamentos no Crontab
 
-O comissionamento automático instala dois agendamentos no Crontab. Caso queira configurá-los manualmente (`crontab -e`), utilize:
+O comissionamento automático instala os agendamentos no Crontab. Caso queira configurá-los manualmente (`crontab -e`), utilize:
 
 ```cron
 # 1. Checagem regular de integridade do Agrocenter (A cada 5 minutos)
@@ -132,6 +138,9 @@ O comissionamento automático instala dois agendamentos no Crontab. Caso queira 
 
 # 2. Relatório Diário de Expediente (Diariamente às 18:00h)
 0 18 * * * cd /home/brunoconter/watchdog-agrocenter && ./venv/bin/python3 src/watchdog/watchdog_cli.py --daily-report > /dev/null 2>&1
+
+# 3. Monitoramento e Keepalive do Dashboard Flask (A cada 1 minuto)
+*/1 * * * * /home/brunoconter/watchdog-agrocenter/scripts/keepalive_dashboard.sh > /dev/null 2>&1
 ```
 
 ---
@@ -146,7 +155,10 @@ cd /home/brunoconter/watchdog-agrocenter
 ./venv/bin/python3 src/dashboard/app.py
 ```
 
-### Execução em Background Persistente (Alpine Linux):
+### Resiliência Automática (Recomendado):
+O script de **keepalive** configurado no Cron (Passo 5) monitora constantemente a porta `5080`. Se o processo Flask cair ou a porta travar, ele se recupera automaticamente e inicia o serviço no background. Isso garante o funcionamento ininterrupto mesmo após quedas de energia no Raspberry Pi.
+
+### Execução em Background Manual:
 Para deixar o Dashboard rodando permanentemente no Alpine Linux, você pode usar o utilitário `nohup` ou integrá-lo ao gerenciador OpenRC. Exemplo rápido com `nohup`:
 ```bash
 nohup ./venv/bin/python3 src/dashboard/app.py > /home/brunoconter/watchdog-agrocenter/logs/flask.log 2>&1 &

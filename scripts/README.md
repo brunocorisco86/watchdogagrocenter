@@ -35,6 +35,13 @@ Este script é executado silenciosamente pelo crontab a cada 5 minutos e contém
 ./scripts/run_watchdog.sh
 ```
 
+### 5º Passo: Habilitar o Keepalive do Dashboard (Watchdog do Dashboard)
+Para garantir a alta disponibilidade do dashboard Flask e sua inicialização resiliente automática em caso de falhas na LAN do Agrocenter, ative o script de keepalive a cada minuto:
+```bash
+chmod +x scripts/keepalive_dashboard.sh
+```
+*Nota: Agende a execução automática no cron conforme detalhado no modelo.*
+
 ---
 
 ## 🛠️ Descrição Detalhada dos Arquivos
@@ -45,3 +52,4 @@ Este script é executado silenciosamente pelo crontab a cada 5 minutos e contém
 | `02` | [run_tests.sh](run_tests.sh) | Bash Shell | Atalho para ativar o venv e executar a suite `pytest -v` na raiz do projeto. |
 | `03` | [setup_alpine.sh](setup_alpine.sh) | Bash Shell | Provedor de instalação automática das libs do sistema, venv, requirements e crontab no Alpine Linux. |
 | `04` | [run_watchdog.sh](run_watchdog.sh) | Bash Shell | Wrapper do crontab que ativa o venv, executa a checagem HTTPS e anexa saídas no log físico. |
+| `05` | [keepalive_dashboard.sh](keepalive_dashboard.sh) | Bash Shell | Script de resiliência e monitoramento que reinicia o Flask se ele cair na LAN. |
