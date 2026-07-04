@@ -295,6 +295,10 @@ document.addEventListener('DOMContentLoaded', () => {
     const contactsTbody = document.getElementById('contacts-tbody');
     const contactsForm = document.getElementById('contacts-form');
     const formError = document.getElementById('form-error');
+    const formTitle = document.getElementById('form-title');
+    const contactOriginalEmail = document.getElementById('contact-original-email');
+    const btnSubmitContact = document.getElementById('btn-submit-contact');
+    const btnCancelEdit = document.getElementById('btn-cancel-edit');
 
     async function loadContacts() {
         if (!contactsTbody) return;
@@ -323,11 +327,19 @@ document.addEventListener('DOMContentLoaded', () => {
                     const actionsTd = document.createElement('td');
                     actionsTd.style.textAlign = 'center';
                     
+                    // Botão Editar
+                    const editBtn = document.createElement('button');
+                    editBtn.className = 'btn-edit-contact';
+                    editBtn.textContent = '[ EDITAR ]';
+                    editBtn.addEventListener('click', () => editContact(c));
+                    
+                    // Botão Remover
                     const deleteBtn = document.createElement('button');
                     deleteBtn.className = 'btn-delete-contact';
                     deleteBtn.textContent = '[ REMOVER ]';
                     deleteBtn.addEventListener('click', () => deleteContact(c.email));
                     
+                    actionsTd.appendChild(editBtn);
                     actionsTd.appendChild(deleteBtn);
                     
                     row.appendChild(nameTd);
@@ -352,6 +364,42 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
+    function editContact(c) {
+        if (!contactsForm) return;
+        
+        // Ativa o modo de edição preenchendo os dados
+        contactOriginalEmail.value = c.email;
+        document.getElementById('contact-name').value = c.name;
+        document.getElementById('contact-email').value = c.email;
+        document.getElementById('contact-telegram').value = c.telegram_id || '';
+        
+        // Altera títulos e botões
+        formTitle.textContent = '✎ EDITAR DESTINATÁRIO';
+        btnSubmitContact.textContent = '> SALVAR ALTERAÇÕES';
+        btnSubmitContact.style.borderColor = 'var(--blue-glow)';
+        btnSubmitContact.style.color = 'var(--blue-glow)';
+        btnCancelEdit.classList.remove('hidden');
+        
+        // Rola até o formulário para facilidade do usuário
+        contactsForm.scrollIntoView({ behavior: 'smooth' });
+    }
+
+    function resetFormState() {
+        if (!contactsForm) return;
+        contactsForm.reset();
+        contactOriginalEmail.value = '';
+        formTitle.textContent = '+ NOVO DESTINATÁRIO';
+        btnSubmitContact.textContent = '> CADASTRAR';
+        btnSubmitContact.style.borderColor = 'var(--green-hacker)';
+        btnSubmitContact.style.color = 'var(--green-hacker)';
+        btnCancelEdit.classList.add('hidden');
+        formError.classList.add('hidden');
+    }
+
+    if (btnCancelEdit) {
+        btnCancelEdit.addEventListener('click', resetFormState);
+    }
+
     async function deleteContact(email) {
         if (!confirm(`Deseja realmente remover o contato ${email}?`)) return;
         
@@ -366,6 +414,10 @@ document.addEventListener('DOMContentLoaded', () => {
             if (response.ok) {
                 appendTerminalLine(`pi@cvale-watchdog:~$ contacts --delete ${email}`, 'output-prompt');
                 appendTerminalLine(`Sucesso: ${data.message}`, 'output-success');
+                // Se o contato removido for o que estava sendo editado, reseta o formulário
+                if (contactOriginalEmail.value === email) {
+                    resetFormState();
+                }
                 await loadContacts();
             } else {
                 alert(`Erro: ${data.error}`);
@@ -380,30 +432,41 @@ document.addEventListener('DOMContentLoaded', () => {
             e.preventDefault();
             formError.classList.add('hidden');
             
+            const originalEmail = contactOriginalEmail.value;
             const name = document.getElementById('contact-name').value;
             const email = document.getElementById('contact-email').value;
             const telegram_id = document.getElementById('contact-telegram').value;
             
+            const isEditMode = originalEmail && originalEmail.trim() !== '';
+            const endpoint = isEditMode ? '/api/contacts/update' : '/api/contacts';
+            const payload = isEditMode 
+                ? { original_email: originalEmail, name, email, telegram_id }
+                : { name, email, telegram_id };
+            
             try {
-                const response = await fetch('/api/contacts', {
+                const response = await fetch(endpoint, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ name, email, telegram_id })
+                    body: JSON.stringify(payload)
                 });
                 const data = await response.json();
                 
                 if (response.ok) {
-                    appendTerminalLine(`pi@cvale-watchdog:~$ contacts --add "${name}" --email ${email}`, 'output-prompt');
+                    const termCmd = isEditMode 
+                        ? `contacts --update ${originalEmail} --email ${email}`
+                        : `contacts --add "${name}" --email ${email}`;
+                    
+                    appendTerminalLine(`pi@cvale-watchdog:~$ ${termCmd}`, 'output-prompt');
                     appendTerminalLine(`Sucesso: ${data.message}`, 'output-success');
                     
-                    contactsForm.reset();
+                    resetFormState();
                     await loadContacts();
                 } else {
-                    formError.textContent = data.error || 'Erro ao adicionar contato.';
+                    formError.textContent = data.error || 'Erro ao processar contato.';
                     formError.classList.remove('hidden');
                 }
             } catch (err) {
-                console.error("Erro ao adicionar contato: ", err);
+                console.error("Erro ao processar contato: ", err);
                 formError.textContent = 'Falha de comunicação com o servidor.';
                 formError.classList.remove('hidden');
             }

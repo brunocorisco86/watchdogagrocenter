@@ -785,3 +785,44 @@ body {
 .hidden {
     display: none !important;
 }
+.btn-edit-contact {
+    background: transparent;
+    border: 1px solid var(--blue-glow);
+    color: var(--blue-glow);
+    font-family: var(--font-mono);
+    font-size: 0.7rem;
+    padding: 0.2rem 0.5rem;
+    border-radius: 4px;
+    cursor: pointer;
+    margin-right: 0.5rem;
+    transition: all 0.2s ease;
+}
+
+.btn-edit-contact:hover {
+    background-color: var(--blue-glow);
+    color: #fff;
+    box-shadow: 0 0 8px rgba(59, 130, 246, 0.5);
+}
+
+.btn-cancel-contact {
+    background: transparent;
+    border: 1px solid var(--text-secondary);
+    color: var(--text-secondary);
+    font-family: var(--font-mono);
+    font-size: 0.8rem;
+    padding: 0.5rem 1rem;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    height: 38px;
+}
+
+.btn-cancel-contact:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+    color: #fff;
+}
+
+.flex-row-buttons {
+    display: flex;
+    gap: 0.5rem;
+}

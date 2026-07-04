@@ -149,6 +149,52 @@ def api_delete_contact():
     except Exception as e:
         return jsonify({"error": f"Erro ao excluir contato: {str(e)}"}), 500
 
+@app.route('/api/contacts/update', methods=['POST'])
+def api_update_contact():
+    data = request.json
+    original_email = data.get('original_email')
+    name = data.get('name')
+    email = data.get('email')
+    telegram_id = data.get('telegram_id', '').strip()
+    
+    if not original_email or not name or not email:
+        return jsonify({"error": "Nome, e-mail e e-mail original são obrigatórios"}), 400
+        
+    try:
+        import json
+        if not os.path.exists(CONTACTS_PATH):
+            return jsonify({"error": "Arquivo de contatos não encontrado"}), 404
+            
+        with open(CONTACTS_PATH, 'r', encoding='utf-8') as f:
+            contacts = json.load(f)
+            
+        # Acha o contato sendo editado
+        target_contact = None
+        for c in contacts:
+            if c['email'].lower() == original_email.lower():
+                target_contact = c
+                break
+                
+        if not target_contact:
+            return jsonify({"error": "Contato não encontrado"}), 404
+            
+        # Verifica se o novo e-mail já existe em OUTRO contato
+        if email.lower() != original_email.lower():
+            if any(c['email'].lower() == email.lower() for c in contacts):
+                return jsonify({"error": "O novo e-mail informado já está cadastrado em outro contato"}), 400
+                
+        # Atualiza campos
+        target_contact['name'] = name
+        target_contact['email'] = email
+        target_contact['telegram_id'] = telegram_id if telegram_id else None
+        
+        with open(CONTACTS_PATH, 'w', encoding='utf-8') as f:
+            json.dump(contacts, f, indent=2, ensure_ascii=False)
+            
+        return jsonify({"message": "Contato atualizado com sucesso!", "contact": target_contact})
+    except Exception as e:
+        return jsonify({"error": f"Erro ao atualizar contato: {str(e)}"}), 500
+
 if __name__ == '__main__':
     port = int(os.getenv('FLASK_PORT', 5000))
     host = os.getenv('FLASK_HOST', '0.0.0.0')

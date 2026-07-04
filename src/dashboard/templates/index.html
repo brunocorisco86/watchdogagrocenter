@@ -202,7 +202,9 @@
 
                 <!-- Formulário de cadastro de novo contato -->
                 <form class="contacts-form" id="contacts-form">
-                    <h4>+ NOVO DESTINATÁRIO</h4>
+                    <h4 id="form-title">+ NOVO DESTINATÁRIO</h4>
+                    <!-- Input oculto para armazenar o email original durante a edição -->
+                    <input type="hidden" id="contact-original-email">
                     <div class="form-row">
                         <div class="form-group">
                             <label for="contact-name">Nome:</label>
@@ -216,8 +218,9 @@
                             <label for="contact-telegram">Telegram ID (Opcional):</label>
                             <input type="text" id="contact-telegram" placeholder="Ex: 987654321">
                         </div>
-                        <div class="form-group btn-group-align">
-                            <button type="submit" class="btn-add-contact">> CADASTRAR</button>
+                        <div class="form-group btn-group-align flex-row-buttons">
+                            <button type="submit" id="btn-submit-contact" class="btn-add-contact">> CADASTRAR</button>
+                            <button type="button" id="btn-cancel-edit" class="btn-cancel-contact hidden">[ CANCELAR ]</button>
                         </div>
                     </div>
                     <div class="form-error-msg hidden" id="form-error"></div>
