@@ -299,6 +299,47 @@
             </div>
         </div>
 
+        <!-- Terminal 4 (Mini-Terminal das Features e Fluxo do watchdog_cli.py - Destaque Verde) -->
+        <div class="terminal-wrapper full-width-terminal cli-highlight-terminal" style="margin-top: 1rem; margin-bottom: 2rem;">
+            <div class="terminal-header" style="background-color: #0c2017; border-bottom: 1px solid rgba(16, 185, 129, 0.3);">
+                <span class="terminal-title" style="color: var(--green-hacker); text-shadow: 0 0 8px rgba(16, 185, 129, 0.5);">[TERMINAL 4: FEATURES & MECANISMOS INTERNOS DO watchdog_cli.py]</span>
+                <div class="terminal-buttons">
+                    <span class="term-btn close"></span>
+                    <span class="term-btn minimize"></span>
+                    <span class="term-btn expand"></span>
+                </div>
+            </div>
+            <div class="terminal-body" id="terminal-cli-body" style="font-size: 0.75rem; line-height: 1.25rem; overflow-x: auto; border: 1px solid rgba(16, 185, 129, 0.2);">
+                <div class="term-line output-system">pi@cvale-watchdog:~$ watchdog_cli --show-internals</div>
+                <div class="term-line output-success">Carregando motores de monitoramento ativo...</div>
+                
+                <div style="font-family: var(--font-mono); color: var(--text-primary); margin: 0.5rem 0;">
+<span style="color: var(--green-hacker);">[MOTOR 1: DOUBLE CHECK DE ISP LOCAL]</span>
+ ├──► Testa conectividade TCP básica resolvendo IPs globais (Cloudflare / Google).
+ └──► Se falhar: Classifica como <span style="color: var(--yellow-hacker);">"Falha de Internet Local (ISP Offline)"</span>, grava no banco e aborta disparo de alarmes.
+
+<span style="color: var(--green-hacker);">[MOTOR 2: BYPASS RESILIENTE DE DNS INTERNO]</span>
+ ├──► Em caso de falha de resolução DNS local, inicia conexões UDP diretas para 1.1.1.1 e 8.8.8.8.
+ └──► Obtém o IP público do Agrocenter, injeta no socket e formata requisição HTTP direta ao IP.
+ └──► Adiciona cabeçalho manual <span style="color: var(--blue-glow);">"Host: prd-agrocenter.cvale.com.br"</span> para bypassar o firewall da Akamai.
+
+<span style="color: var(--green-hacker);">[MOTOR 3: MOTOR DE REQUISITOS E REQUISITOS DE CONTEÚDO (HTML SIGNATURES)]</span>
+ ├──► Exige obrigatoriamente status HTTP <span style="color: var(--green-hacker);">200 OK</span> e metadados com <span style="color: var(--blue-glow);">Content-Type: text/html</span>.
+ ├──► Varre o código-fonte em busca das palavras-chave obrigatórias do portal.
+ ├──► Identifica e rotula erros de sistema (exposição de logs/warnings do banco de dados).
+ └──► Identifica e rotula bloqueios de firewall da CDN (<span style="color: var(--red-alert);">Bloqueios WAF / Access Denied Akamai</span>).
+
+<span style="color: var(--green-hacker);">[MOTOR 4: POLÍTICA DE RETRIES E COOLDOWN]</span>
+ ├──► Em caso de erro inicial, executa automaticamente <span style="color: var(--yellow-hacker);">3 tentativas sequenciais</span> de requisição.
+ └──► Aguarda um cooldown fixo de <span style="color: var(--blue-glow);">2 segundos</span> entre as tentativas antes de declarar queda.
+
+<span style="color: var(--green-hacker);">[MOTOR 5: AUTO-PRUNING CONCORRENTE]</span>
+ └──► A cada inserção bem-sucedida, varre e expurga registros antigos com <span style="color: var(--red-alert);">> 24 horas</span> (Pruning).
+                </div>
+                <div class="term-line output-system">pi@cvale-watchdog:~$ <span class="blink-cursor">_</span></div>
+            </div>
+        </div>
+
         <!-- Footer -->
         <footer class="main-footer">
             <p>Watchdog Agrocenter v1.0.0 &bull; C.Vale Cooperativa Agroindustrial</p>
