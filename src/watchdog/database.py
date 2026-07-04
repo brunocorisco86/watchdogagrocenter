@@ -105,45 +105,75 @@ class DatabaseManager:
             conn.execute(query, (now, incident_id))
             conn.commit()
 
-    def get_kpis(self):
-        """Retorna estatísticas para exibir no dashboard"""
+    def prune_logs(self):
+        """Deleta os logs mais antigos que 1 dia para economizar memória"""
+        query = "DELETE FROM monitor_logs WHERE timestamp < datetime('now', 'localtime', '-1 day')"
+        with self._get_connection() as conn:
+            conn.execute(query)
+            conn.commit()
+
+    def get_latency_history_6h(self):
+        """Retorna os registros de latência das últimas 6 horas para série temporal"""
+        query = """
+            SELECT timestamp, response_time_ms, is_healthy 
+            FROM monitor_logs 
+            WHERE timestamp >= datetime('now', 'localtime', '-6 hours') 
+            ORDER BY timestamp ASC
+        """
+        with self._get_connection() as conn:
+            cursor = conn.cursor()
+            cursor.execute(query)
+            return [dict(row) for row in cursor.fetchall()]
+
+    def get_kpis(self, period_filter='30d'):
+        """Retorna estatísticas filtradas por período para exibir no dashboard"""
+        filter_map = {
+            '1h': '-1 hour',
+            '6h': '-6 hours',
+            '1d': '-1 day',
+            '1w': '-7 days',
+            '30d': '-30 days'
+        }
+        period_str = filter_map.get(period_filter, '-30 days')
+
         with self._get_connection() as conn:
             cursor = conn.cursor()
             
-            # Total de verificações
-            cursor.execute("SELECT COUNT(*) FROM monitor_logs")
+            # Total de verificações no período
+            cursor.execute("SELECT COUNT(*) FROM monitor_logs WHERE timestamp >= datetime('now', 'localtime', ?)", (period_str,))
             total_checks = cursor.fetchone()[0]
 
-            # Verificações bem sucedidas vs falhas
-            cursor.execute("SELECT COUNT(*) FROM monitor_logs WHERE is_healthy = 1")
+            # Verificações bem sucedidas vs falhas no período
+            cursor.execute("SELECT COUNT(*) FROM monitor_logs WHERE is_healthy = 1 AND timestamp >= datetime('now', 'localtime', ?)", (period_str,))
             healthy_checks = cursor.fetchone()[0]
             
-            # Tempo médio de resposta
-            cursor.execute("SELECT AVG(response_time_ms) FROM monitor_logs WHERE is_healthy = 1")
+            # Tempo médio de resposta no período
+            cursor.execute("SELECT AVG(response_time_ms) FROM monitor_logs WHERE is_healthy = 1 AND timestamp >= datetime('now', 'localtime', ?)", (period_str,))
             avg_response_time = cursor.fetchone()[0] or 0.0
 
-            # Incidentes totais
-            cursor.execute("SELECT COUNT(*) FROM incidents")
+            # Incidentes totais iniciados no período
+            cursor.execute("SELECT COUNT(*) FROM incidents WHERE start_timestamp >= datetime('now', 'localtime', ?)", (period_str,))
             total_incidents = cursor.fetchone()[0]
 
-            # Incidente ativo
+            # Incidente ativo (sempre o último ativo, indepentende de filtro)
             active_incident = self.get_active_incident()
 
             # Histórico de incidentes resolvidos (últimos 10)
             cursor.execute("SELECT * FROM incidents WHERE status = 'RESOLVED' ORDER BY end_timestamp DESC LIMIT 10")
             resolved_incidents = [dict(row) for row in cursor.fetchall()]
 
-            # Disponibilidade (%)
+            # Disponibilidade (%) no período
             availability = (healthy_checks / total_checks * 100) if total_checks > 0 else 100.0
 
-            # Distribuição de erros (%)
+            # Distribuição de erros (%) no período
             failed_checks = total_checks - healthy_checks
             cursor.execute("""
                 SELECT error_message, COUNT(*) as count 
                 FROM monitor_logs 
                 WHERE is_healthy = 0 AND error_message IS NOT NULL AND error_message != ''
+                  AND timestamp >= datetime('now', 'localtime', ?)
                 GROUP BY error_message
-            """)
+            """, (period_str,))
             error_rows = cursor.fetchall()
             error_distribution = []
             for row in error_rows:

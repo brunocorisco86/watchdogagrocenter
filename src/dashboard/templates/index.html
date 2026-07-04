@@ -6,6 +6,8 @@
     <title>C.Vale - Watchdog Agrocenter Dashboard</title>
     <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;700&family=Outfit:wght@300;400;600;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <!-- Biblioteca Chart.js para Série Temporal -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body>
     <div class="stars-container"></div>
@@ -32,6 +34,18 @@
             </div>
         </header>
 
+        <!-- Barra de Filtros de Período -->
+        <div class="filter-bar">
+            <span class="filter-label">> FILTRAR KPIs:</span>
+            <div class="filter-group">
+                <button class="filter-btn" data-period="1h">[ 1 HORA ]</button>
+                <button class="filter-btn" data-period="6h">[ 6 HORAS ]</button>
+                <button class="filter-btn" data-period="1d">[ 1 DIA ]</button>
+                <button class="filter-btn" data-period="1w">[ 1 SEMANA ]</button>
+                <button class="filter-btn active" data-period="30d">[ 1 MÊS ]</button>
+            </div>
+        </div>
+
         <!-- KPI Grid -->
         <section class="kpi-grid">
             <div class="kpi-card" data-kpi="availability">
@@ -39,7 +53,7 @@
                 <div class="kpi-content">
                     <h3>Disponibilidade</h3>
                     <div class="kpi-value">{{ kpis.availability }}%</div>
-                    <p>Histórico geral acumulado</p>
+                    <p>Filtro temporal ativo</p>
                 </div>
             </div>
             
@@ -48,7 +62,7 @@
                 <div class="kpi-content">
                     <h3>Tempo Médio</h3>
                     <div class="kpi-value">{{ kpis.avg_response_time }} ms</div>
-                    <p>Latência média de resposta</p>
+                    <p>Latência média no período</p>
                 </div>
             </div>
 
@@ -57,7 +71,7 @@
                 <div class="kpi-content">
                     <h3>Verificações</h3>
                     <div class="kpi-value">{{ kpis.total_checks }}</div>
-                    <p>Verificações executadas</p>
+                    <p>Testes no período</p>
                 </div>
             </div>
 
@@ -71,17 +85,28 @@
             </div>
         </section>
 
+        <!-- Seção do Gráfico de Série Temporal (6 Horas) -->
+        <section class="chart-section">
+            <div class="chart-header">
+                <span class="chart-title">[SÉRIE TEMPORAL: LATÊNCIA DO PORTAL (ÚLTIMAS 6 HORAS)]</span>
+            </div>
+            <div class="chart-body">
+                <canvas id="latencyChart"></canvas>
+            </div>
+        </section>
+
         <!-- Terminal & Error Analytics Section -->
         <main class="dashboard-main">
-            <!-- Mini Terminal Nerd -->
-            <div class="terminal-wrapper">
+            
+            <!-- Terminal 1: Histórico de Testes (Banco SQLite) -->
+            <div class="terminal-wrapper" id="term-sqlite">
                 <div class="terminal-header">
                     <div class="terminal-buttons">
                         <span class="t-btn close"></span>
                         <span class="t-btn minimize"></span>
                         <span class="t-btn expand"></span>
                     </div>
-                    <div class="terminal-title">cvale-watchdog@pi3b:~ - bash</div>
+                    <div class="terminal-title">cvale-watchdog:sqlite-db - bash</div>
                     <div class="terminal-actions">
                         <button id="btn-trigger" class="term-action-btn">
                             <span class="btn-text">> RUN_CHECK</span>
@@ -107,6 +132,22 @@
                 </div>
             </div>
 
+            <!-- Terminal 2: Logs Físicos de Execução (watchdog.log) -->
+            <div class="terminal-wrapper" id="term-sys">
+                <div class="terminal-header">
+                    <div class="terminal-buttons">
+                        <span class="t-btn close"></span>
+                        <span class="t-btn minimize"></span>
+                        <span class="t-btn expand"></span>
+                    </div>
+                    <div class="terminal-title">cvale-watchdog:/var/log/watchdog.log - tail -f</div>
+                </div>
+                <div class="terminal-body" id="sys-log-body">
+                    <div class="term-line output-system">Carregando logs físicos do sistema de arquivos local...</div>
+                    <div class="term-line blink-cursor">>_</div>
+                </div>
+            </div>
+
             <!-- Analisador de Falhas / Distribuição de Erros -->
             <div class="stats-panel-wrapper">
                 <div class="stats-panel-header">
@@ -128,7 +169,7 @@
                         {% endfor %}
                     {% else %}
                         <div class="no-errors-message">
-                            Nenhum erro registrado até o momento.<br>Sistema 100% operacional.
+                            Nenhum erro registrado no período.<br>Sistema 100% operacional.
                         </div>
                     {% endif %}
                 </div>
@@ -138,7 +179,7 @@
         <!-- Footer -->
         <footer class="main-footer">
             <p>Watchdog Agrocenter v1.0.0 &bull; C.Vale Cooperativa Agroindustrial</p>
-            <p>Desenvolvido para Raspberry Pi (Alpine Linux) | Baixo Consumo de Recursos</p>
+            <p>Desenvolvido para Raspberry Pi (Alpine Linux) | Logs prunados em 1 dia</p>
         </footer>
     </div>
 

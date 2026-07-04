@@ -1,73 +1,202 @@
 document.addEventListener('DOMContentLoaded', () => {
     const btnTrigger = document.getElementById('btn-trigger');
-    const btnText = btnTrigger.querySelector('.btn-text');
-    const btnLoader = btnTrigger.querySelector('.btn-loader');
+    const btnText = btnTrigger ? btnTrigger.querySelector('.btn-text') : null;
+    const btnLoader = btnTrigger ? btnTrigger.querySelector('.btn-loader') : null;
     const terminalBody = document.getElementById('terminal-body');
+    const sysLogBody = document.getElementById('sys-log-body');
+    
+    let currentPeriod = '30d';
+    let latencyChart = null;
 
-    // Função para rolar o terminal para baixo
-    const scrollToBottom = () => {
-        terminalBody.scrollTop = terminalBody.scrollHeight;
+    // Função para rolar os terminais para baixo
+    const scrollToBottom = (element) => {
+        if (element) {
+            element.scrollTop = element.scrollHeight;
+        }
     };
 
     // Rola para baixo inicialmente
-    scrollToBottom();
+    scrollToBottom(terminalBody);
+    scrollToBottom(sysLogBody);
 
-    // Event listener para o gatilho manual do watchdog
-    btnTrigger.addEventListener('click', async () => {
-        // Bloqueia botão e mostra loading
-        btnTrigger.disabled = true;
-        btnText.textContent = 'RUNNING...';
-        btnLoader.classList.remove('hidden');
-
-        // Cria a linha de comando no terminal de simulação
-        appendTerminalLine('pi@cvale-watchdog:~$ python3 src/watchdog/watchdog_cli.py --manual-trigger', 'output-prompt');
-        appendTerminalLine('Acessando serviço Agrocenter e validando premissas de integridade...', 'output-system');
-
-        try {
-            const response = await fetch('/api/trigger', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                }
-            });
-            const data = await response.json();
-
-            if (response.ok) {
-                appendTerminalLine(`Sucesso: ${data.message}`, 'output-success');
-                // Atualiza a tela
-                await updateDashboardData();
-            } else {
-                appendTerminalLine(`Erro do Servidor: ${data.message}`, 'output-error');
-            }
-        } catch (error) {
-            appendTerminalLine(`Falha de Conectividade Local: ${error.message}`, 'output-error');
-        } finally {
-            // Desbloqueia botão
-            btnTrigger.disabled = false;
-            btnText.textContent = '> RUN_CHECK';
-            btnLoader.classList.add('hidden');
-            scrollToBottom();
-        }
+    // Event listener para os botões de filtro de período
+    const filterButtons = document.querySelectorAll('.filter-btn');
+    filterButtons.forEach(btn => {
+        btn.addEventListener('click', async (e) => {
+            filterButtons.forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            currentPeriod = btn.dataset.period;
+            
+            // Injeta comando de filtro no terminal
+            appendTerminalLine(`pi@cvale-watchdog:~$ watchdog --filter-period ${currentPeriod.toUpperCase()}`, 'output-prompt');
+            appendTerminalLine(`Filtrando métricas do banco SQLite para o período de ${currentPeriod.toUpperCase()}...`, 'output-system');
+            
+            await updateDashboardData();
+        });
     });
 
-    // Função para injetar uma linha no terminal
+    // Event listener para o gatilho manual do watchdog
+    if (btnTrigger) {
+        btnTrigger.addEventListener('click', async () => {
+            btnTrigger.disabled = true;
+            if (btnText) btnText.textContent = 'RUNNING...';
+            if (btnLoader) btnLoader.classList.remove('hidden');
+
+            appendTerminalLine('pi@cvale-watchdog:~$ python3 src/watchdog/watchdog_cli.py --manual-trigger', 'output-prompt');
+            appendTerminalLine('Acessando serviço Agrocenter e validando premissas de integridade...', 'output-system');
+
+            try {
+                const response = await fetch('/api/trigger', { method: 'POST' });
+                const data = await response.json();
+
+                if (response.ok) {
+                    appendTerminalLine(`Sucesso: ${data.message}`, 'output-success');
+                    await updateDashboardData();
+                } else {
+                    appendTerminalLine(`Erro do Servidor: ${data.message}`, 'output-error');
+                }
+            } catch (error) {
+                appendTerminalLine(`Falha de Conectividade Local: ${error.message}`, 'output-error');
+            } finally {
+                btnTrigger.disabled = false;
+                if (btnText) btnText.textContent = '> RUN_CHECK';
+                if (btnLoader) btnLoader.classList.add('hidden');
+                scrollToBottom(terminalBody);
+            }
+        });
+    }
+
+    // Função para injetar uma linha no terminal SQLite
     function appendTerminalLine(text, className) {
+        if (!terminalBody) return;
         const line = document.createElement('div');
         line.className = `term-line ${className}`;
         line.textContent = text;
         
-        // Insere a linha antes do cursor do prompt (o último elemento '_')
         const cursorLine = terminalBody.querySelector('.blink-cursor');
-        terminalBody.insertBefore(line, cursorLine);
-        scrollToBottom();
+        if (cursorLine) {
+            terminalBody.insertBefore(line, cursorLine);
+        } else {
+            terminalBody.appendChild(line);
+        }
+        scrollToBottom(terminalBody);
     }
 
-    // Função para atualizar os dados do Dashboard via API
+    // Função para atualizar os logs do sistema físico (watchdog.log)
+    async function updateSystemLogs() {
+        if (!sysLogBody) return;
+        try {
+            const response = await fetch('/api/system-logs');
+            const logs = await response.json();
+            
+            // Remove linhas antigas do terminal de sistema
+            const existingLines = sysLogBody.querySelectorAll('.term-line:not(.blink-cursor)');
+            existingLines.forEach(el => el.remove());
+            
+            if (Array.isArray(logs) && logs.length > 0) {
+                const cursorLine = sysLogBody.querySelector('.blink-cursor');
+                logs.forEach(logLine => {
+                    const line = document.createElement('div');
+                    line.className = 'term-line output-system';
+                    line.textContent = logLine;
+                    
+                    if (cursorLine) {
+                        sysLogBody.insertBefore(line, cursorLine);
+                    } else {
+                        sysLogBody.appendChild(line);
+                    }
+                });
+            }
+            scrollToBottom(sysLogBody);
+        } catch (err) {
+            console.error("Erro ao carregar logs do sistema: ", err);
+        }
+    }
+
+    // Função para renderizar/atualizar o gráfico de latência
+    async function updateLatencyChart() {
+        const ctx = document.getElementById('latencyChart');
+        if (!ctx) return;
+
+        try {
+            const response = await fetch('/api/latency-6h');
+            const data = await response.json();
+
+            // Extrai as labels (horas formatadas) e dados (latência em ms)
+            const labels = [];
+            const values = [];
+            
+            data.forEach(item => {
+                // Formata timestamp ISO para 'HH:MM:SS'
+                try {
+                    const dt = new Date(item.timestamp);
+                    const formattedTime = dt.toLocaleTimeString('pt-BR', { hour12: false });
+                    labels.push(formattedTime);
+                } catch {
+                    labels.push(item.timestamp);
+                }
+                values.push(item.is_healthy ? item.response_time_ms : null);
+            });
+
+            // Se o gráfico já existe, destrói para evitar sobreposição
+            if (latencyChart) {
+                latencyChart.destroy();
+            }
+
+            // Inicializa Chart.js com tema nerd/hacker
+            latencyChart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: 'Tempo de Resposta (ms)',
+                        data: values,
+                        borderColor: '#00ff66',
+                        backgroundColor: 'rgba(0, 255, 102, 0.08)',
+                        borderWidth: 2,
+                        fill: true,
+                        tension: 0.2,
+                        pointRadius: 3,
+                        pointBackgroundColor: '#00ff66',
+                        spanGaps: true // Ignora falhas para não quebrar a linha do gráfico
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        x: {
+                            grid: { color: 'rgba(255, 255, 255, 0.03)' },
+                            ticks: {
+                                color: '#94a3b8',
+                                font: { family: 'Fira Code', size: 10 }
+                            }
+                        },
+                        y: {
+                            grid: { color: 'rgba(255, 255, 255, 0.03)' },
+                            ticks: {
+                                color: '#94a3b8',
+                                font: { family: 'Fira Code', size: 10 }
+                            },
+                            suggestedMin: 0
+                        }
+                    },
+                    plugins: {
+                        legend: { display: false }
+                    }
+                }
+            });
+        } catch (err) {
+            console.error("Erro ao carregar o gráfico: ", err);
+        }
+    }
+
+    // Função para atualizar os dados gerais do Dashboard via API
     async function updateDashboardData() {
         try {
-            // 1. Atualizar KPIs
-            const kpisResponse = await fetch('/api/kpis');
-            const kpis = await kpisResponse.ok ? await kpisResponse.json() : null;
+            // 1. Atualizar KPIs com filtro de período ativo
+            const kpisResponse = await fetch(`/api/kpis?period=${currentPeriod}`);
+            const kpis = kpisResponse.ok ? await kpisResponse.json() : null;
 
             if (kpis) {
                 document.querySelector('[data-kpi="availability"] .kpi-value').textContent = `${kpis.availability}%`;
@@ -80,24 +209,24 @@ document.addEventListener('DOMContentLoaded', () => {
                 
                 incidentValue.textContent = kpis.total_incidents;
                 
-                // Trata visualmente a queda ativa
                 const statusDot = document.querySelector('.status-indicator-dot');
                 const statusLabel = document.querySelector('.status-label');
 
                 if (kpis.active_incident) {
-                    incidentCard.classList.add('kpi-alert');
-                    incidentText.textContent = `1 ativo no momento`;
+                    if (incidentCard) incidentCard.classList.add('kpi-alert');
+                    if (incidentText) incidentText.textContent = `1 ativo no momento`;
                     
-                    statusDot.className = 'status-indicator-dot status-down-pulse';
-                    statusLabel.textContent = 'SISTEMA EM ALERTA (OFFLINE)';
+                    if (statusDot) statusDot.className = 'status-indicator-dot status-down-pulse';
+                    if (statusLabel) statusLabel.textContent = 'SISTEMA EM ALERTA (OFFLINE)';
                 } else {
-                    incidentCard.classList.remove('kpi-alert');
-                    incidentText.textContent = `0 incidentes ativos`;
+                    if (incidentCard) incidentCard.classList.remove('kpi-alert');
+                    if (incidentText) incidentText.textContent = `0 incidentes ativos`;
                     
-                    statusDot.className = 'status-indicator-dot status-up-pulse';
-                    statusLabel.textContent = 'SISTEMA OPERACIONAL';
+                    if (statusDot) statusDot.className = 'status-indicator-dot status-up-pulse';
+                    if (statusLabel) statusLabel.textContent = 'SISTEMA OPERACIONAL';
                 }
-                // 1.1 Atualizar o Painel de Distribuição de Erros
+
+                // Atualizar o Painel de Distribuição de Erros
                 const errorStatsBody = document.getElementById('error-stats-body');
                 if (errorStatsBody) {
                     if (kpis.error_distribution && kpis.error_distribution.length > 0) {
@@ -120,42 +249,51 @@ document.addEventListener('DOMContentLoaded', () => {
                     } else {
                         errorStatsBody.innerHTML = `
                             <div class="no-errors-message">
-                                Nenhum erro registrado até o momento.<br>Sistema 100% operacional.
+                                Nenhum erro registrado no período.<br>Sistema 100% operacional.
                             </div>
                         `;
                     }
                 }
             }
 
-            // 2. Atualizar Logs do Terminal
+            // 2. Atualizar Logs do Terminal SQLite
             const logsResponse = await fetch('/api/logs');
-            const logs = await logsResponse.ok ? await logsResponse.json() : [];
+            const logs = logsResponse.ok ? await logsResponse.json() : [];
 
-            if (logs.length > 0) {
-                // Remove as linhas de log antigas (linhas com output-success ou output-error que não sejam interativas)
-                const existingLogs = terminalBody.querySelectorAll('.output-success, .output-error');
+            if (logs.length > 0 && terminalBody) {
+                const existingLogs = terminalBody.querySelectorAll('.term-line:not(.output-system):not(.output-prompt):not(.blink-cursor)');
                 existingLogs.forEach(el => el.remove());
 
-                // Adiciona os novos logs de cima para baixo
+                const cursorLine = terminalBody.querySelector('.blink-cursor');
                 logs.forEach(log => {
                     const statusText = log.is_healthy ? 'OK' : `ERRO: ${log.error_message}`;
                     const lineText = `[${log.timestamp}] - HTTP ${log.status_code} - ${log.response_time_ms}ms - ${statusText}`;
                     const className = log.is_healthy ? 'output-success' : 'output-error';
                     
-                    // Injeta antes do cursor
                     const line = document.createElement('div');
                     line.className = `term-line ${className}`;
                     line.textContent = lineText;
                     
-                    const cursorLine = terminalBody.querySelector('.blink-cursor');
-                    terminalBody.insertBefore(line, cursorLine);
+                    if (cursorLine) {
+                        terminalBody.insertBefore(line, cursorLine);
+                    } else {
+                        terminalBody.appendChild(line);
+                    }
                 });
+                scrollToBottom(terminalBody);
             }
+
+            // 3. Atualizar logs do sistema de arquivos e gráfico temporal
+            await updateSystemLogs();
+            await updateLatencyChart();
         } catch (err) {
             console.error("Erro ao atualizar o painel: ", err);
         }
     }
 
-    // Loop de auto-atualização de KPIs a cada 30 segundos
+    // Inicialização geral
+    updateDashboardData();
+
+    // Auto-atualização de logs e gráficos a cada 30 segundos
     setInterval(updateDashboardData, 30000);
 });

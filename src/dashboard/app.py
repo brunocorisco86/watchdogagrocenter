@@ -1,6 +1,6 @@
 import os
 import sys
-from flask import Flask, render_template, jsonify, redirect, url_for
+from flask import Flask, render_template, jsonify, redirect, url_for, request
 from dotenv import load_dotenv
 
 # Adiciona o diretório raiz ao path para poder importar src
@@ -20,7 +20,8 @@ db = DatabaseManager(DB_PATH)
 
 @app.route('/')
 def index():
-    kpis = db.get_kpis()
+    # Carrega KPIs padrão de 30 dias
+    kpis = db.get_kpis('30d')
     logs = db.get_latest_logs(limit=30)
     
     # Adicionar status do serviço agrocenter atual
@@ -30,13 +31,35 @@ def index():
 
 @app.route('/api/kpis')
 def api_kpis():
-    kpis = db.get_kpis()
+    period = request.args.get('period', '30d')
+    kpis = db.get_kpis(period)
     return jsonify(kpis)
 
 @app.route('/api/logs')
 def api_logs():
     logs = db.get_latest_logs(limit=30)
     return jsonify(logs)
+
+@app.route('/api/system-logs')
+def api_system_logs():
+    """Lê as últimas 50 linhas do arquivo de log físico do sistema"""
+    log_file_path = os.path.join(base_dir, 'logs/watchdog.log')
+    if not os.path.exists(log_file_path):
+        return jsonify(["Arquivo de log do sistema vazio ou inexistente."])
+    try:
+        with open(log_file_path, 'r', encoding='utf-8') as f:
+            lines = f.readlines()
+        # Pega as últimas 50 linhas e inverte para ficar em ordem cronológica inversa (mais recente no topo) ou normal
+        last_lines = [line.strip() for line in lines[-50:]]
+        return jsonify(last_lines)
+    except Exception as e:
+        return jsonify([f"Erro ao ler logs: {str(e)}"])
+
+@app.route('/api/latency-6h')
+def api_latency_6h():
+    """Retorna os dados de latência das últimas 6 horas para alimentar o gráfico"""
+    history = db.get_latency_history_6h()
+    return jsonify(history)
 
 @app.route('/api/trigger', methods=['POST'])
 def trigger_check():
