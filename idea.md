@@ -142,7 +142,7 @@ erDiagram
 | 6 | Download e Configuração do Logo C.Vale nos `assets` | 100% | Antigravity (Download efetuado via wget) |
 | 7 | Dashboard Flask com Mini-Terminais Nerd e KPIs | 100% | Antigravity (Concluído) |
 | 8 | Scripts de Comissionamento e Automatização para Alpine Linux (`scripts/setup_alpine.sh`) | 100% | Antigravity (Concluído) |
-| 9 | Implementação de Testes Unitários (`tests/`) | 0% | Pendente |
+| 9 | Implementação de Testes Unitários (`tests/`) | 100% | Antigravity (Concluído com Pytest) |
 | 10| Configuração final do Git, README.md, .env e venv | 100% | Antigravity (Concluído) |
 
 ---
