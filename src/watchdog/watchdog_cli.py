@@ -17,7 +17,7 @@ def load_config():
     load_dotenv(os.path.join(base_dir, '.env'))
 
     return {
-        'url': os.getenv('AGROCENTER_URL', 'https://agrocenter.cvale.com.br'),
+        'url': os.getenv('AGROCENTER_URL', 'https://prd-agrocenter.cvale.com.br/login'),
         'timeout': int(os.getenv('REQUEST_TIMEOUT_SECONDS', '10')),
         'max_failures': int(os.getenv('MAX_CONSECUTIVE_FAILURES_BEFORE_EMAIL', '3')),
         'db_path': os.path.join(base_dir, os.getenv('SQLITE_DB_PATH', 'src/watchdog/database.db')),
