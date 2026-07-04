@@ -95,42 +95,42 @@
             </div>
         </section>
 
-        <!-- Terminal & Error Analytics Section -->
-        <main class="dashboard-main">
-            
-            <!-- Terminal 1: Histórico de Testes (Banco SQLite) -->
-            <div class="terminal-wrapper" id="term-sqlite">
-                <div class="terminal-header">
-                    <div class="terminal-buttons">
-                        <span class="t-btn close"></span>
-                        <span class="t-btn minimize"></span>
-                        <span class="t-btn expand"></span>
-                    </div>
-                    <div class="terminal-title">cvale-watchdog:sqlite-db - bash</div>
-                    <div class="terminal-actions">
-                        <button id="btn-trigger" class="term-action-btn">
-                            <span class="btn-text">> RUN_CHECK</span>
-                            <span class="btn-loader hidden"></span>
-                        </button>
-                    </div>
+        <!-- Terminal 1: Histórico de Testes (Banco SQLite) - LARGURA TOTAL -->
+        <div class="terminal-wrapper full-width-terminal" id="term-sqlite">
+            <div class="terminal-header">
+                <div class="terminal-buttons">
+                    <span class="t-btn close"></span>
+                    <span class="t-btn minimize"></span>
+                    <span class="t-btn expand"></span>
                 </div>
-                <div class="terminal-body" id="terminal-body">
-                    <div class="term-line output-system">Initializing C.Vale Watchdog Shell...</div>
-                    <div class="term-line output-system">Alpine Linux v3.19.0 (armv7l) - Raspberry Pi 3B</div>
-                    <div class="term-line output-system">Target URL: <a href="{{ url }}" target="_blank">{{ url }}</a></div>
-                    <div class="term-line output-prompt">pi@cvale-watchdog:~$ watchdog --status</div>
-                    <div class="term-line output-system">---------------------------------------------</div>
-                    <div class="term-line output-system">Active Incident: {% if kpis.active_incident %}ID: {{ kpis.active_incident.id }} | Erros consecutivos: {{ kpis.active_incident.consecutive_failures }} | Desde: {{ kpis.active_incident.start_timestamp }}{% else %}Nenhum incidente ativo.{% endif %}</div>
-                    <div class="term-line output-system">---------------------------------------------</div>
-                    
-                    {% for log in logs %}
-                        <div class="term-line {% if log.is_healthy %}output-success{% else %}output-error{% endif %}">
-                            [{{ log.timestamp }}] - HTTP {{ log.status_code }} - {{ log.response_time_ms }}ms - {% if log.is_healthy %}OK{% else %}ERRO: {{ log.error_message }}{% endif %}
-                        </div>
-                    {% endfor %}
-                    <div class="term-line blink-cursor">>_</div>
+                <div class="terminal-title">cvale-watchdog:sqlite-db - bash</div>
+                <div class="terminal-actions">
+                    <button id="btn-trigger" class="term-action-btn">
+                        <span class="btn-text">> RUN_CHECK</span>
+                        <span class="btn-loader hidden"></span>
+                    </button>
                 </div>
             </div>
+            <div class="terminal-body" id="terminal-body">
+                <div class="term-line output-system">Initializing C.Vale Watchdog Shell...</div>
+                <div class="term-line output-system">Alpine Linux v3.19.0 (armv7l) - Raspberry Pi 3B</div>
+                <div class="term-line output-system">Target URL: <a href="{{ url }}" target="_blank">{{ url }}</a></div>
+                <div class="term-line output-prompt">pi@cvale-watchdog:~$ watchdog --status</div>
+                <div class="term-line output-system">---------------------------------------------</div>
+                <div class="term-line output-system">Active Incident: {% if kpis.active_incident %}ID: {{ kpis.active_incident.id }} | Erros consecutivos: {{ kpis.active_incident.consecutive_failures }} | Desde: {{ kpis.active_incident.start_timestamp }}{% else %}Nenhum incidente ativo.{% endif %}</div>
+                <div class="term-line output-system">---------------------------------------------</div>
+                
+                {% for log in logs %}
+                    <div class="term-line {% if log.is_healthy %}output-success{% else %}output-error{% endif %}">
+                        [{{ log.timestamp }}] - HTTP {{ log.status_code }} - {{ log.response_time_ms }}ms - {% if log.is_healthy %}OK{% else %}ERRO: {{ log.error_message }}{% endif %}
+                    </div>
+                {% endfor %}
+                <div class="term-line blink-cursor">>_</div>
+            </div>
+        </div>
+
+        <!-- Seção Inferior: Terminal 2 e Analisador Lado a Lado -->
+        <main class="dashboard-main">
 
             <!-- Terminal 2: Logs Físicos de Execução (watchdog.log) -->
             <div class="terminal-wrapper" id="term-sys">
