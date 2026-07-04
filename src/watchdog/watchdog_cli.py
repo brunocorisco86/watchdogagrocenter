@@ -527,8 +527,179 @@ def run_daily_report():
         log_to_file(config['logs_dir'], "Erro ao enviar relatório diário.")
         print("Erro ao enviar relatório diário.")
 
+def run_monthly_report():
+    config = load_config()
+    db = DatabaseManager(config['db_path'])
+    notifier = Notifier(
+        telegram_token=config['telegram_token'],
+        telegram_chat_id=config['telegram_chat_id'],
+        smtp_config=config['smtp_config']
+    )
+    
+    log_to_file(config['logs_dir'], "Iniciando geração de relatório mensal...")
+    
+    # 1. Coleta os KPIs dos últimos 30 dias usando get_kpis
+    kpis = db.get_kpis(period_filter='30d')
+    
+    # 2. Coleta a lista de incidentes que ocorreram nos últimos 30 dias
+    import sqlite3
+    conn = sqlite3.connect(config['db_path'])
+    conn.row_factory = sqlite3.Row
+    cursor = conn.cursor()
+    
+    cursor.execute("""
+        SELECT id, start_timestamp, end_timestamp, consecutive_failures, status
+        FROM incidents
+        WHERE start_timestamp >= datetime('now', 'localtime', '-30 days')
+        ORDER BY start_timestamp DESC
+    """)
+    incidents = cursor.fetchall()
+    
+    # Monta a tabela HTML de incidentes
+    if incidents:
+        table_rows = ""
+        for inc in incidents:
+            status_badge = ""
+            if inc['status'] == 'RESOLVED':
+                status_badge = '<span class="incident-badge badge-resolved">Resolvido</span>'
+            else:
+                status_badge = '<span class="incident-badge badge-active">Ativo</span>'
+                
+            start_dt = datetime.fromisoformat(inc['start_timestamp'])
+            end_time_str = "N/A"
+            duration_str = "N/A"
+            if inc['end_timestamp']:
+                end_dt = datetime.fromisoformat(inc['end_timestamp'])
+                end_time_str = end_dt.strftime('%d/%m/%Y %H:%M:%S')
+                duration_str = f"{round((end_dt - start_dt).total_seconds() / 60, 1)} min"
+            elif inc['status'] == 'ACTIVE':
+                duration_str = f"{round((datetime.now() - start_dt).total_seconds() / 60, 1)} min (em andamento)"
+                
+            table_rows += f"""
+                <tr>
+                    <td>#{inc['id']}</td>
+                    <td>{start_dt.strftime('%d/%m/%Y %H:%M:%S')}</td>
+                    <td>{end_time_str}</td>
+                    <td>{duration_str}</td>
+                    <td>{status_badge}</td>
+                </tr>
+            """
+        incident_table_html = f"""
+            <table>
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Início</th>
+                        <th>Resolução</th>
+                        <th>Duração</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {table_rows}
+                </tbody>
+            </table>
+        """
+    else:
+        incident_table_html = "<p style='font-size: 13px; color: #475569;'>Nenhum incidente registrado nos últimos 30 dias.</p>"
+
+    # 3. Monta a tabela HTML de distribuição de falhas
+    if kpis.get('error_distribution'):
+        error_rows = ""
+        for err in kpis['error_distribution']:
+            error_rows += f"""
+                <tr>
+                    <td><b>{err['error_message']}</b></td>
+                    <td style="text-align: right;">{err['count']} ocor.</td>
+                    <td style="text-align: right;"><b>{err['percentage']}%</b></td>
+                </tr>
+            """
+        error_distribution_html = f"""
+            <table>
+                <thead>
+                    <tr>
+                        <th>Mensagem de Erro</th>
+                        <th style="text-align: right;">Frequência</th>
+                        <th style="text-align: right;">Proporção</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {error_rows}
+                </tbody>
+            </table>
+        """
+    else:
+        error_distribution_html = "<p style='font-size: 13px; color: #475569;'>Nenhuma falha de serviço registrada no período.</p>"
+        
+    # Cores de KPI baseadas no status
+    availability = float(kpis.get('availability', 100))
+    uptime_color = "#16a34a" if availability >= 99.0 else ("#d97706" if availability >= 95.0 else "#dc2626")
+    
+    total_incidents = int(kpis.get('total_incidents', 0))
+    incident_color = "#475569" if total_incidents == 0 else "#dc2626"
+    
+    # Total de falhas no período
+    cursor.execute("""
+        SELECT COUNT(*) as cnt FROM monitor_logs 
+        WHERE is_healthy = 0 AND timestamp >= datetime('now', 'localtime', '-30 days')
+    """)
+    failures_count = cursor.fetchone()['cnt']
+    conn.close()
+
+    # Variáveis do Template
+    template_vars = {
+        'generation_time': datetime.now().strftime('%d/%m/%Y %H:%M:%S'),
+        'availability': str(availability),
+        'uptime_color': uptime_color,
+        'avg_response_time': str(kpis.get('avg_response_time', 0)),
+        'total_checks': str(kpis.get('total_checks', 0)),
+        'failures_count': str(failures_count),
+        'total_incidents': str(total_incidents),
+        'incident_color': incident_color,
+        'incident_table_html': incident_table_html,
+        'error_distribution_html': error_distribution_html,
+        'agrocenter_url': config['url']
+    }
+
+    # Caminho do template de relatório diário (podemos usar o mesmo template visual)
+    daily_template_path = os.path.abspath(os.path.join(os.path.dirname(__file__), 'daily_report_template.html'))
+
+    # 5. Envia o relatório por E-mail
+    subject = f"[RELATÓRIO MENSAL] Fechamento de Ciclo (30 dias) - Watchdog Agrocenter"
+    email_sent = notifier.send_email_report(
+        subject=subject,
+        template_vars=template_vars,
+        contacts_path=config['contacts_path'],
+        template_path=daily_template_path
+    )
+    
+    # 6. Envia resumo via Telegram
+    telegram_msg = (
+        f"📊 <b>RELATÓRIO MENSAL: C.Vale Agrocenter</b>\n"
+        f"<i>Consolidado dos últimos 30 dias (Fechamento Mensal).</i>\n\n"
+        f"<b>Disponibilidade (SLA Mensal):</b> {availability}%\n"
+        f"<b>Latência Média:</b> {kpis.get('avg_response_time', 0)} ms\n"
+        f"<b>Total de Verificações:</b> {kpis.get('total_checks', 0)} (Falhas: {failures_count})\n"
+        f"<b>Incidentes Registrados:</b> {total_incidents}\n\n"
+        f"📨 <i>O relatório mensal analítico detalhado com o SLA consolidado foi enviado com sucesso para o e-mail dos administradores!</i>"
+    )
+    
+    telegram_sent = notifier.send_telegram_alert(telegram_msg, config['contacts_path'], consecutive_failures=0)
+    
+    if email_sent or telegram_sent:
+        log_to_file(config['logs_dir'], "Relatório mensal enviado com sucesso.")
+        print("Relatório mensal enviado com sucesso.")
+    else:
+        log_to_file(config['logs_dir'], "Erro ao enviar relatório mensal.")
+        print("Erro ao enviar relatório mensal.")
+
 if __name__ == '__main__':
-    if len(sys.argv) > 1 and sys.argv[1] == '--daily-report':
-        run_daily_report()
+    if len(sys.argv) > 1:
+        if sys.argv[1] == '--daily-report':
+            run_daily_report()
+        elif sys.argv[1] == '--monthly-report':
+            run_monthly_report()
+        else:
+            run_check()
     else:
         run_check()

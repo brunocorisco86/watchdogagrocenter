@@ -61,6 +61,17 @@ Para receber o relatório analítico de performance consolidado por e-mail e Tel
 
 ---
 
+## 📅 Agendamento do Relatório Mensal (Todo dia 30 às 18:00h)
+
+Para receber o relatório com o consolidado de SLA/Uptime e incidentes do mês fechado por e-mail e Telegram pontualmente às **18:00** do dia **30** de cada mês, adicione o seguinte agendamento:
+
+```cron
+# Relatório Mensal de SLA consolidado do mês todo dia 30 às 18:00
+0 18 30 * * cd "/home/brunoconter/Documentos/1_C.VALE/2 - PROJETOS/11_WATCHDOG_AGROCENTER" && ./venv/bin/python3 src/watchdog/watchdog_cli.py --monthly-report >> logs/monthly_report.log 2>&1
+```
+
+---
+
 ## 🛡️ Script de Resiliência e Keepalive (Watchdog do Dashboard)
 
 Para garantir que o Dashboard Flask continue de pé na LAN do Agrocenter no Raspberry Pi, implementamos um script de **keepalive**. Ele é agendado no cron para rodar a cada **1 minuto** e realiza um double-check: tenta conectar via HTTP na porta `5080`. Se o site estiver offline ou travado, encerra qualquer processo zumbi que esteja prendendo a porta e reinicia o Flask no background.

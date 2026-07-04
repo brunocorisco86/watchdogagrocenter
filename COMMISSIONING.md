@@ -139,7 +139,10 @@ O comissionamento automático instala os agendamentos no Crontab. Caso queira co
 # 2. Relatório Diário de Expediente (Diariamente às 18:00h)
 0 18 * * * cd /home/brunoconter/watchdog-agrocenter && ./venv/bin/python3 src/watchdog/watchdog_cli.py --daily-report > /dev/null 2>&1
 
-# 3. Monitoramento e Keepalive do Dashboard Flask (A cada 1 minuto)
+# 3. Relatório Mensal de SLA consolidado (Todo dia 30 às 18:00h)
+0 18 30 * * cd /home/brunoconter/watchdog-agrocenter && ./venv/bin/python3 src/watchdog/watchdog_cli.py --monthly-report > /dev/null 2>&1
+
+# 4. Monitoramento e Keepalive do Dashboard Flask (A cada 1 minuto)
 */1 * * * * /home/brunoconter/watchdog-agrocenter/scripts/keepalive_dashboard.sh > /dev/null 2>&1
 ```
 
