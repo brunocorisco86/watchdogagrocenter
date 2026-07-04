@@ -43,70 +43,154 @@ def log_to_file(logs_dir, message):
         f.write(f"[{timestamp}] {message}\n")
     print(message)
 
+def resolve_dns_udp(domain, dns_server):
+    """
+    Realiza uma consulta DNS UDP (tipo A) de forma nativa (sem dependências externas)
+    para o servidor DNS informado (1.1.1.1 ou 8.8.8.8).
+    """
+    import socket
+    import struct
+    
+    # Cabeçalho DNS Query simples (ID=0x1234, Flags=0x0100, QDCOUNT=1)
+    packet = struct.pack(">HHHHHH", 0x1234, 0x0100, 1, 0, 0, 0)
+    for part in domain.split('.'):
+        packet += struct.pack("B", len(part)) + part.encode('utf-8')
+    packet += b'\x00' # Final do nome
+    packet += struct.pack(">HH", 1, 1) # Tipo A (IPv4), Classe IN (Internet)
+    
+    try:
+        sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+        sock.settimeout(2.0)
+        sock.sendto(packet, (dns_server, 53))
+        data, _ = sock.recvfrom(512)
+        sock.close()
+        
+        # Pula cabeçalho (12 bytes) e a query para encontrar a resposta
+        idx = 12
+        while data[idx] != 0:
+            idx += data[idx] + 1
+        idx += 5 # Pula byte 0, tipo e classe (4 bytes)
+        
+        # Leitura da resposta
+        if (data[idx] & 0xc0) == 0xc0:
+            idx += 2 # Nome compactado
+        else:
+            while data[idx] != 0:
+                idx += data[idx] + 1
+            idx += 1
+            
+        rdlength = struct.unpack(">H", data[idx+8:idx+10])[0]
+        ip_bytes = data[idx+10:idx+10+rdlength]
+        if rdlength == 4:
+            return ".".join(str(b) for b in ip_bytes)
+    except Exception:
+        pass
+    return None
+
 def test_http_service(url, timeout):
     """
-    Realiza o teste HTTP e valida as premissas de saúde do serviço Agrocenter.
-    Retorna (is_healthy, status_code, elapsed_ms, error_message)
+    Realiza o teste HTTP com sistema de retry (3 tentativas) e fallback
+    de DNS para 1.1.1.1/8.8.8.8 no caso de erros de conexão/DNS.
     """
+    import urllib3
+    from urllib.parse import urlparse
+    urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
+    
     headers = {
         'User-Agent': 'C.Vale Watchdog Agent/1.0 (Raspberry Pi Dev)'
     }
     
-    start_time = time.time()
-    try:
-        response = requests.get(url, timeout=timeout, headers=headers)
-        elapsed_ms = int((time.time() - start_time) * 1000)
-        
-        # Validar Premissas de Saúde:
-        # 1. Validação de Metadados de Cabeçalhos HTTP
-        content_type = response.headers.get('Content-Type', '')
-        if 'text/html' not in content_type:
-            return False, response.status_code, elapsed_ms, f"Tipo de conteúdo inválido nos metadados HTTP: '{content_type}' (esperado text/html)"
-
-        # 2. Status HTTP deve ser menor que 400
-        if response.status_code >= 400:
-            return False, response.status_code, elapsed_ms, f"Erro HTTP Status Code: {response.status_code}"
+    parsed_url = urlparse(url)
+    hostname = parsed_url.hostname
+    
+    retries = 3
+    sleep_seconds = 2
+    
+    for attempt in range(1, retries + 1):
+        start_time = time.time()
+        try:
+            response = requests.get(url, timeout=timeout, headers=headers)
+            elapsed_ms = int((time.time() - start_time) * 1000)
             
-        content_lower = response.text.lower()
-        
-        # 3. Verificar páginas de erro disfarçadas, bloqueios de CDNs (Cloudflare / Akamai)
-        cdn_block_indicators = ["cloudflare", "ray id", "ddos protection", "checking your browser", "access denied", "reference #", "akamai"]
-        for indicator in cdn_block_indicators:
-            if indicator in content_lower and "loading..." not in content_lower: # 'loading...' é legítimo do React
-                # Se for um erro real do Akamai (Access Denied / Reference #)
-                if "access denied" in content_lower or "reference #" in content_lower:
-                    return False, response.status_code, elapsed_ms, "Bloqueio ou acesso negado pela CDN (Akamai / WAF)"
-                
-        # 4. Verificar falhas de backend/banco de dados expostas na resposta
-        db_error_indicators = ["database connection failed", "sql error", "driver error", "internal server error", "fatal error"]
-        for indicator in db_error_indicators:
-            if indicator in content_lower:
-                return False, response.status_code, elapsed_ms, f"Erro de banco/sistema exposto na resposta: '{indicator}'"
-                
-        # 5. Premissa de Presença e Assinatura do Portal (React + C.Vale Agrocenter)
-        # O site da C.Vale Agrocenter em React possui tags exclusivas como content="Agro Center", eaware.io, e assets específicos do logo
-        expected_keywords = [
-            'content="agro center"',
-            'eaware.io',
-            'assets/images/geral/simbolo.png',
-            'loading...',
-            'agrocenter'
-        ]
-        has_keyword = any(kw in content_lower for kw in expected_keywords)
-        if not has_keyword:
-            return False, response.status_code, elapsed_ms, "Conteúdo retornado não condiz com o portal Agrocenter (possível falha de DNS ou sequestro de rota)"
+            # 1. Validação de Metadados de Cabeçalhos HTTP
+            content_type = response.headers.get('Content-Type', '')
+            if 'text/html' not in content_type:
+                return False, response.status_code, elapsed_ms, f"Tipo de conteúdo inválido nos metadados HTTP: '{content_type}'"
 
-        return True, response.status_code, elapsed_ms, ""
-        
-    except requests.exceptions.Timeout:
-        elapsed_ms = int((time.time() - start_time) * 1000)
-        return False, 0, elapsed_ms, f"Timeout na requisição após {timeout}s"
-    except requests.exceptions.ConnectionError:
-        elapsed_ms = int((time.time() - start_time) * 1000)
-        return False, 0, elapsed_ms, "Falha de conexão / DNS ao tentar acessar o servidor"
-    except Exception as e:
-        elapsed_ms = int((time.time() - start_time) * 1000)
-        return False, 0, elapsed_ms, f"Erro inesperado: {str(e)}"
+            # 2. Status HTTP de Erro
+            if response.status_code >= 400:
+                content_lower = response.text.lower()
+                if any(x in content_lower for x in ["access denied", "reference #", "akamai"]):
+                    return False, response.status_code, elapsed_ms, "Bloqueio de Firewall (Akamai WAF)"
+                return False, response.status_code, elapsed_ms, f"Erro HTTP Status Code: {response.status_code}"
+                
+            content_lower = response.text.lower()
+            
+            # 3. Verificar páginas de erro disfarçadas ou bloqueios Akamai
+            if any(x in content_lower for x in ["access denied", "reference #", "akamai"]):
+                if "loading..." not in content_lower:
+                    return False, response.status_code, elapsed_ms, "Bloqueio de Firewall (Akamai WAF)"
+                
+            # 4. Verificar falhas de backend/banco de dados
+            db_error_indicators = ["database connection failed", "sql error", "driver error", "internal server error", "fatal error"]
+            for indicator in db_error_indicators:
+                if indicator in content_lower:
+                    return False, response.status_code, elapsed_ms, f"Erro de banco/sistema exposto na resposta: '{indicator}'"
+                    
+            # 5. Premissa de Presença e Assinatura do Portal React
+            expected_keywords = [
+                'content="agro center"',
+                'eaware.io',
+                'assets/images/geral/simbolo.png',
+                'loading...',
+                'agrocenter'
+            ]
+            has_keyword = any(kw in content_lower for kw in expected_keywords)
+            if not has_keyword:
+                return False, response.status_code, elapsed_ms, "Conteúdo retornado não condiz com o portal Agrocenter (possível falha de DNS ou sequestro de rota)"
+
+            return True, response.status_code, elapsed_ms, ""
+            
+        except (requests.exceptions.ConnectionError, requests.exceptions.Timeout):
+            elapsed_ms = int((time.time() - start_time) * 1000)
+            
+            # Se for a última tentativa, executa o DNS fallback para identificar a causa real
+            if attempt == retries:
+                resolved_ip = None
+                for public_dns in ["1.1.1.1", "8.8.8.8"]:
+                    resolved_ip = resolve_dns_udp(hostname, public_dns)
+                    if resolved_ip:
+                        break
+                
+                if resolved_ip:
+                    # O DNS público resolveu. Indica falha no Unbound / Pi-hole local!
+                    # Tenta fazer a requisição usando o IP direto para confirmar
+                    try:
+                        fallback_url = url.replace(hostname, resolved_ip)
+                        fallback_headers = headers.copy()
+                        fallback_headers['Host'] = hostname
+                        
+                        fb_start = time.time()
+                        fb_response = requests.get(fallback_url, headers=fallback_headers, timeout=timeout, verify=False)
+                        fb_elapsed = int((time.time() - fb_start) * 1000)
+                        
+                        if fb_response.status_code < 400:
+                            return False, 0, fb_elapsed, "Falha de DNS Local (Pi-hole / Unbound)"
+                        else:
+                            return False, fb_response.status_code, fb_elapsed, "Erro de Rede Externo (DNS local com falha, rota com erro)"
+                    except Exception:
+                        return False, 0, elapsed_ms, "Falha de DNS Local (Unbound inativo / Sem resolução local)"
+                else:
+                    # DNS público também falhou. Conexão com a internet inteira caiu.
+                    return False, 0, elapsed_ms, "Falha de Conectividade Geral (Sem Internet)"
+            
+            time.sleep(sleep_seconds)
+            
+        except Exception as e:
+            elapsed_ms = int((time.time() - start_time) * 1000)
+            if attempt == retries:
+                return False, 0, elapsed_ms, f"Erro inesperado após retentativas: {str(e)}"
+            time.sleep(sleep_seconds)
 
 def run_check():
     config = load_config()

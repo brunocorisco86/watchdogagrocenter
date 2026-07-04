@@ -97,6 +97,34 @@ document.addEventListener('DOMContentLoaded', () => {
                     statusDot.className = 'status-indicator-dot status-up-pulse';
                     statusLabel.textContent = 'SISTEMA OPERACIONAL';
                 }
+                // 1.1 Atualizar o Painel de Distribuição de Erros
+                const errorStatsBody = document.getElementById('error-stats-body');
+                if (errorStatsBody) {
+                    if (kpis.error_distribution && kpis.error_distribution.length > 0) {
+                        errorStatsBody.innerHTML = '';
+                        kpis.error_distribution.forEach(err => {
+                            const item = document.createElement('div');
+                            item.className = 'error-stat-item';
+                            item.innerHTML = `
+                                <div class="error-stat-meta">
+                                    <span class="error-name" title="${err.error_message}">${err.error_message}</span>
+                                    <span class="error-pct">${err.percentage}%</span>
+                                </div>
+                                <div class="error-bar-container">
+                                    <div class="error-bar-fill" style="width: ${err.percentage}%"></div>
+                                </div>
+                                <div class="error-count">${err.count} ocorrências</div>
+                            `;
+                            errorStatsBody.appendChild(item);
+                        });
+                    } else {
+                        errorStatsBody.innerHTML = `
+                            <div class="no-errors-message">
+                                Nenhum erro registrado até o momento.<br>Sistema 100% operacional.
+                            </div>
+                        `;
+                    }
+                }
             }
 
             // 2. Atualizar Logs do Terminal

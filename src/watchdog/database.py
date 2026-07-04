@@ -136,13 +136,34 @@ class DatabaseManager:
             # Disponibilidade (%)
             availability = (healthy_checks / total_checks * 100) if total_checks > 0 else 100.0
 
+            # Distribuição de erros (%)
+            failed_checks = total_checks - healthy_checks
+            cursor.execute("""
+                SELECT error_message, COUNT(*) as count 
+                FROM monitor_logs 
+                WHERE is_healthy = 0 AND error_message IS NOT NULL AND error_message != ''
+                GROUP BY error_message
+            """)
+            error_rows = cursor.fetchall()
+            error_distribution = []
+            for row in error_rows:
+                err_msg = row['error_message']
+                count = row['count']
+                pct = round((count / failed_checks * 100), 1) if failed_checks > 0 else 0.0
+                error_distribution.append({
+                    'error_message': err_msg,
+                    'count': count,
+                    'percentage': pct
+                })
+
             return {
                 'total_checks': total_checks,
                 'healthy_checks': healthy_checks,
-                'failed_checks': total_checks - healthy_checks,
+                'failed_checks': failed_checks,
                 'avg_response_time': round(avg_response_time, 2),
                 'total_incidents': total_incidents,
                 'active_incident': active_incident,
                 'resolved_incidents': resolved_incidents,
-                'availability': round(availability, 2)
+                'availability': round(availability, 2),
+                'error_distribution': error_distribution
             }
