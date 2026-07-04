@@ -135,14 +135,14 @@ erDiagram
 | ID | Tarefa / Etapa | % Completo | Responsável / Nota |
 |:---|:---|:---:|:---|
 | 1 | Arquitetura, Ideação (`idea.md`) e Estrutura de Pastas | 100% | Antigravity |
-| 2 | Modelagem de Banco de Dados e Scripts SQLite (`src/watchdog/database.py`) | 0% | Pendente |
-| 3 | Core do Watchdog & Validador de Premissas HTTP (`src/watchdog/watchdog_cli.py`) | 0% | Pendente |
-| 4 | Módulo de Alerta Telegram (`aiogram`) e E-mail (`smtplib`) | 0% | Pendente |
-| 5 | Criação do Template de E-mail (Azul Cobalto + Branco) | 0% | Pendente |
-| 6 | Download e Configuração do Logo C.Vale nos `assets` | 0% | Pendente (fazer download do logo público C.Vale ou mockup) |
-| 7 | Dashboard Flask com Mini-Terminais Nerd e KPIs | 0% | Pendente |
-| 8 | Scripts de Comissionamento e Automatização para Alpine Linux (`scripts/setup_alpine.sh`) | 0% | Pendente |
+| 2 | Modelagem de Banco de Dados e Scripts SQLite (`src/watchdog/database.py`) | 100% | Antigravity (Concluído) |
+| 3 | Core do Watchdog & Validador de Premissas HTTP (`src/watchdog/watchdog_cli.py`) | 100% | Antigravity (Concluído) |
+| 4 | Módulo de Alerta Telegram (`aiogram`) e E-mail (`smtplib`) | 100% | Antigravity (Concluído) |
+| 5 | Criação do Template de E-mail (Azul Cobalto + Branco) | 100% | Antigravity (Concluído) |
+| 6 | Download e Configuração do Logo C.Vale nos `assets` | 100% | Antigravity (Download efetuado via wget) |
+| 7 | Dashboard Flask com Mini-Terminais Nerd e KPIs | 100% | Antigravity (Concluído) |
+| 8 | Scripts de Comissionamento e Automatização para Alpine Linux (`scripts/setup_alpine.sh`) | 100% | Antigravity (Concluído) |
 | 9 | Implementação de Testes Unitários (`tests/`) | 0% | Pendente |
-| 10| Configuração final do Git, README.md, .env e venv | 0% | Pendente |
+| 10| Configuração final do Git, README.md, .env e venv | 100% | Antigravity (Concluído) |
 
 ---

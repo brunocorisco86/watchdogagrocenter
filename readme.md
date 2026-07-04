@@ -105,5 +105,5 @@ O Alpine Linux é escolhido para produção devido ao seu consumo de memória ex
 | Template HTML de E-mail (Azul Cobalto + Branco) | 100% | Concluído |
 | Dashboard Flask Estilo Terminal Nerd | 100% | Concluído |
 | Scripts de Comissionamento (Alpine Linux) | 100% | Concluído |
-| Download do Logo Oficial C.Vale nos `assets` | 0% | Pendente |
+| Download do Logo Oficial C.Vale nos `assets` | 100% | Concluído |
 | Testes Unitários e Integrados | 0% | Pendente |
