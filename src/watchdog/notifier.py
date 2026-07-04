@@ -12,22 +12,49 @@ class Notifier:
         self.telegram_chat_id = telegram_chat_id
         self.smtp_config = smtp_config or {}
 
-    async def _send_telegram(self, text):
-        if not self.telegram_token or not self.telegram_chat_id:
-            print("Telegram não configurado no .env.")
+    async def _send_telegram(self, text, contacts_path=None):
+        destinatarios = []
+        if self.telegram_chat_id:
+            destinatarios.append(str(self.telegram_chat_id))
+            
+        # Lê contatos adicionais do JSON para envio do Telegram
+        if contacts_path and os.path.exists(contacts_path):
+            try:
+                with open(contacts_path, 'r', encoding='utf-8') as f:
+                    contacts = json.load(f)
+                for c in contacts:
+                    t_id = c.get('telegram_id')
+                    if t_id and c.get('enabled', True):
+                        t_id_str = str(t_id).strip()
+                        if t_id_str and t_id_str not in destinatarios:
+                            destinatarios.append(t_id_str)
+            except Exception as e:
+                print(f"Erro ao ler contatos adicionais para Telegram: {e}")
+
+        if not destinatarios:
+            print("Nenhum destinatário de Telegram configurado.")
             return False
+
+        if not self.telegram_token:
+            print("Telegram Token não configurado no .env.")
+            return False
+
         try:
             bot = Bot(token=self.telegram_token)
-            await bot.send_message(chat_id=self.telegram_chat_id, text=text, parse_mode="HTML")
+            for chat_id in destinatarios:
+                try:
+                    await bot.send_message(chat_id=chat_id, text=text, parse_mode="HTML")
+                except Exception as ex:
+                    print(f"Erro ao enviar telegram para chat_id {chat_id}: {ex}")
             await bot.session.close()
             return True
         except Exception as e:
-            print(f"Erro ao enviar mensagem pelo Telegram: {e}")
+            print(f"Erro geral ao inicializar bot do Telegram: {e}")
             return False
 
-    def send_telegram_alert(self, text):
+    def send_telegram_alert(self, text, contacts_path=None):
         """Dispara mensagem síncrona chamando a rotina assíncrona do aiogram"""
-        return asyncio.run(self._send_telegram(text))
+        return asyncio.run(self._send_telegram(text, contacts_path))
 
     def send_email_alert(self, subject, template_vars, contacts_path, template_path):
         """Envia e-mails para a lista de contatos definida no contacts.json"""

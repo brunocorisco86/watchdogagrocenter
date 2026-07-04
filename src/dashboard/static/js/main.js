@@ -291,8 +291,128 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
+    // === GERENCIADOR DE CONTATOS (Nova Feature) ===
+    const contactsTbody = document.getElementById('contacts-tbody');
+    const contactsForm = document.getElementById('contacts-form');
+    const formError = document.getElementById('form-error');
+
+    async function loadContacts() {
+        if (!contactsTbody) return;
+        try {
+            const response = await fetch('/api/contacts');
+            const contacts = await response.json();
+            
+            contactsTbody.innerHTML = '';
+            
+            if (Array.isArray(contacts) && contacts.length > 0) {
+                contacts.forEach(c => {
+                    const row = document.createElement('tr');
+                    
+                    const nameTd = document.createElement('td');
+                    nameTd.textContent = c.name;
+                    
+                    const emailTd = document.createElement('td');
+                    emailTd.textContent = c.email;
+                    
+                    const telegramTd = document.createElement('td');
+                    telegramTd.textContent = c.telegram_id ? c.telegram_id : 'N/A';
+                    
+                    const statusTd = document.createElement('td');
+                    statusTd.innerHTML = c.enabled ? '<span class="badge-active-status">● ATIVO</span>' : 'INATIVO';
+                    
+                    const actionsTd = document.createElement('td');
+                    actionsTd.style.textAlign = 'center';
+                    
+                    const deleteBtn = document.createElement('button');
+                    deleteBtn.className = 'btn-delete-contact';
+                    deleteBtn.textContent = '[ REMOVER ]';
+                    deleteBtn.addEventListener('click', () => deleteContact(c.email));
+                    
+                    actionsTd.appendChild(deleteBtn);
+                    
+                    row.appendChild(nameTd);
+                    row.appendChild(emailTd);
+                    row.appendChild(telegramTd);
+                    row.appendChild(statusTd);
+                    row.appendChild(actionsTd);
+                    
+                    contactsTbody.appendChild(row);
+                });
+            } else {
+                contactsTbody.innerHTML = `
+                    <tr>
+                        <td colspan="5" style="text-align: center; color: var(--text-secondary);">
+                            Nenhum contato cadastrado.
+                        </td>
+                    </tr>
+                `;
+            }
+        } catch (err) {
+            console.error("Erro ao carregar contatos: ", err);
+        }
+    }
+
+    async function deleteContact(email) {
+        if (!confirm(`Deseja realmente remover o contato ${email}?`)) return;
+        
+        try {
+            const response = await fetch('/api/contacts/delete', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ email })
+            });
+            const data = await response.json();
+            
+            if (response.ok) {
+                appendTerminalLine(`pi@cvale-watchdog:~$ contacts --delete ${email}`, 'output-prompt');
+                appendTerminalLine(`Sucesso: ${data.message}`, 'output-success');
+                await loadContacts();
+            } else {
+                alert(`Erro: ${data.error}`);
+            }
+        } catch (err) {
+            console.error("Erro ao excluir contato: ", err);
+        }
+    }
+
+    if (contactsForm) {
+        contactsForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            formError.classList.add('hidden');
+            
+            const name = document.getElementById('contact-name').value;
+            const email = document.getElementById('contact-email').value;
+            const telegram_id = document.getElementById('contact-telegram').value;
+            
+            try {
+                const response = await fetch('/api/contacts', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ name, email, telegram_id })
+                });
+                const data = await response.json();
+                
+                if (response.ok) {
+                    appendTerminalLine(`pi@cvale-watchdog:~$ contacts --add "${name}" --email ${email}`, 'output-prompt');
+                    appendTerminalLine(`Sucesso: ${data.message}`, 'output-success');
+                    
+                    contactsForm.reset();
+                    await loadContacts();
+                } else {
+                    formError.textContent = data.error || 'Erro ao adicionar contato.';
+                    formError.classList.remove('hidden');
+                }
+            } catch (err) {
+                console.error("Erro ao adicionar contato: ", err);
+                formError.textContent = 'Falha de comunicação com o servidor.';
+                formError.classList.remove('hidden');
+            }
+        });
+    }
+
     // Inicialização geral
     updateDashboardData();
+    loadContacts();
 
     // Auto-atualização de logs e gráficos a cada 30 segundos
     setInterval(updateDashboardData, 30000);

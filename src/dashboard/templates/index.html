@@ -176,6 +176,55 @@
             </div>
         </main>
 
+        <!-- Painel de Gerenciamento de Contatos e Alertas (Nova Feature) -->
+        <section class="contacts-panel-section">
+            <div class="contacts-header">
+                <span class="contacts-title">[GERENCIADOR DE DESTINATÁRIOS DE ALERTAS (E-MAIL & TELEGRAM)]</span>
+            </div>
+            <div class="contacts-body">
+                <!-- Tabela de contatos existentes -->
+                <div class="contacts-list-container">
+                    <table class="contacts-table" id="contacts-table">
+                        <thead>
+                            <tr>
+                                <th>Nome</th>
+                                <th>E-mail</th>
+                                <th>Telegram ID</th>
+                                <th>Status</th>
+                                <th style="text-align: center;">Ações</th>
+                            </tr>
+                        </thead>
+                        <tbody id="contacts-tbody">
+                            <!-- Injetado dinamicamente via JS -->
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- Formulário de cadastro de novo contato -->
+                <form class="contacts-form" id="contacts-form">
+                    <h4>+ NOVO DESTINATÁRIO</h4>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="contact-name">Nome:</label>
+                            <input type="text" id="contact-name" placeholder="Ex: João Silva" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="contact-email">E-mail:</label>
+                            <input type="email" id="contact-email" placeholder="Ex: joao@cvale.com.br" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="contact-telegram">Telegram ID (Opcional):</label>
+                            <input type="text" id="contact-telegram" placeholder="Ex: 987654321">
+                        </div>
+                        <div class="form-group btn-group-align">
+                            <button type="submit" class="btn-add-contact">> CADASTRAR</button>
+                        </div>
+                    </div>
+                    <div class="form-error-msg hidden" id="form-error"></div>
+                </form>
+            </div>
+        </section>
+
         <!-- Footer -->
         <footer class="main-footer">
             <p>Watchdog Agrocenter v1.0.0 &bull; C.Vale Cooperativa Agroindustrial</p>

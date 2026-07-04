@@ -70,6 +70,85 @@ def trigger_check():
     except Exception as e:
         return jsonify({'status': 'error', 'message': str(e)}), 500
 
+CONTACTS_PATH = os.path.join(base_dir, 'src/watchdog/contacts.json')
+
+@app.route('/api/contacts', methods=['GET', 'POST'])
+def api_contacts():
+    if request.method == 'GET':
+        if not os.path.exists(CONTACTS_PATH):
+            return jsonify([])
+        try:
+            import json
+            with open(CONTACTS_PATH, 'r', encoding='utf-8') as f:
+                contacts = json.load(f)
+            return jsonify(contacts)
+        except Exception as e:
+            return jsonify({"error": f"Erro ao ler contatos: {str(e)}"}), 500
+            
+    elif request.method == 'POST':
+        data = request.json
+        name = data.get('name')
+        email = data.get('email')
+        telegram_id = data.get('telegram_id', '').strip()
+        
+        if not name or not email:
+            return jsonify({"error": "Nome e e-mail são obrigatórios"}), 400
+            
+        try:
+            import json
+            contacts = []
+            if os.path.exists(CONTACTS_PATH):
+                with open(CONTACTS_PATH, 'r', encoding='utf-8') as f:
+                    contacts = json.load(f)
+            
+            # Verifica duplicados
+            if any(c['email'].lower() == email.lower() for c in contacts):
+                return jsonify({"error": "E-mail já cadastrado"}), 400
+                
+            new_contact = {
+                "name": name,
+                "email": email,
+                "telegram_id": telegram_id if telegram_id else None,
+                "enabled": True
+            }
+            contacts.append(new_contact)
+            
+            with open(CONTACTS_PATH, 'w', encoding='utf-8') as f:
+                json.dump(contacts, f, indent=2, ensure_ascii=False)
+                
+            return jsonify({"message": "Contato adicionado com sucesso!", "contact": new_contact})
+        except Exception as e:
+            return jsonify({"error": f"Erro ao salvar contato: {str(e)}"}), 500
+
+@app.route('/api/contacts/delete', methods=['POST'])
+def api_delete_contact():
+    data = request.json
+    email = data.get('email')
+    
+    if not email:
+        return jsonify({"error": "E-mail é obrigatório"}), 400
+        
+    try:
+        import json
+        if not os.path.exists(CONTACTS_PATH):
+            return jsonify({"error": "Arquivo de contatos não encontrado"}), 404
+            
+        with open(CONTACTS_PATH, 'r', encoding='utf-8') as f:
+            contacts = json.load(f)
+            
+        # Filtra removendo o email
+        new_contacts = [c for c in contacts if c['email'].lower() != email.lower()]
+        
+        if len(new_contacts) == len(contacts):
+            return jsonify({"error": "Contato não encontrado"}), 404
+            
+        with open(CONTACTS_PATH, 'w', encoding='utf-8') as f:
+            json.dump(new_contacts, f, indent=2, ensure_ascii=False)
+            
+        return jsonify({"message": "Contato removido com sucesso!"})
+    except Exception as e:
+        return jsonify({"error": f"Erro ao excluir contato: {str(e)}"}), 500
+
 if __name__ == '__main__':
     port = int(os.getenv('FLASK_PORT', 5000))
     host = os.getenv('FLASK_HOST', '0.0.0.0')

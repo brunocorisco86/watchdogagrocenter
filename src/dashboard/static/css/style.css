@@ -616,3 +616,172 @@ body {
         text-align: center;
     }
 }
+
+/* Contacts Panel (New Feature) */
+.contacts-panel-section {
+    background-color: #05070e;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 8px;
+    box-shadow: 0 15px 35px rgba(0,0,0,0.5);
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+}
+
+.contacts-header {
+    background-color: #0e1322;
+    padding: 0.75rem 1rem;
+    border-bottom: 1px solid rgba(255,255,255,0.05);
+}
+
+.contacts-title {
+    font-family: var(--font-mono);
+    font-size: 0.8rem;
+    color: var(--text-secondary);
+    font-weight: bold;
+}
+
+.contacts-body {
+    padding: 1.25rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+.contacts-list-container {
+    overflow-x: auto;
+    border: 1px solid rgba(255,255,255,0.05);
+    border-radius: 6px;
+}
+
+.contacts-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-family: var(--font-mono);
+    font-size: 0.8rem;
+    text-align: left;
+}
+
+.contacts-table th {
+    background-color: #0d1326;
+    color: var(--blue-glow);
+    padding: 0.75rem;
+    font-weight: bold;
+    border-bottom: 1px solid rgba(255,255,255,0.1);
+}
+
+.contacts-table td {
+    padding: 0.75rem;
+    border-bottom: 1px solid rgba(255,255,255,0.02);
+    color: var(--text-primary);
+}
+
+.contacts-table tr:hover td {
+    background-color: rgba(255,255,255,0.02);
+}
+
+.badge-active-status {
+    color: var(--green-hacker);
+    text-shadow: 0 0 5px var(--green-glow);
+}
+
+.btn-delete-contact {
+    background: transparent;
+    border: 1px solid var(--red-alert);
+    color: var(--red-alert);
+    font-family: var(--font-mono);
+    font-size: 0.7rem;
+    padding: 0.2rem 0.5rem;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.btn-delete-contact:hover {
+    background-color: var(--red-alert);
+    color: #fff;
+    box-shadow: 0 0 8px var(--red-glow);
+}
+
+/* Form Styles */
+.contacts-form {
+    border-top: 1px dashed rgba(255,255,255,0.1);
+    padding-top: 1.25rem;
+}
+
+.contacts-form h4 {
+    font-family: var(--font-mono);
+    font-size: 0.8rem;
+    color: var(--blue-glow);
+    margin: 0 0 1rem 0;
+}
+
+.form-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+    align-items: flex-end;
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.35rem;
+    flex: 1;
+    min-width: 180px;
+}
+
+.form-group label {
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    color: var(--text-secondary);
+}
+
+.form-group input {
+    background-color: #0b0f19;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    color: #fff;
+    font-family: var(--font-mono);
+    font-size: 0.8rem;
+    padding: 0.5rem;
+    border-radius: 4px;
+    outline: none;
+    transition: border-color 0.2s;
+}
+
+.form-group input:focus {
+    border-color: var(--blue-glow);
+    box-shadow: 0 0 5px rgba(59, 130, 246, 0.3);
+}
+
+.btn-add-contact {
+    background: transparent;
+    border: 1px solid var(--green-hacker);
+    color: var(--green-hacker);
+    font-family: var(--font-mono);
+    font-weight: bold;
+    font-size: 0.8rem;
+    padding: 0.5rem 1.25rem;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    height: 38px;
+}
+
+.btn-add-contact:hover {
+    background-color: var(--green-hacker);
+    color: #000;
+    box-shadow: 0 0 10px var(--green-glow);
+}
+
+.form-error-msg {
+    margin-top: 0.75rem;
+    color: var(--red-alert);
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    text-shadow: 0 0 4px var(--red-glow);
+}
+
+.hidden {
+    display: none !important;
+}
