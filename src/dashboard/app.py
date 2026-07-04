@@ -24,7 +24,7 @@ def index():
     logs = db.get_latest_logs(limit=30)
     
     # Adicionar status do serviço agrocenter atual
-    agrocenter_url = os.getenv('AGROCENTER_URL', 'https://prd-agrocenter.cvale.com.br/login')
+    agrocenter_url = os.getenv('AGROCENTER_URL', 'https://prd-agrocenter.cvale.com.br')
     
     return render_template('index.html', kpis=kpis, logs=logs, url=agrocenter_url)
 
