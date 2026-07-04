@@ -335,6 +335,13 @@
 
 <span style="color: var(--green-hacker);">[MOTOR 5: AUTO-PRUNING CONCORRENTE]</span>
  └──► A cada inserção bem-sucedida, varre e expurga registros antigos com <span style="color: var(--red-alert);">> 24 horas</span> (Pruning).
+
+<span style="color: var(--green-hacker);">[MOTOR 6: ESTRUTURA DO BANCO DE DADOS & MER]</span>
+ ├──► Mapeado no SQLite local (database.db) e base JSON (contacts.json) com schemas otimizados:
+ ├──► <span style="color: var(--blue-glow);">monitor_logs</span> (id PK, timestamp, status_code, response_time_ms, is_healthy, error_message, check_type)
+ ├──► <span style="color: var(--blue-glow);">incidents</span>    (id PK, start_timestamp, end_timestamp, consecutive_failures, telegram_sent, email_sent, status)
+ └──► <span style="color: var(--blue-glow);">contacts.json</span>(email PK, name, telegram_id, level, department, enabled)
+ └──► Relacionamento: <span style="color: var(--yellow-hacker);">monitor_logs</span> [1] ───► [0..1] <span style="color: var(--yellow-hacker);">incidents</span> [1] ───► [0..*] <span style="color: var(--yellow-hacker);">contacts</span> (alertados conforme falhas)
                 </div>
                 <div class="term-line output-system">pi@cvale-watchdog:~$ <span class="blink-cursor">_</span></div>
             </div>
