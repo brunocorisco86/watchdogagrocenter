@@ -4,6 +4,10 @@ import time
 import requests
 from datetime import datetime
 from dotenv import load_dotenv
+import urllib3
+
+# Desativa avisos de requisições HTTPS inseguras (usado nas validações por IP direto)
+urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
 # Adiciona o diretório raiz ao path para poder importar src
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '../../')))
@@ -87,6 +91,23 @@ def resolve_dns_udp(domain, dns_server):
         pass
     return None
 
+def test_isp_connectivity():
+    """
+    Testa a conectividade com a internet externa (ISP local) acessando
+    serviços mundiais altamente estáveis. Retorna True se houver conexão, False caso contrário.
+    """
+    if os.getenv("FORCE_ISP_OFFLINE") == "1":
+        return False
+    test_urls = ["https://1.1.1.1", "https://8.8.8.8"]
+    for url in test_urls:
+        try:
+            response = requests.head(url, timeout=2.0, verify=False)
+            if response.status_code < 400:
+                return True
+        except Exception:
+            continue
+    return False
+
 def test_http_service(url, timeout):
     """
     Realiza o teste HTTP com sistema de retry (3 tentativas) e fallback
@@ -154,8 +175,13 @@ def test_http_service(url, timeout):
         except (requests.exceptions.ConnectionError, requests.exceptions.Timeout):
             elapsed_ms = int((time.time() - start_time) * 1000)
             
-            # Se for a última tentativa, executa o DNS fallback para identificar a causa real
+            # Se for a última tentativa, executa a checagem de ISP e o DNS fallback
             if attempt == retries:
+                # 1. Checa a conectividade geral com a internet (ISP local)
+                if not test_isp_connectivity():
+                    return False, 0, elapsed_ms, "Falha de Conectividade Local (Sem Internet - ISP Offline)"
+
+                # 2. Se temos internet, tentamos o fallback de DNS
                 resolved_ip = None
                 for public_dns in ["1.1.1.1", "8.8.8.8"]:
                     resolved_ip = resolve_dns_udp(hostname, public_dns)
@@ -164,7 +190,6 @@ def test_http_service(url, timeout):
                 
                 if resolved_ip:
                     # O DNS público resolveu. Indica falha no Unbound / Pi-hole local!
-                    # Tenta fazer a requisição usando o IP direto para confirmar
                     try:
                         fallback_url = url.replace(hostname, resolved_ip)
                         fallback_headers = headers.copy()
@@ -181,8 +206,8 @@ def test_http_service(url, timeout):
                     except Exception:
                         return False, 0, elapsed_ms, "Falha de DNS Local (Unbound inativo / Sem resolução local)"
                 else:
-                    # DNS público também falhou. Conexão com a internet inteira caiu.
-                    return False, 0, elapsed_ms, "Falha de Conectividade Geral (Sem Internet)"
+                    # ISP está online, mas o DNS público também não resolveu (domínio inexistente/fora do ar)
+                    return False, 0, elapsed_ms, "Falha de Resolução DNS Geral (Dominio inacessivel)"
             
             time.sleep(sleep_seconds)
             
@@ -206,6 +231,11 @@ def run_check():
     
     # Salva no histórico SQLite
     db.add_monitor_log(status_code, elapsed_ms, is_healthy, error_msg)
+
+    # Se for falha nossa de infra local (ISP Offline), registramos o log acima mas suspendemos alertas
+    if not is_healthy and error_msg == "Falha de Conectividade Local (Sem Internet - ISP Offline)":
+        log_to_file(config['logs_dir'], "Falha classificada como INFRAESTRUTURA LOCAL (ISP Offline). Alertas e incidentes suspensos.")
+        return
 
     # Gerenciamento de Incidentes
     active_incident = db.get_active_incident()
