@@ -288,9 +288,54 @@ def run_check():
             
             log_to_file(config['logs_dir'], f"Falha persistente. Total de erros consecutivos: {new_failures}")
 
-            # Se atingiu o limite e o e-mail não foi enviado
+            # Se atingiu o limite de 5 falhas consecutivas e os alertas de escalação ainda não foram disparados
             if new_failures >= config['max_failures'] and not active_incident['email_sent']:
-                # Dispara notificação por e-mail (Escalação)
+                downtime_minutes = round((datetime.now() - datetime.fromisoformat(active_incident['start_timestamp'])).total_seconds() / 60, 1)
+                
+                # 1. Seleção e envio de Template do Telegram específico para a falha
+                if "Akamai" in error_msg:
+                    # Template 2: Bloqueio do WAF / Akamai
+                    telegram_escalation_msg = (
+                        f"🛡️ <b>ALERTA DE SEGURANÇA: Bloqueio Akamai WAF há {downtime_minutes} min</b>\n"
+                        f"<i>O tráfego do Watchdog está sendo barrado pelo WAF da C.Vale.</i>\n\n"
+                        f"<b>Serviço:</b> C.Vale Agrocenter\n"
+                        f"<b>Status HTTP:</b> {status_code} (Forbidden/Access Denied)\n"
+                        f"<b>Erros Consecutivos:</b> {new_failures} tentativas\n"
+                        f"<b>Mensagem de Erro:</b> <code>{error_msg}</code>\n\n"
+                        f"⚠️ <i>Nota: Possível bloqueio de IP público da LAN ou mudança de regras no WAF.</i>"
+                    )
+                elif "DNS Local" in error_msg:
+                    # Template 3: Problema no DNS Local (Pi-hole / Unbound)
+                    telegram_escalation_msg = (
+                        f"⚙️ <b>ALERTA LOCAL: Falha de DNS Local (Pi-hole/Unbound)</b>\n"
+                        f"<i>Detecção de instabilidade nos resolvedores locais da LAN.</i>\n\n"
+                        f"<b>Serviço de Origem:</b> Unbound + Pi-hole Local\n"
+                        f"<b>Erro:</b> Falha ao resolver o domínio do Agrocenter\n"
+                        f"<b>Resultado do DNS Fallback:</b> DNS público (1.1.1.1/8.8.8.8) resolveu com sucesso!\n"
+                        f"<b>Status do Link Externo:</b> Funcional (requisição via IP respondeu)\n"
+                        f"<b>Erros Consecutivos:</b> {new_failures} tentativas\n\n"
+                        f"⚠️ <i>Atenção: O portal está online na rede externa, mas inacessível dentro da LAN.</i>"
+                    )
+                else:
+                    # Template 1: Falha Geral de Servidor / Timeout / HTTP Erro
+                    telegram_escalation_msg = (
+                        f"🚨 <b>ALERTA ESCALADO: Agrocenter Offline há {downtime_minutes} min</b>\n"
+                        f"<i>Falha consecutiva persistente detectada pelo Watchdog C.Vale.</i>\n\n"
+                        f"<b>Serviço:</b> C.Vale Agrocenter\n"
+                        f"<b>URL:</b> {config['url']}\n"
+                        f"<b>Status HTTP:</b> {status_code}\n"
+                        f"<b>Tempo de Resposta:</b> {elapsed_ms} ms\n"
+                        f"<b>Erros Consecutivos:</b> {new_failures} tentativas\n"
+                        f"<b>Mensagem de Erro:</b> <code>{error_msg}</code>\n"
+                        f"<b>Uptime:</b> Sem Uptime no período\n\n"
+                        f"⚠️ <i>Atenção: O serviço falhou de forma contínua e requer inspeção do backend.</i>"
+                    )
+                
+                # Envia o alerta especial de escalação via Telegram
+                notifier.send_telegram_alert(telegram_escalation_msg)
+                log_to_file(config['logs_dir'], "Alerta escalado do Telegram com template específico enviado.")
+
+                # 2. Dispara notificação por e-mail (Escalação)
                 subject = f"[CRÍTICO] Falha Persistente - Watchdog C.Vale Agrocenter"
                 template_vars = {
                     'alert_class': 'critical',
@@ -315,13 +360,6 @@ def run_check():
                 if email_sent:
                     db.mark_email_sent(incident_id)
                     log_to_file(config['logs_dir'], "E-mail de escalação de incidente enviado com sucesso.")
-                
-                # Opcional: Atualiza o Telegram com status de escalação
-                msg_escalation = (
-                    f"⚠️ <b>ALERTA ESCALADO: Agrocenter offline há mais de {new_failures} verificações!</b>\n"
-                    f"E-mails de escalação foram enviados aos administradores."
-                )
-                notifier.send_telegram_alert(msg_escalation)
 
 if __name__ == '__main__':
     run_check()
