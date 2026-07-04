@@ -61,6 +61,24 @@ Para receber o relatório analítico de performance consolidado por e-mail e Tel
 
 ---
 
+## 🛡️ Script de Resiliência e Keepalive (Watchdog do Dashboard)
+
+Para garantir que o Dashboard Flask continue de pé na LAN do Agrocenter no Raspberry Pi, implementamos um script de **keepalive**. Ele é agendado no cron para rodar a cada **1 minuto** e realiza um double-check: tenta conectar via HTTP na porta `5080`. Se o site estiver offline ou travado, encerra qualquer processo zumbi que esteja prendendo a porta e reinicia o Flask no background.
+
+### 1. Dar Permissão de Execução
+```bash
+chmod +x scripts/keepalive_dashboard.sh
+```
+
+### 2. Adicionar no Crontab (`crontab -e`)
+Adicione a seguinte linha no seu agendador:
+```cron
+# Monitorar e reerguer o Dashboard Flask automaticamente a cada minuto se ele cair
+*/1 * * * * "/home/brunoconter/Documentos/1_C.VALE/2 - PROJETOS/11_WATCHDOG_AGROCENTER/scripts/keepalive_dashboard.sh"
+```
+
+---
+
 ## 📋 Diagnóstico e Logs do Cron
 
 Qualquer saída gerada pela tarefa agendada no cron será registrada no seguinte arquivo:
