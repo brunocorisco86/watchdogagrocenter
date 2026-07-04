@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>Relatório Diário - Watchdog Agrocenter</title>
+    <style>
+        body {{
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f3f4f6;
+            margin: 0;
+            padding: 20px;
+            color: #1f2937;
+        }}
+        .container {{
+            max-width: 600px;
+            margin: 0 auto;
+            background-color: #ffffff;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+            border: 1px solid #e5e7eb;
+        }}
+        .header {{
+            background-color: #0e1726;
+            padding: 25px;
+            text-align: center;
+            border-bottom: 4px solid #1e40af;
+        }}
+        .header h1 {{
+            color: #ffffff;
+            margin: 0;
+            font-size: 20px;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+        }}
+        .header p {{
+            color: #94a3b8;
+            margin: 5px 0 0 0;
+            font-size: 13px;
+        }}
+        .content {{
+            padding: 30px 25px;
+        }}
+        .welcome-text {{
+            font-size: 15px;
+            line-height: 1.6;
+            margin-top: 0;
+            margin-bottom: 25px;
+            color: #4b5563;
+        }}
+        .kpi-grid {{
+            display: table;
+            width: 100%;
+            margin-bottom: 30px;
+            border-spacing: 10px;
+            margin-left: -10px;
+            margin-right: -10px;
+        }}
+        .kpi-card {{
+            display: table-cell;
+            width: 50%;
+            background-color: #f8fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 6px;
+            padding: 15px;
+            text-align: center;
+            vertical-align: middle;
+        }}
+        .kpi-val {{
+            font-size: 22px;
+            font-weight: 700;
+            color: #1e3a8a;
+            margin-bottom: 5px;
+        }}
+        .kpi-lbl {{
+            font-size: 11px;
+            color: #64748b;
+            text-transform: uppercase;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+        }}
+        .section-title {{
+            font-size: 14px;
+            font-weight: 700;
+            color: #0f172a;
+            border-bottom: 2px solid #f1f5f9;
+            padding-bottom: 8px;
+            margin-top: 30px;
+            margin-bottom: 15px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }}
+        table {{
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 13px;
+            margin-bottom: 20px;
+        }}
+        th {{
+            background-color: #f1f5f9;
+            color: #475569;
+            text-align: left;
+            padding: 10px;
+            font-weight: 600;
+            border-bottom: 1px solid #cbd5e1;
+        }}
+        td {{
+            padding: 10px;
+            border-bottom: 1px solid #f1f5f9;
+            color: #334155;
+        }}
+        tr:last-child td {{
+            border-bottom: none;
+        }}
+        .incident-badge {{
+            display: inline-block;
+            padding: 2px 6px;
+            font-size: 10px;
+            font-weight: 600;
+            border-radius: 4px;
+            text-transform: uppercase;
+        }}
+        .badge-resolved {{
+            background-color: #dcfce7;
+            color: #166534;
+        }}
+        .badge-active {{
+            background-color: #fee2e2;
+            color: #991b1b;
+        }}
+        .footer {{
+            background-color: #f8fafc;
+            padding: 20px;
+            text-align: center;
+            border-top: 1px solid #e2e8f0;
+            font-size: 11px;
+            color: #94a3b8;
+            line-height: 1.5;
+        }}
+        .footer a {{
+            color: #1e40af;
+            text-decoration: none;
+        }}
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <div class="header">
+            <h1>Relatório Diário de Disponibilidade</h1>
+            <p>Portal Agrocenter C.Vale &bull; Fechamento de Expediente</p>
+        </div>
+
+        <!-- Content -->
+        <div class="content">
+            <p class="welcome-text">
+                Olá, administrador.<br>
+                Abaixo está o consolidado de performance e disponibilidade do portal <b>C.Vale Agrocenter</b> referente às últimas 24 horas (gerado em {generation_time}).
+            </p>
+
+            <!-- KPIs -->
+            <div class="kpi-grid">
+                <div style="display: table-row;">
+                    <div class="kpi-card">
+                        <div class="kpi-val" style="color: {uptime_color};">{availability}%</div>
+                        <div class="kpi-lbl">Uptime / Disponibilidade</div>
+                    </div>
+                    <div class="kpi-card">
+                        <div class="kpi-val">{avg_response_time} ms</div>
+                        <div class="kpi-lbl">Tempo de Resposta Médio</div>
+                    </div>
+                </div>
+                <div style="display: table-row;">
+                    <div class="kpi-card" style="padding-top: 20px;">
+                        <div class="kpi-val" style="font-size: 18px;">{total_checks} / {failures_count}</div>
+                        <div class="kpi-lbl">Testes / Falhas</div>
+                    </div>
+                    <div class="kpi-card" style="padding-top: 20px;">
+                        <div class="kpi-val" style="font-size: 18px; color: {incident_color};">{total_incidents}</div>
+                        <div class="kpi-lbl">Incidentes no Período</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Incidentes do Dia -->
+            <div class="section-title">Histórico de Incidentes (24h)</div>
+            {incident_table_html}
+
+            <!-- Distribuição de Erros -->
+            <div class="section-title">Distribuição de Falhas</div>
+            {error_distribution_html}
+        </div>
+
+        <!-- Footer -->
+        <div class="footer">
+            Este relatório foi gerado automaticamente pelo sistema de monitoramento.<br>
+            <b>Serviço Agrocenter:</b> <a href="{agrocenter_url}" target="_blank">{agrocenter_url}</a><br>
+            C.Vale Cooperativa Agroindustrial &copy; 2026
+        </div>
+    </div>
+</body>
+</html>

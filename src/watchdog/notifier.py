@@ -94,3 +94,57 @@ class Notifier:
         except Exception as e:
             print(f"Erro ao enviar e-mail: {e}")
             return False
+
+    def send_email_report(self, subject, template_vars, contacts_path, template_path):
+        """Envia relatórios consolidados em HTML para a lista de contatos do contacts.json"""
+        if not self.smtp_config.get('server') or not self.smtp_config.get('user'):
+            print("SMTP não configurado no .env.")
+            return False
+
+        try:
+            # 1. Carrega os contatos
+            if not os.path.exists(contacts_path):
+                print(f"Arquivo de contatos não encontrado em: {contacts_path}")
+                return False
+
+            with open(contacts_path, 'r', encoding='utf-8') as f:
+                contacts = json.load(f)
+
+            destinatarios = [c['email'] for c in contacts if c.get('enabled', False)]
+            if not destinatarios:
+                print("Nenhum contato habilitado para envio de e-mail.")
+                return False
+
+            # 2. Carrega e preenche o template de e-mail do relatório
+            if not os.path.exists(template_path):
+                print(f"Template de e-mail não encontrado em: {template_path}")
+                return False
+
+            with open(template_path, 'r', encoding='utf-8') as f:
+                template_html = f.read()
+
+            # Preenche os placeholders no HTML de forma flexível
+            html_content = template_html.format(**template_vars)
+
+            # 3. Envia o e-mail
+            server = smtplib.SMTP(self.smtp_config['server'], int(self.smtp_config.get('port', 587)))
+            server.starttls()
+            server.login(self.smtp_config['user'], self.smtp_config['password'])
+
+            for dest in destinatarios:
+                msg = MIMEMultipart('alternative')
+                msg['Subject'] = subject
+                msg['From'] = self.smtp_config.get('from', self.smtp_config['user'])
+                msg['To'] = dest
+
+                part = MIMEText(html_content, 'html')
+                msg.attach(part)
+
+                server.sendmail(msg['From'], dest, msg.as_string())
+                print(f"E-mail de relatório enviado com sucesso para: {dest}")
+
+            server.quit()
+            return True
+        except Exception as e:
+            print(f"Erro ao enviar e-mail de relatório: {e}")
+            return False

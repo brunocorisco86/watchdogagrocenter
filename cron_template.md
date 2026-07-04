@@ -48,6 +48,19 @@ crontab -l
 
 ---
 
+## 📊 Agendamento do Relatório Diário (Fechamento às 18h)
+
+Para receber o relatório analítico de performance consolidado por e-mail e Telegram pontualmente às **18:00** (final de expediente), adicione o seguinte agendamento no seu `crontab -e`:
+
+```cron
+# Relatório Diário de Uptime e Incidentes consolidado do dia às 18:00
+0 18 * * * cd "/home/brunoconter/Documentos/1_C.VALE/2 - PROJETOS/11_WATCHDOG_AGROCENTER" && ./venv/bin/python3 src/watchdog/watchdog_cli.py --daily-report >> logs/daily_report.log 2>&1
+```
+
+*Nota: Garanta que o diretório `logs/` exista na raiz para a gravação da saída de erros do relatório.*
+
+---
+
 ## 📋 Diagnóstico e Logs do Cron
 
 Qualquer saída gerada pela tarefa agendada no cron será registrada no seguinte arquivo:
