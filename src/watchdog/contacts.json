@@ -1,12 +1,12 @@
 [
   {
-    "name": "Administrador de Redes C.Vale",
-    "email": "admin.rede@cvale.com.br",
+    "name": "Bruno Conter (C.Vale)",
+    "email": "bruno.conter@cvale.com.br",
     "enabled": true
   },
   {
-    "name": "Suporte Técnico Agrocenter",
-    "email": "suporte.agrocenter@cvale.com.br",
+    "name": "Bruno Corisco (Gmail)",
+    "email": "brunocorisco@gmail.com",
     "enabled": true
   }
 ]
