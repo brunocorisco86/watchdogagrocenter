@@ -174,60 +174,6 @@
                     {% endif %}
                 </div>
             </div>
-
-            <!-- Terminal 3 (Mini-Terminal de Arquitetura em ASCII Art) -->
-            <div class="terminal-wrapper full-width-terminal" style="margin-top: 1.5rem;">
-                <div class="terminal-header">
-                    <span class="terminal-title">[TERMINAL 3: MAPEAMENTO DA ARQUITETURA LÓGICA E FLUXO DO SISTEMA]</span>
-                    <div class="terminal-buttons">
-                        <span class="term-btn close"></span>
-                        <span class="term-btn minimize"></span>
-                        <span class="term-btn expand"></span>
-                    </div>
-                </div>
-                <div class="terminal-body" id="terminal-arch-body" style="font-size: 0.75rem; line-height: 1.2rem; overflow-x: auto; white-space: pre;">
-                    <div class="term-line output-system">pi@cvale-watchdog:~$ arch --view-logic</div>
-                    <div class="term-line output-success">Carregando mapa lógico C.Vale Watchdog v1.0.0...</div>
-                    <pre class="ascii-art-block" style="color: var(--blue-glow); font-family: var(--font-mono); margin: 0.5rem 0;">
-┌─────────────────────────┐     ┌────────────────────────────────────────────────────────┐
-│  CRONTAB (A cada 5m)    │ ──► │  watchdog_cli.py (Resiliência & Validador de Premissas)│
-└─────────────────────────┘     └───────────────────────────┬────────────────────────────┘
-                                                            │
-                     ┌──────────────────────────────────────┴──────────────────────────────────────┐
-                     ▼                                                                             ▼
-        [1. Conectividade ISP]                                                          [2. Resolvedor de DNS]
-     Local offline: grava log e                                                     Instável: consulta sockets UDP
-      suspende envio de alertas.                                                     (1.1.1.1) e faz bypass por IP.
-                     │                                                                             │
-                     └──────────────────────────────────────┬──────────────────────────────────────┘
-                                                            ▼
-                                                [3. HTTPS GET & Metadados]
-                                            Garante Status 200 + Content-Type
-                                           e valida assinaturas HTML do portal.
-                                                            │
-                     ┌──────────────────────────────────────┴──────────────────────────────────────┐
-                     ▼                                                                             ▼
-              [Sucesso: OK]                                                                 [Falha detectada]
-      Loga SQLite e, se havia incidente                                            Inicia incidente ou incrementa falhas.
-       ativo, resolve e notifica TODOS.                                            Abaixo, fluxo de acionamento por nível:
-                     │                                                                             │
-                     │                                      ┌──────────────────────────────────────┤
-                     │                                      ▼                                      ▼
-                     │                            [Falha persistente <15]                 [Falha grave >=15 e >=30]
-                     │                                      │                                      │
-                     │                             Notifica Nível 1 - TI                   Notifica Nível 2 e 3
-                     │                           (Suporte Técnico Plantão)              (Supervisão e Chefias TI/Neg)
-                     │                                      │                                      │
-                     └──────────────────────────────────────┼──────────────────────────────────────┘
-                                                            ▼
-                                                 ┌─────────────────────┐
-                                                 │ Canais de Alerta    │
-                                                 │ (Telegram & E-mail) │
-                                                 └─────────────────────┘
-                    </pre>
-                    <div class="term-line output-system">pi@cvale-watchdog:~$ <span class="blink-cursor">_</span></div>
-                </div>
-            </div>
         </main>
 
         <!-- Painel de Gerenciamento de Contatos e Alertas (Nova Feature) -->
@@ -298,6 +244,60 @@
                 </form>
             </div>
         </section>
+
+        <!-- Terminal 3 (Mini-Terminal de Arquitetura em ASCII Art - Destaque Especial) -->
+        <div class="terminal-wrapper full-width-terminal architecture-highlight-terminal" style="margin-top: 2rem; margin-bottom: 2rem;">
+            <div class="terminal-header" style="background-color: #0d162a; border-bottom: 1px solid rgba(59, 130, 246, 0.3);">
+                <span class="terminal-title" style="color: var(--blue-glow); text-shadow: 0 0 8px rgba(59, 130, 246, 0.5);">[TERMINAL 3: MAPEAMENTO DA ARQUITETURA LÓGICA E FLUXO DO SISTEMA]</span>
+                <div class="terminal-buttons">
+                    <span class="term-btn close"></span>
+                    <span class="term-btn minimize"></span>
+                    <span class="term-btn expand"></span>
+                </div>
+            </div>
+            <div class="terminal-body" id="terminal-arch-body" style="font-size: 0.75rem; line-height: 1.2rem; overflow-x: auto; white-space: pre; border: 1px solid rgba(59, 130, 246, 0.2);">
+                <div class="term-line output-system">pi@cvale-watchdog:~$ arch --view-logic</div>
+                <div class="term-line output-success">Carregando mapa lógico C.Vale Watchdog v1.0.0...</div>
+                <pre class="ascii-art-block" style="color: var(--blue-glow); font-family: var(--font-mono); margin: 0.5rem 0;">
+┌─────────────────────────┐     ┌────────────────────────────────────────────────────────┐
+│  CRONTAB (A cada 5m)    │ ──► │  watchdog_cli.py (Resiliência & Validador de Premissas)│
+└─────────────────────────┘     └───────────────────────────┬────────────────────────────┘
+                                                            │
+                     ┌──────────────────────────────────────┴──────────────────────────────────────┐
+                     ▼                                                                             ▼
+        [1. Conectividade ISP]                                                          [2. Resolvedor de DNS]
+     Local offline: grava log e                                                     Instável: consulta sockets UDP
+      suspende envio de alertas.                                                     (1.1.1.1) e faz bypass por IP.
+                     │                                                                             │
+                     └──────────────────────────────────────┬──────────────────────────────────────┘
+                                                            ▼
+                                                [3. HTTPS GET & Metadados]
+                                            Garante Status 200 + Content-Type
+                                           e valida assinaturas HTML do portal.
+                                                            │
+                     ┌──────────────────────────────────────┴──────────────────────────────────────┐
+                     ▼                                                                             ▼
+              [Sucesso: OK]                                                                 [Falha detectada]
+      Loga SQLite e, se havia incidente                                            Inicia incidente ou incrementa falhas.
+       ativo, resolve e notifica TODOS.                                            Abaixo, fluxo de acionamento por nível:
+                     │                                                                             │
+                     │                                      ┌──────────────────────────────────────┤
+                     │                                      ▼                                      ▼
+                     │                            [Falha persistente <15]                 [Falha grave >=15 e >=30]
+                     │                                      │                                      │
+                     │                             Notifica Nível 1 - TI                   Notifica Nível 2 e 3
+                     │                           (Suporte Técnico Plantão)              (Supervisão e Chefias TI/Neg)
+                     │                                      │                                      │
+                     └──────────────────────────────────────┼──────────────────────────────────────┘
+                                                            ▼
+                                                 ┌─────────────────────┐
+                                                 │ Canais de Alerta    │
+                                                 │ (Telegram & E-mail) │
+                                                 └─────────────────────┘
+                </pre>
+                <div class="term-line output-system">pi@cvale-watchdog:~$ <span class="blink-cursor">_</span></div>
+            </div>
+        </div>
 
         <!-- Footer -->
         <footer class="main-footer">
