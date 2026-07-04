@@ -3,17 +3,21 @@ venv/
 .venv/
 ENV/
 env/
+dist/
+build/
+*.egg-info/
+.eggs/
 
-# Python Cache
-__pycache__/
-*.pyc
-*.pyo
-*.pyd
+# Python Cache (Recursivo)
+**/__pycache__/
+**/*.py[cod]
+*$py.class
 .pytest_cache/
 .coverage
 htmlcov/
+.tox/
 
-# Logs
+# Logs e Relatórios
 logs/*.log
 *.log
 
@@ -24,12 +28,19 @@ src/watchdog/database.db
 *.db-shm
 *.db-wal
 
-# Configuration & Credentials
+# Configuration & Credentials (NUNCA commitar segredos!)
 .env
 .env.local
 .env.development.local
 .env.test.local
 .env.production.local
+
+# Security & Certificates (SSL/TLS)
+*.pem
+*.key
+*.crt
+*.csr
+*.pfx
 
 # IDEs and OS
 .vscode/
