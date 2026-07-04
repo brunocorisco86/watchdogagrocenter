@@ -26,7 +26,7 @@ O projeto está estruturado em torno dos três pilares estratégicos de resoluç
 
 ## 2. Modelo Entidade-Relacionamento (MER)
 
-O banco de dados SQLite (`database.db`) possui duas tabelas principais para rastreamento de disponibilidade e gerenciamento de incidentes:
+O banco de dados SQLite (`database.db`) possui duas tabelas principais para rastreamento de disponibilidade e gerenciamento de incidentes, enquanto a base de dados em JSON (`contacts.json`) armazena os destinatários das notificações e seus respectivos níveis de acionamento e departamentos:
 
 ```mermaid
 erDiagram
@@ -49,8 +49,18 @@ erDiagram
         boolean email_sent
         string status
     }
+
+    CONTACT {
+        string email PK
+        string name
+        string telegram_id
+        int level
+        string department
+        boolean enabled
+    }
     
     MONITOR_LOG ||--o| INCIDENT : "gera/associa"
+    INCIDENT ||--o{ CONTACT : "alerta_por_nivel"
 ```
 
 ### Detalhes das Tabelas:
@@ -70,25 +80,35 @@ erDiagram
   - `telegram_sent` (BOOLEAN DEFAULT 0)
   - `email_sent` (BOOLEAN DEFAULT 0)
   - `status` (TEXT) - Ex: 'ACTIVE', 'RESOLVED'
+- **`contacts` (Armazenamento em JSON)**: Base de dados de contatos de suporte de TI e Negócios.
+  - `email` (TEXT PRIMARY KEY) - E-mail do contato.
+  - `name` (TEXT) - Nome do contato.
+  - `telegram_id` (TEXT) - ID do Telegram do contato (opcional).
+  - `level` (INTEGER) - Nível de acionamento (1: Imediato, 2: 15 falhas, 3: 30 falhas).
+  - `department` (TEXT) - Área do contato ('TI' ou 'NEGOCIO').
+  - `enabled` (BOOLEAN) - Status ativo/inativo do contato.
 
 ---
 
 ## 3. Fluxo do Watchdog (Cron Execution)
 
-1. O **Cron** aciona o script `watchdog_cli.py` a cada *X* minutos.
+1. O **Cron** aciona o script `watchdog_cli.py` a cada 5 minutos.
 2. O script realiza a chamada HTTP para o Agrocenter.
 3. **Validação de Premissas**:
    - Status HTTP deve ser 200.
    - O tempo de resposta deve ser < `TIMEOUT` configurado.
-   - O corpo da resposta deve conter/não conter determinadas palavras-chave (ex: evitar páginas de erro customizadas do Cloudflare/Firewall disfarçadas de 200).
+   - O corpo da resposta deve conter/não conter determinadas palavras-chave (ex: evitar páginas de erro customizadas do WAF Akamai, DNS caídos ou banco offline).
 4. Se o teste passar:
    - Salva status como saudável.
-   - Se houver um incidente `ACTIVE` aberto, fecha o incidente (marca `end_timestamp` e altera status para `RESOLVED`) e envia notificação de "Serviço Restabelecido" no Telegram.
+   - Se houver um incidente `ACTIVE` aberto, fecha o incidente (marca `end_timestamp` e altera status para `RESOLVED`) e envia notificação de "Serviço Restabelecido" no Telegram para **todos** os contatos habilitados que foram alertados anteriormente.
 5. Se o teste falhar:
-   - Salva log de falha.
-   - Se não houver incidente `ACTIVE`, cria um novo incidente, envia alerta imediato via Telegram.
+   - Salva log de falha no banco de dados SQLite.
+   - Se não houver incidente `ACTIVE`, cria um novo incidente. O Telegram principal de administração (definido no `.env`) recebe o alerta imediato de primeiro erro.
    - Se o incidente já existir, incrementa `consecutive_failures`.
-   - Se `consecutive_failures` atingir o limite limite de tolerância (ex: 3 falhas consecutivas), envia notificação por e-mail para a lista de contatos do JSON.
+   - **Regra de Escalação por Nível de Falhas**:
+     - **De 5 a 14 Falhas Consecutivas**: Dispara alertas (E-mail e Telegram) apenas para contatos ativos de **Nível 1 (Operacional)** do departamento **TI**.
+     - **De 15 a 29 Falhas Consecutivas (~1h a 2h)**: Dispara alertas para contatos de **Nível 1 e 2 (Supervisão)** de **TI e NEGÓCIO**.
+     - **A partir de 30 Falhas Consecutivas (~2.5h+)**: O incidente atinge gravidade crítica máxima. Dispara alertas para **todos os níveis**, incluindo contatos de **Nível 3 (Diretoria/Gestão/Chefe da TI)**.
 
 ---
 

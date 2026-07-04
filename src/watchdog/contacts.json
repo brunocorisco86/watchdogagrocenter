@@ -2,12 +2,17 @@
   {
     "name": "Bruno Conter (C.Vale)",
     "email": "bruno.conter@cvale.com.br",
-    "enabled": true
+    "enabled": true,
+    "telegram_id": null,
+    "level": 1,
+    "department": "NEGOCIO"
   },
   {
-    "name": "Bruno Conter (Gmail)",
+    "name": "Bruno Corisco (Gmail)",
     "email": "brunocorisco@gmail.com",
     "enabled": true,
-    "telegram_id": null
+    "telegram_id": null,
+    "level": 2,
+    "department": "NEGOCIO"
   }
 ]

@@ -196,12 +196,12 @@
                      ┌──────────────────────────────────────┴──────────────────────────────────────┐
                      ▼                                                                             ▼
         [1. Conectividade ISP]                                                          [2. Resolvedor de DNS]
-    Se local estiver offline, grava log                                            Se local falhar, consulta socket UDP
-   "ISP Offline" e suspende os alertas.                                          (1.1.1.1/8.8.8.8) e faz bypass HTTPS por IP.
+     Local offline: grava log e                                                     Instável: consulta sockets UDP
+      suspende envio de alertas.                                                     (1.1.1.1) e faz bypass por IP.
                      │                                                                             │
                      └──────────────────────────────────────┬──────────────────────────────────────┘
                                                             ▼
-                                               [3. HTTPS GET & Metadados]
+                                                [3. HTTPS GET & Metadados]
                                             Garante Status 200 + Content-Type
                                            e valida assinaturas HTML do portal.
                                                             │
@@ -209,13 +209,21 @@
                      ▼                                                                             ▼
               [Sucesso: OK]                                                                 [Falha detectada]
       Loga SQLite e, se havia incidente                                            Inicia incidente ou incrementa falhas.
-        ativo, marca resolvido e alerta.                                           Atingindo 5 falhas, dispara escalação.
+       ativo, resolve e notifica TODOS.                                            Abaixo, fluxo de acionamento por nível:
                      │                                                                             │
-                     ▼                                                                             ▼
-         ┌───────────────────────┐                                                     ┌───────────────────────┐
-         │ Notificação Telegram  │                                                     │ Notificações E-mail   │
-         │  (Admin + Adicionais) │                                                     │ (Múltiplos Contatos)  │
-         └───────────────────────┘                                                     └───────────────────────┘
+                     │                                      ┌──────────────────────────────────────┤
+                     │                                      ▼                                      ▼
+                     │                            [Falha persistente <15]                 [Falha grave >=15 e >=30]
+                     │                                      │                                      │
+                     │                             Notifica Nível 1 - TI                   Notifica Nível 2 e 3
+                     │                           (Suporte Técnico Plantão)              (Supervisão e Chefias TI/Neg)
+                     │                                      │                                      │
+                     └──────────────────────────────────────┼──────────────────────────────────────┘
+                                                            ▼
+                                                 ┌─────────────────────┐
+                                                 │ Canais de Alerta    │
+                                                 │ (Telegram & E-mail) │
+                                                 └─────────────────────┘
                     </pre>
                     <div class="term-line output-system">pi@cvale-watchdog:~$ <span class="blink-cursor">_</span></div>
                 </div>
@@ -236,6 +244,8 @@
                                 <th>Nome</th>
                                 <th>E-mail</th>
                                 <th>Telegram ID</th>
+                                <th>Nível</th>
+                                <th>Departamento</th>
                                 <th>Status</th>
                                 <th style="text-align: center;">Ações</th>
                             </tr>
@@ -263,6 +273,21 @@
                         <div class="form-group">
                             <label for="contact-telegram">Telegram ID (Opcional):</label>
                             <input type="text" id="contact-telegram" placeholder="Ex: 987654321">
+                        </div>
+                        <div class="form-group">
+                            <label for="contact-level">Nível de Acionamento:</label>
+                            <select id="contact-level" class="form-select-hacker" required>
+                                <option value="1">Nível 1 (Acionamento Imediato)</option>
+                                <option value="2">Nível 2 (Após 15 falhas / ~1h)</option>
+                                <option value="3">Nível 3 (Após 30 falhas / ~2.5h)</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="contact-dept">Departamento/Área:</label>
+                            <select id="contact-dept" class="form-select-hacker" required>
+                                <option value="TI">TI (Tecnologia da Informação)</option>
+                                <option value="NEGOCIO">NEGÓCIO (Operações/Comercial)</option>
+                            </select>
                         </div>
                         <div class="form-group btn-group-align flex-row-buttons">
                             <button type="submit" id="btn-submit-contact" class="btn-add-contact">> CADASTRAR</button>

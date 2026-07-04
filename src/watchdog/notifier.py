@@ -12,7 +12,7 @@ class Notifier:
         self.telegram_chat_id = telegram_chat_id
         self.smtp_config = smtp_config or {}
 
-    async def _send_telegram(self, text, contacts_path=None):
+    async def _send_telegram(self, text, contacts_path=None, consecutive_failures=1):
         destinatarios = []
         if self.telegram_chat_id:
             destinatarios.append(str(self.telegram_chat_id))
@@ -22,12 +22,38 @@ class Notifier:
             try:
                 with open(contacts_path, 'r', encoding='utf-8') as f:
                     contacts = json.load(f)
+                
+                is_resolution = "restabelecido" in text.lower() or "normalizado" in text.lower() or "resolvido" in text.lower() or consecutive_failures == 0
+                
                 for c in contacts:
                     t_id = c.get('telegram_id')
                     if t_id and c.get('enabled', True):
                         t_id_str = str(t_id).strip()
-                        if t_id_str and t_id_str not in destinatarios:
-                            destinatarios.append(t_id_str)
+                        if not t_id_str:
+                            continue
+                            
+                        # Política de Escalação Telegram
+                        if is_resolution:
+                            if t_id_str not in destinatarios:
+                                destinatarios.append(t_id_str)
+                        else:
+                            c_level = int(c.get('level', 1))
+                            c_dept = c.get('department', 'TI').upper()
+                            
+                            if consecutive_failures >= 30:
+                                # Diretoria e todos os níveis ativos
+                                if t_id_str not in destinatarios:
+                                    destinatarios.append(t_id_str)
+                            elif consecutive_failures >= 15:
+                                # Níveis 1 e 2 ativos
+                                if c_level <= 2:
+                                    if t_id_str not in destinatarios:
+                                        destinatarios.append(t_id_str)
+                            else:
+                                # Nível 1 TI ativo apenas (falhas < 15)
+                                if c_level == 1 and c_dept == 'TI':
+                                    if t_id_str not in destinatarios:
+                                        destinatarios.append(t_id_str)
             except Exception as e:
                 print(f"Erro ao ler contatos adicionais para Telegram: {e}")
 
@@ -52,12 +78,12 @@ class Notifier:
             print(f"Erro geral ao inicializar bot do Telegram: {e}")
             return False
 
-    def send_telegram_alert(self, text, contacts_path=None):
+    def send_telegram_alert(self, text, contacts_path=None, consecutive_failures=1):
         """Dispara mensagem síncrona chamando a rotina assíncrona do aiogram"""
-        return asyncio.run(self._send_telegram(text, contacts_path))
+        return asyncio.run(self._send_telegram(text, contacts_path, consecutive_failures))
 
     def send_email_alert(self, subject, template_vars, contacts_path, template_path):
-        """Envia e-mails para a lista de contatos definida no contacts.json"""
+        """Envia e-mails para a lista de contatos definida no contacts.json conforme nível de acionamento"""
         if not self.smtp_config.get('server') or not self.smtp_config.get('user'):
             print("SMTP não configurado no .env.")
             return False
@@ -71,9 +97,36 @@ class Notifier:
             with open(contacts_path, 'r', encoding='utf-8') as f:
                 contacts = json.load(f)
 
-            destinatarios = [c['email'] for c in contacts if c.get('enabled', False)]
+            # Filtra destinatários baseado nas falhas consecutivas e área
+            failures = int(template_vars.get('consecutive_failures', 5))
+            is_resolution = template_vars.get('incident_status') == 'RESOLVIDO'
+            
+            destinatarios = []
+            for c in contacts:
+                if not c.get('enabled', True):
+                    continue
+                
+                if is_resolution:
+                    # Notificações de restabelecimento vão para todos os contatos ativos
+                    destinatarios.append(c['email'])
+                else:
+                    c_level = int(c.get('level', 1))
+                    c_dept = c.get('department', 'TI').upper()
+                    
+                    if failures >= 30:
+                        # Nível 3 (Diretoria): todos os contatos ativos recebem
+                        destinatarios.append(c['email'])
+                    elif failures >= 15:
+                        # Nível 2 (Supervisão): nível 1 e 2 recebem (TI & Negócio)
+                        if c_level <= 2:
+                            destinatarios.append(c['email'])
+                    else:
+                        # Nível 1 (Operacional): apenas nível 1 de TI recebe
+                        if c_level == 1 and c_dept == 'TI':
+                            destinatarios.append(c['email'])
+
             if not destinatarios:
-                print("Nenhum contato habilitado para envio de e-mail.")
+                print("Nenhum destinatário elegível no nível de falhas atual.")
                 return False
 
             # 2. Carrega e preenche o template de e-mail
@@ -93,7 +146,7 @@ class Notifier:
                 status_code=template_vars.get('status_code', 'N/A'),
                 response_time_ms=template_vars.get('response_time_ms', 'N/A'),
                 timestamp=template_vars.get('timestamp', 'N/A'),
-                consecutive_failures=template_vars.get('consecutive_failures', '0'),
+                consecutive_failures=str(failures),
                 max_failures=template_vars.get('max_failures', '3'),
                 error_message=template_vars.get('error_message', 'Erro Desconhecido'),
                 agrocenter_url=template_vars.get('agrocenter_url', '')

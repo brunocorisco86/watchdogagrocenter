@@ -90,9 +90,17 @@ def api_contacts():
         name = data.get('name')
         email = data.get('email')
         telegram_id = data.get('telegram_id', '').strip()
+        level = int(data.get('level', 1))
+        department = data.get('department', 'TI').strip().upper()
         
         if not name or not email:
             return jsonify({"error": "Nome e e-mail são obrigatórios"}), 400
+            
+        if level not in [1, 2, 3]:
+            return jsonify({"error": "O nível de acionamento deve ser 1 (Operacional), 2 (Supervisão) ou 3 (Diretoria)"}), 400
+            
+        if department not in ['TI', 'NEGOCIO']:
+            return jsonify({"error": "O departamento deve ser 'TI' ou 'NEGOCIO'"}), 400
             
         try:
             import json
@@ -109,6 +117,8 @@ def api_contacts():
                 "name": name,
                 "email": email,
                 "telegram_id": telegram_id if telegram_id else None,
+                "level": level,
+                "department": department,
                 "enabled": True
             }
             contacts.append(new_contact)
@@ -156,9 +166,17 @@ def api_update_contact():
     name = data.get('name')
     email = data.get('email')
     telegram_id = data.get('telegram_id', '').strip()
+    level = int(data.get('level', 1))
+    department = data.get('department', 'TI').strip().upper()
     
     if not original_email or not name or not email:
         return jsonify({"error": "Nome, e-mail e e-mail original são obrigatórios"}), 400
+        
+    if level not in [1, 2, 3]:
+        return jsonify({"error": "O nível de acionamento deve ser 1 (Operacional), 2 (Supervisão) ou 3 (Diretoria)"}), 400
+        
+    if department not in ['TI', 'NEGOCIO']:
+        return jsonify({"error": "O departamento deve ser 'TI' ou 'NEGOCIO'"}), 400
         
     try:
         import json
@@ -187,6 +205,8 @@ def api_update_contact():
         target_contact['name'] = name
         target_contact['email'] = email
         target_contact['telegram_id'] = telegram_id if telegram_id else None
+        target_contact['level'] = level
+        target_contact['department'] = department
         
         with open(CONTACTS_PATH, 'w', encoding='utf-8') as f:
             json.dump(contacts, f, indent=2, ensure_ascii=False)

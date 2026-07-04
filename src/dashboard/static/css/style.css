@@ -826,3 +826,27 @@ body {
     display: flex;
     gap: 0.5rem;
 }
+
+.form-select-hacker {
+    background-color: #0b0f19;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    color: #fff;
+    font-family: var(--font-mono);
+    font-size: 0.8rem;
+    padding: 0.5rem;
+    border-radius: 4px;
+    outline: none;
+    transition: border-color 0.2s;
+    cursor: pointer;
+    height: 34px;
+}
+
+.form-select-hacker:focus {
+    border-color: var(--blue-glow);
+    box-shadow: 0 0 5px rgba(59, 130, 246, 0.3);
+}
+
+.form-select-hacker option {
+    background-color: #0b0f19;
+    color: #fff;
+}

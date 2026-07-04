@@ -256,7 +256,7 @@ def run_check():
                 f"<b>Tempo de Resposta:</b> {elapsed_ms} ms\n"
                 f"<b>Horário:</b> {datetime.now().strftime('%d/%m/%Y %H:%M:%S')}"
             )
-            notifier.send_telegram_alert(msg, config['contacts_path'])
+            notifier.send_telegram_alert(msg, config['contacts_path'], consecutive_failures=0)
             log_to_file(config['logs_dir'], "Alerta de restabelecimento enviado via Telegram.")
             
     else:
@@ -276,7 +276,7 @@ def run_check():
                 f"<b>Horário:</b> {datetime.now().strftime('%d/%m/%Y %H:%M:%S')}\n"
                 f"<b>Gravidade:</b> Inicial (Notificação Telegram)"
             )
-            sent = notifier.send_telegram_alert(msg, config['contacts_path'])
+            sent = notifier.send_telegram_alert(msg, config['contacts_path'], consecutive_failures=1)
             if sent:
                 db.mark_telegram_sent(incident_id)
                 log_to_file(config['logs_dir'], "Notificação de novo incidente enviada via Telegram.")
@@ -332,7 +332,7 @@ def run_check():
                     )
                 
                 # Envia o alerta especial de escalação via Telegram
-                notifier.send_telegram_alert(telegram_escalation_msg, config['contacts_path'])
+                notifier.send_telegram_alert(telegram_escalation_msg, config['contacts_path'], consecutive_failures=new_failures)
                 log_to_file(config['logs_dir'], "Alerta escalado do Telegram com template específico enviado.")
 
                 # 2. Dispara notificação por e-mail (Escalação)
@@ -518,7 +518,7 @@ def run_daily_report():
         f"📨 <i>O relatório analítico detalhado de incidentes e erros foi enviado com sucesso para o e-mail dos administradores!</i>"
     )
     
-    telegram_sent = notifier.send_telegram_alert(telegram_msg, config['contacts_path'])
+    telegram_sent = notifier.send_telegram_alert(telegram_msg, config['contacts_path'], consecutive_failures=0)
     
     if email_sent or telegram_sent:
         log_to_file(config['logs_dir'], "Relatório diário enviado com sucesso.")

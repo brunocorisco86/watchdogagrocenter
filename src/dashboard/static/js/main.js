@@ -321,6 +321,17 @@ document.addEventListener('DOMContentLoaded', () => {
                     const telegramTd = document.createElement('td');
                     telegramTd.textContent = c.telegram_id ? c.telegram_id : 'N/A';
                     
+                    // Coluna Nível
+                    const levelTd = document.createElement('td');
+                    let levelText = "Nível 1 (Imediato)";
+                    if (c.level === 2) levelText = "Nível 2 (~1h)";
+                    else if (c.level === 3) levelText = "Nível 3 (~2.5h)";
+                    levelTd.textContent = levelText;
+                    
+                    // Coluna Departamento
+                    const deptTd = document.createElement('td');
+                    deptTd.textContent = c.department === 'NEGOCIO' ? 'NEGÓCIO' : 'TI';
+                    
                     const statusTd = document.createElement('td');
                     statusTd.innerHTML = c.enabled ? '<span class="badge-active-status">● ATIVO</span>' : 'INATIVO';
                     
@@ -345,6 +356,8 @@ document.addEventListener('DOMContentLoaded', () => {
                     row.appendChild(nameTd);
                     row.appendChild(emailTd);
                     row.appendChild(telegramTd);
+                    row.appendChild(levelTd);
+                    row.appendChild(deptTd);
                     row.appendChild(statusTd);
                     row.appendChild(actionsTd);
                     
@@ -353,7 +366,7 @@ document.addEventListener('DOMContentLoaded', () => {
             } else {
                 contactsTbody.innerHTML = `
                     <tr>
-                        <td colspan="5" style="text-align: center; color: var(--text-secondary);">
+                        <td colspan="7" style="text-align: center; color: var(--text-secondary);">
                             Nenhum contato cadastrado.
                         </td>
                     </tr>
@@ -372,6 +385,8 @@ document.addEventListener('DOMContentLoaded', () => {
         document.getElementById('contact-name').value = c.name;
         document.getElementById('contact-email').value = c.email;
         document.getElementById('contact-telegram').value = c.telegram_id || '';
+        document.getElementById('contact-level').value = c.level || 1;
+        document.getElementById('contact-dept').value = c.department || 'TI';
         
         // Altera títulos e botões
         formTitle.textContent = '✎ EDITAR DESTINATÁRIO';
@@ -388,6 +403,8 @@ document.addEventListener('DOMContentLoaded', () => {
         if (!contactsForm) return;
         contactsForm.reset();
         contactOriginalEmail.value = '';
+        document.getElementById('contact-level').value = "1";
+        document.getElementById('contact-dept').value = "TI";
         formTitle.textContent = '+ NOVO DESTINATÁRIO';
         btnSubmitContact.textContent = '> CADASTRAR';
         btnSubmitContact.style.borderColor = 'var(--green-hacker)';
@@ -436,12 +453,14 @@ document.addEventListener('DOMContentLoaded', () => {
             const name = document.getElementById('contact-name').value;
             const email = document.getElementById('contact-email').value;
             const telegram_id = document.getElementById('contact-telegram').value;
+            const level = parseInt(document.getElementById('contact-level').value);
+            const department = document.getElementById('contact-dept').value;
             
             const isEditMode = originalEmail && originalEmail.trim() !== '';
             const endpoint = isEditMode ? '/api/contacts/update' : '/api/contacts';
             const payload = isEditMode 
-                ? { original_email: originalEmail, name, email, telegram_id }
-                : { name, email, telegram_id };
+                ? { original_email: originalEmail, name, email, telegram_id, level, department }
+                : { name, email, telegram_id, level, department };
             
             try {
                 const response = await fetch(endpoint, {
