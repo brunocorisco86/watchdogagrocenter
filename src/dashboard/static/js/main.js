@@ -120,18 +120,25 @@ document.addEventListener('DOMContentLoaded', () => {
 
         try {
             const response = await fetch('/api/latency-6h');
-            const data = await response.json();
+            let data = await response.json();
 
-            // Extrai as labels (horas formatadas) e dados (latência em ms)
+            if (!Array.isArray(data)) {
+                data = [];
+            }
+
+            // Ordena os logs de forma cronológica garantida (do mais antigo para o mais recente)
+            data.sort((a, b) => a.timestamp.localeCompare(b.timestamp));
+
+            // Extrai as labels (horas formatadas HH:MM) e dados (latência em ms)
             const labels = [];
             const values = [];
             
             data.forEach(item => {
-                // Formata timestamp ISO para 'HH:MM:SS'
+                // Extrai a hora HH:MM diretamente do timestamp (evita flutuações de fuso horário)
                 try {
-                    const dt = new Date(item.timestamp);
-                    const formattedTime = dt.toLocaleTimeString('pt-BR', { hour12: false });
-                    labels.push(formattedTime);
+                    const timePart = item.timestamp.split(' ')[1] || item.timestamp;
+                    const hhmm = timePart.substring(0, 5); // Pega apenas 'HH:MM'
+                    labels.push(hhmm);
                 } catch {
                     labels.push(item.timestamp);
                 }
@@ -156,7 +163,7 @@ document.addEventListener('DOMContentLoaded', () => {
                         borderWidth: 2,
                         fill: true,
                         tension: 0.2,
-                        pointRadius: 3,
+                        pointRadius: 2,
                         pointBackgroundColor: '#00ff66',
                         spanGaps: true // Ignora falhas para não quebrar a linha do gráfico
                     }]
@@ -169,7 +176,8 @@ document.addEventListener('DOMContentLoaded', () => {
                             grid: { color: 'rgba(255, 255, 255, 0.03)' },
                             ticks: {
                                 color: '#94a3b8',
-                                font: { family: 'Fira Code', size: 10 }
+                                font: { family: 'Fira Code', size: 10 },
+                                maxTicksLimit: 10 // Limita a quantidade de marcações no eixo X para evitar poluição visual
                             }
                         },
                         y: {
