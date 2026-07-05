@@ -7,10 +7,54 @@ from email.mime.text import MIMEText
 from aiogram import Bot
 
 class Notifier:
-    def __init__(self, telegram_token=None, telegram_chat_id=None, smtp_config=None):
+    def __init__(self, telegram_token=None, telegram_chat_id=None, smtp_config=None, db_path=None):
         self.telegram_token = telegram_token
         self.telegram_chat_id = telegram_chat_id
         self.smtp_config = smtp_config or {}
+        self.db_path = db_path
+
+    def _get_thresholds(self):
+        # Limiares padrão em minutos
+        thresholds = {
+            'level1': 15,
+            'level2': 60,
+            'level3': 150,
+            'level4': 720
+        }
+        
+        # Carrega o intervalo de checagem do ambiente
+        check_interval = 3
+        try:
+            check_interval = int(os.getenv('CHECK_INTERVAL_MINUTES', '3'))
+        except Exception:
+            pass
+            
+        if self.db_path and os.path.exists(self.db_path):
+            try:
+                import sqlite3
+                conn = sqlite3.connect(self.db_path)
+                conn.row_factory = sqlite3.Row
+                cursor = conn.cursor()
+                cursor.execute("SELECT key, value FROM settings")
+                rows = cursor.fetchall()
+                for row in rows:
+                    key = row['key']
+                    val = row['value']
+                    if key in ('level1_minutes', 'level2_minutes', 'level3_minutes', 'level4_minutes'):
+                        level_key = key.replace('_minutes', '')
+                        thresholds[level_key] = int(val)
+                conn.close()
+            except Exception as e:
+                print(f"Erro ao carregar configurações de nível do banco: {e}")
+                
+        # Converte minutos para quantidade de falhas consecutivas
+        failures = {
+            1: max(1, int(thresholds['level1'] / check_interval)),
+            2: max(1, int(thresholds['level2'] / check_interval)),
+            3: max(1, int(thresholds['level3'] / check_interval)),
+            4: max(1, int(thresholds['level4'] / check_interval))
+        }
+        return failures
 
     async def _send_telegram(self, text, contacts_path=None, consecutive_failures=1):
         destinatarios = []
@@ -24,6 +68,9 @@ class Notifier:
                     contacts = json.load(f)
                 
                 is_resolution = "restabelecido" in text.lower() or "normalizado" in text.lower() or "resolvido" in text.lower() or consecutive_failures == 0
+                
+                # Obtém os limiares dinâmicos
+                thresholds = self._get_thresholds()
                 
                 for c in contacts:
                     t_id = c.get('telegram_id')
@@ -40,22 +87,22 @@ class Notifier:
                             c_level = int(c.get('level', 1))
                             c_dept = c.get('department', 'TI').upper()
                             
-                            if consecutive_failures >= 240:
+                            if consecutive_failures >= thresholds[4]:
                                 # Nível 4 (Escalação Máxima 12h): Níveis 1, 2, 3 e 4 ativos
                                 if c_level <= 4:
                                     if t_id_str not in destinatarios:
                                         destinatarios.append(t_id_str)
-                            elif consecutive_failures >= 50:
+                            elif consecutive_failures >= thresholds[3]:
                                 # Nível 3 (Diretoria 2.5h): Níveis 1, 2 e 3 ativos
                                 if c_level <= 3:
                                     if t_id_str not in destinatarios:
                                         destinatarios.append(t_id_str)
-                            elif consecutive_failures >= 20:
+                            elif consecutive_failures >= thresholds[2]:
                                 # Nível 2 (Supervisão 1h): Níveis 1 e 2 ativos
                                 if c_level <= 2:
                                     if t_id_str not in destinatarios:
                                         destinatarios.append(t_id_str)
-                            elif consecutive_failures >= 5:
+                            elif consecutive_failures >= thresholds[1]:
                                 # Nível 1 (Operacional 15 min): Apenas Nível 1 TI ativo
                                 if c_level == 1 and c_dept == 'TI':
                                     if t_id_str not in destinatarios:
@@ -107,6 +154,9 @@ class Notifier:
             failures = int(template_vars.get('consecutive_failures', 5))
             is_resolution = template_vars.get('incident_status') == 'RESOLVIDO'
             
+            # Obtém os limiares dinâmicos
+            thresholds = self._get_thresholds()
+            
             destinatarios = []
             for c in contacts:
                 if not c.get('enabled', True):
@@ -119,19 +169,19 @@ class Notifier:
                     c_level = int(c.get('level', 1))
                     c_dept = c.get('department', 'TI').upper()
                     
-                    if failures >= 240:
+                    if failures >= thresholds[4]:
                         # Nível 4 (Escalação Máxima 12h): níveis 1, 2, 3 e 4 recebem (nível <= 4)
                         if c_level <= 4:
                             destinatarios.append(c['email'])
-                    elif failures >= 50:
+                    elif failures >= thresholds[3]:
                         # Nível 3 (Diretoria 2.5h): níveis 1, 2 e 3 recebem (nível <= 3)
                         if c_level <= 3:
                             destinatarios.append(c['email'])
-                    elif failures >= 20:
+                    elif failures >= thresholds[2]:
                         # Nível 2 (Supervisão 1h): níveis 1 e 2 recebem (nível <= 2)
                         if c_level <= 2:
                             destinatarios.append(c['email'])
-                    elif failures >= 5:
+                    elif failures >= thresholds[1]:
                         # Nível 1 (Operacional 15 min): apenas nível 1 de TI recebe
                         if c_level == 1 and c_dept == 'TI':
                             destinatarios.append(c['email'])

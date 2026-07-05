@@ -27,7 +27,30 @@ def index():
     # Adicionar status do serviço agrocenter atual
     agrocenter_url = os.getenv('AGROCENTER_URL', 'https://prd-agrocenter.cvale.com.br')
     
-    return render_template('index.html', kpis=kpis, logs=logs, url=agrocenter_url)
+    settings = db.get_all_settings()
+    check_interval = int(os.getenv('CHECK_INTERVAL_MINUTES', '3'))
+    
+    l1_min = int(settings.get('level1_minutes', 15))
+    l2_min = int(settings.get('level2_minutes', 60))
+    l3_min = int(settings.get('level3_minutes', 150))
+    l4_min = int(settings.get('level4_minutes', 720))
+    
+    def format_time_text(minutes):
+        if minutes >= 60:
+            h = minutes / 60
+            if h == int(h):
+                return f"{int(h)} hora" if h == 1 else f"{int(h)} horas"
+            return f"{h} horas"
+        return f"{minutes} minutos"
+        
+    render_settings = {
+        'l1_min': l1_min, 'l1_fail': max(1, int(l1_min / check_interval)), 'l1_time': format_time_text(l1_min),
+        'l2_min': l2_min, 'l2_fail': max(1, int(l2_min / check_interval)), 'l2_time': format_time_text(l2_min),
+        'l3_min': l3_min, 'l3_fail': max(1, int(l3_min / check_interval)), 'l3_time': format_time_text(l3_min),
+        'l4_min': l4_min, 'l4_fail': max(1, int(l4_min / check_interval)), 'l4_time': format_time_text(l4_min)
+    }
+    
+    return render_template('index.html', kpis=kpis, logs=logs, url=agrocenter_url, settings=render_settings)
 
 @app.route('/api/kpis')
 def api_kpis():
@@ -214,6 +237,31 @@ def api_update_contact():
         return jsonify({"message": "Contato atualizado com sucesso!", "contact": target_contact})
     except Exception as e:
         return jsonify({"error": f"Erro ao atualizar contato: {str(e)}"}), 500
+
+@app.route('/api/settings', methods=['GET', 'POST'])
+def api_settings():
+    if request.method == 'GET':
+        try:
+            settings = db.get_all_settings()
+            return jsonify(settings)
+        except Exception as e:
+            return jsonify({"error": f"Erro ao obter configurações: {str(e)}"}), 500
+    elif request.method == 'POST':
+        try:
+            data = request.json
+            settings_to_update = {}
+            for key in ('level1_minutes', 'level2_minutes', 'level3_minutes', 'level4_minutes'):
+                if key in data:
+                    val = int(data[key])
+                    if val <= 0:
+                        return jsonify({"error": "O tempo deve ser maior que 0 minutos"}), 400
+                    settings_to_update[key] = val
+            db.update_settings(settings_to_update)
+            return jsonify({"message": "Configurações atualizadas com sucesso!", "settings": settings_to_update})
+        except ValueError:
+            return jsonify({"error": "Valor de tempo inválido (deve ser número inteiro)"}), 400
+        except Exception as e:
+            return jsonify({"error": f"Erro ao salvar configurações: {str(e)}"}), 500
 
 if __name__ == '__main__':
     port = int(os.getenv('FLASK_PORT', 5080))

@@ -41,6 +41,44 @@ class DatabaseManager:
                     status TEXT DEFAULT 'ACTIVE'
                 )
             ''')
+            # Tabela de configurações
+            cursor.execute('''
+                CREATE TABLE IF NOT EXISTS settings (
+                    key TEXT PRIMARY KEY,
+                    value TEXT
+                )
+            ''')
+            # Valores padrão de limites dos níveis (em minutos)
+            defaults = [
+                ('level1_minutes', '15'),
+                ('level2_minutes', '60'),
+                ('level3_minutes', '150'),
+                ('level4_minutes', '720')
+            ]
+            for key, val in defaults:
+                cursor.execute('INSERT OR IGNORE INTO settings (key, value) VALUES (?, ?)', (key, val))
+            conn.commit()
+
+    def get_setting(self, key, default=None):
+        query = "SELECT value FROM settings WHERE key = ?"
+        with self._get_connection() as conn:
+            cursor = conn.cursor()
+            cursor.execute(query, (key,))
+            row = cursor.fetchone()
+            return row['value'] if row else default
+
+    def get_all_settings(self):
+        query = "SELECT * FROM settings"
+        with self._get_connection() as conn:
+            cursor = conn.cursor()
+            cursor.execute(query)
+            return {row['key']: row['value'] for row in cursor.fetchall()}
+
+    def update_settings(self, settings_dict):
+        query = "INSERT OR REPLACE INTO settings (key, value) VALUES (?, ?)"
+        with self._get_connection() as conn:
+            for key, val in settings_dict.items():
+                conn.execute(query, (key, str(val)))
             conn.commit()
 
     def add_monitor_log(self, status_code, response_time_ms, is_healthy, error_message, check_type='HTTP'):

@@ -255,7 +255,8 @@ def run_check():
     notifier = Notifier(
         telegram_token=config['telegram_token'],
         telegram_chat_id=config['telegram_chat_id'],
-        smtp_config=config['smtp_config']
+        smtp_config=config['smtp_config'],
+        db_path=config['db_path']
     )
 
     log_to_file(config['logs_dir'], "Iniciando verificação de rotina...")
@@ -310,12 +311,33 @@ def run_check():
             
             log_to_file(config['logs_dir'], f"Falha persistente. Total de erros consecutivos: {new_failures}")
 
-            # Verifica se atingiu os limites exatos de escalação (Nível 1, 2, 3 ou 4)
+            # Verifica se atingiu os limites exatos de escalação (Nível 1, 2, 3 ou 4) dinamicamente
+            settings = db.get_all_settings()
+            check_interval = int(os.getenv('CHECK_INTERVAL_MINUTES', '3'))
+            
+            l1_min = int(settings.get('level1_minutes', '15'))
+            l2_min = int(settings.get('level2_minutes', '60'))
+            l3_min = int(settings.get('level3_minutes', '150'))
+            l4_min = int(settings.get('level4_minutes', '720'))
+            
+            l1_fail = max(1, int(l1_min / check_interval))
+            l2_fail = max(1, int(l2_min / check_interval))
+            l3_fail = max(1, int(l3_min / check_interval))
+            l4_fail = max(1, int(l4_min / check_interval))
+            
+            def format_time_off(minutes):
+                if minutes >= 60:
+                    hours = minutes / 60
+                    if hours == int(hours):
+                        return f"{int(hours)} hora" if hours == 1 else f"{int(hours)} horas"
+                    return f"{hours} horas"
+                return f"{minutes} minutos"
+
             limiares = {
-                5: ("NÍVEL 1 (TI)", "15 minutos", "Operacional (TI)"),
-                20: ("NÍVEL 2 (Supervisão)", "1 hora", "Supervisão (TI & Negócio)"),
-                50: ("NÍVEL 3 (Diretoria)", "2.5 horas", "Diretoria (Estratégico)"),
-                240: ("NÍVEL 4 (Escalação Máxima)", "12 horas", "Escalação Máxima (Todos os Níveis)")
+                l1_fail: ("NÍVEL 1 (TI)", format_time_off(l1_min), "Operacional (TI)"),
+                l2_fail: ("NÍVEL 2 (Supervisão)", format_time_off(l2_min), "Supervisão (TI & Negócio)"),
+                l3_fail: ("NÍVEL 3 (Diretoria)", format_time_off(l3_min), "Diretoria (Estratégico)"),
+                l4_fail: ("NÍVEL 4 (Escalação Máxima)", format_time_off(l4_min), "Escalação Máxima (Todos os Níveis)")
             }
             
             if new_failures in limiares:
@@ -395,7 +417,8 @@ def run_daily_report():
     notifier = Notifier(
         telegram_token=config['telegram_token'],
         telegram_chat_id=config['telegram_chat_id'],
-        smtp_config=config['smtp_config']
+        smtp_config=config['smtp_config'],
+        db_path=config['db_path']
     )
     
     log_to_file(config['logs_dir'], "Iniciando geração de relatório diário...")
@@ -561,7 +584,8 @@ def run_monthly_report():
     notifier = Notifier(
         telegram_token=config['telegram_token'],
         telegram_chat_id=config['telegram_chat_id'],
-        smtp_config=config['smtp_config']
+        smtp_config=config['smtp_config'],
+        db_path=config['db_path']
     )
     
     log_to_file(config['logs_dir'], "Iniciando geração de relatório mensal...")

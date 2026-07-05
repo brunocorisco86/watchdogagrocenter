@@ -308,9 +308,68 @@ document.addEventListener('DOMContentLoaded', () => {
     const btnSubmitContact = document.getElementById('btn-submit-contact');
     const btnCancelEdit = document.getElementById('btn-cancel-edit');
 
+    let settingsCache = {
+        level1_minutes: 15,
+        level2_minutes: 60,
+        level3_minutes: 150,
+        level4_minutes: 720
+    };
+
+    function formatMinutesText(minutes) {
+        if (minutes >= 60) {
+            const h = minutes / 60;
+            if (h === parseInt(h)) {
+                return `${parseInt(h)}h`;
+            }
+            return `${h}h`;
+        }
+        return `${minutes}m`;
+    }
+
+    async function loadSettings() {
+        try {
+            const response = await fetch('/api/settings');
+            const data = await response.json();
+            if (response.ok) {
+                settingsCache = data;
+                applySettingsToDOM();
+            }
+        } catch (err) {
+            console.error("Erro ao carregar configurações: ", err);
+        }
+    }
+
+    function applySettingsToDOM() {
+        const formatLongText = (minutes) => {
+            if (minutes >= 60) {
+                const h = minutes / 60;
+                if (h === parseInt(h)) {
+                    return `${parseInt(h)} ${parseInt(h) === 1 ? 'hora' : 'horas'}`;
+                }
+                return `${h} horas`;
+            }
+            return `${minutes} minutos`;
+        };
+        
+        const checkInterval = 3;
+        const l1_fail = Math.max(1, Math.floor(settingsCache.level1_minutes / checkInterval));
+        const l2_fail = Math.max(1, Math.floor(settingsCache.level2_minutes / checkInterval));
+        const l3_fail = Math.max(1, Math.floor(settingsCache.level3_minutes / checkInterval));
+        const l4_fail = Math.max(1, Math.floor(settingsCache.level4_minutes / checkInterval));
+        
+        const options = document.querySelectorAll('#contact-level option');
+        if (options.length === 4) {
+            options[0].textContent = `Nível 1 (Após ${formatLongText(settingsCache.level1_minutes)} off / ${l1_fail} ${l1_fail === 1 ? 'falha' : 'falhas'})`;
+            options[1].textContent = `Nível 2 (Após ${formatLongText(settingsCache.level2_minutes)} off / ${l2_fail} ${l2_fail === 1 ? 'falha' : 'falhas'})`;
+            options[2].textContent = `Nível 3 (Após ${formatLongText(settingsCache.level3_minutes)} off / ${l3_fail} ${l3_fail === 1 ? 'falha' : 'falhas'})`;
+            options[3].textContent = `Nível 4 (Após ${formatLongText(settingsCache.level4_minutes)} off / ${l4_fail} ${l4_fail === 1 ? 'falha' : 'falhas'})`;
+        }
+    }
+
     async function loadContacts() {
         if (!contactsTbody) return;
         try {
+            await loadSettings();
             const response = await fetch('/api/contacts');
             const contacts = await response.json();
             
@@ -329,12 +388,12 @@ document.addEventListener('DOMContentLoaded', () => {
                     const telegramTd = document.createElement('td');
                     telegramTd.textContent = c.telegram_id ? c.telegram_id : 'N/A';
                     
-                    // Coluna Nível
+                    // Coluna Nível dinâmico
                     const levelTd = document.createElement('td');
-                    let levelText = "Nível 1 (15m off)";
-                    if (c.level === 2) levelText = "Nível 2 (1h off)";
-                    else if (c.level === 3) levelText = "Nível 3 (2.5h off)";
-                    else if (c.level === 4) levelText = "Nível 4 (12h off)";
+                    let levelText = `Nível 1 (${formatMinutesText(settingsCache.level1_minutes)} off)`;
+                    if (c.level === 2) levelText = `Nível 2 (${formatMinutesText(settingsCache.level2_minutes)} off)`;
+                    else if (c.level === 3) levelText = `Nível 3 (${formatMinutesText(settingsCache.level3_minutes)} off)`;
+                    else if (c.level === 4) levelText = `Nível 4 (${formatMinutesText(settingsCache.level4_minutes)} off)`;
                     levelTd.textContent = levelText;
                     
                     // Coluna Departamento
@@ -497,6 +556,109 @@ document.addEventListener('DOMContentLoaded', () => {
                 console.error("Erro ao processar contato: ", err);
                 formError.textContent = 'Falha de comunicação com o servidor.';
                 formError.classList.remove('hidden');
+            }
+        });
+    }
+
+    // === CONFIGURAÇÃO DE LIMIARES (Modal Popup) ===
+    const btnOpenSettings = document.getElementById('btn-open-settings');
+    const btnCloseSettings = document.getElementById('btn-close-settings');
+    const btnCancelSettings = document.getElementById('btn-cancel-settings');
+    const settingsModal = document.getElementById('settings-modal');
+    const settingsForm = document.getElementById('settings-form');
+    const settingsError = document.getElementById('settings-error');
+    const settingsSuccess = document.getElementById('settings-success');
+
+    if (btnOpenSettings) {
+        btnOpenSettings.addEventListener('click', async () => {
+            if (settingsError) settingsError.classList.add('hidden');
+            if (settingsSuccess) settingsSuccess.classList.add('hidden');
+            
+            try {
+                const response = await fetch('/api/settings');
+                const settings = await response.json();
+                
+                if (response.ok) {
+                    document.getElementById('settings-level1').value = settings.level1_minutes || 15;
+                    document.getElementById('settings-level2').value = settings.level2_minutes || 60;
+                    document.getElementById('settings-level3').value = settings.level3_minutes || 150;
+                    document.getElementById('settings-level4').value = settings.level4_minutes || 720;
+                    
+                    settingsModal.classList.remove('hidden');
+                } else {
+                    alert('Erro ao carregar configurações.');
+                }
+            } catch (err) {
+                console.error("Erro ao obter configurações: ", err);
+                alert('Erro de comunicação com o servidor.');
+            }
+        });
+    }
+
+    const closeSettingsModal = () => {
+        if (settingsModal) {
+            settingsModal.classList.add('hidden');
+        }
+    };
+
+    if (btnCloseSettings) btnCloseSettings.addEventListener('click', closeSettingsModal);
+    if (btnCancelSettings) btnCancelSettings.addEventListener('click', closeSettingsModal);
+
+    window.addEventListener('click', (e) => {
+        if (e.target === settingsModal) {
+            closeSettingsModal();
+        }
+    });
+
+    if (settingsForm) {
+        settingsForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            if (settingsError) settingsError.classList.add('hidden');
+            if (settingsSuccess) settingsSuccess.classList.add('hidden');
+            
+            const level1_minutes = parseInt(document.getElementById('settings-level1').value);
+            const level2_minutes = parseInt(document.getElementById('settings-level2').value);
+            const level3_minutes = parseInt(document.getElementById('settings-level3').value);
+            const level4_minutes = parseInt(document.getElementById('settings-level4').value);
+            
+            try {
+                const response = await fetch('/api/settings', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        level1_minutes,
+                        level2_minutes,
+                        level3_minutes,
+                        level4_minutes
+                    })
+                });
+                const data = await response.json();
+                
+                if (response.ok) {
+                    if (settingsSuccess) {
+                        settingsSuccess.textContent = data.message;
+                        settingsSuccess.classList.remove('hidden');
+                    }
+                    
+                    appendTerminalLine(`pi@cvale-watchdog:~$ watchdog-config --set L1=${level1_minutes} L2=${level2_minutes} L3=${level3_minutes} L4=${level4_minutes}`, 'output-prompt');
+                    appendTerminalLine('Limiares de SLA atualizados com sucesso no banco SQLite de produção!', 'output-success');
+                    
+                    await loadSettings();
+                    await loadContacts();
+                    
+                    setTimeout(closeSettingsModal, 1200);
+                } else {
+                    if (settingsError) {
+                        settingsError.textContent = data.error || 'Erro ao salvar configurações.';
+                        settingsError.classList.remove('hidden');
+                    }
+                }
+            } catch (err) {
+                console.error("Erro ao salvar configurações: ", err);
+                if (settingsError) {
+                    settingsError.textContent = 'Falha de comunicação com o servidor.';
+                    settingsError.classList.remove('hidden');
+                }
             }
         });
     }
