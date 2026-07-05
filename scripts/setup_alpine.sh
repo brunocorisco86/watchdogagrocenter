@@ -52,7 +52,7 @@ rc-service crond start || echo "Nota: crond já pode estar rodando ou openrc ind
 CRON_PATH="/etc/crontabs/root"
 PWD_DIR=$(pwd)
 
-JOB_CHECK="*/5 * * * * $PWD_DIR/scripts/run_watchdog.sh > /dev/null 2>&1"
+JOB_CHECK="*/3 * * * * $PWD_DIR/scripts/run_watchdog.sh > /dev/null 2>&1"
 JOB_DAILY="0 18 * * * cd $PWD_DIR && ./venv/bin/python3 src/watchdog/watchdog_cli.py --daily-report > /dev/null 2>&1"
 JOB_MONTHLY="0 18 30 * * cd $PWD_DIR && ./venv/bin/python3 src/watchdog/watchdog_cli.py --monthly-report > /dev/null 2>&1"
 JOB_KEEPALIVE="*/1 * * * * $PWD_DIR/scripts/keepalive_dashboard.sh > /dev/null 2>&1"

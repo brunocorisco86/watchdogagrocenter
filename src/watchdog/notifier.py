@@ -40,17 +40,23 @@ class Notifier:
                             c_level = int(c.get('level', 1))
                             c_dept = c.get('department', 'TI').upper()
                             
-                            if consecutive_failures >= 30:
-                                # Diretoria e todos os níveis ativos
-                                if t_id_str not in destinatarios:
-                                    destinatarios.append(t_id_str)
-                            elif consecutive_failures >= 15:
-                                # Níveis 1 e 2 ativos
+                            if consecutive_failures >= 240:
+                                # Nível 4 (Escalação Máxima 12h): Níveis 1, 2, 3 e 4 ativos
+                                if c_level <= 4:
+                                    if t_id_str not in destinatarios:
+                                        destinatarios.append(t_id_str)
+                            elif consecutive_failures >= 50:
+                                # Nível 3 (Diretoria 2.5h): Níveis 1, 2 e 3 ativos
+                                if c_level <= 3:
+                                    if t_id_str not in destinatarios:
+                                        destinatarios.append(t_id_str)
+                            elif consecutive_failures >= 20:
+                                # Nível 2 (Supervisão 1h): Níveis 1 e 2 ativos
                                 if c_level <= 2:
                                     if t_id_str not in destinatarios:
                                         destinatarios.append(t_id_str)
-                            else:
-                                # Nível 1 TI ativo apenas (falhas < 15)
+                            elif consecutive_failures >= 5:
+                                # Nível 1 (Operacional 15 min): Apenas Nível 1 TI ativo
                                 if c_level == 1 and c_dept == 'TI':
                                     if t_id_str not in destinatarios:
                                         destinatarios.append(t_id_str)
@@ -113,15 +119,20 @@ class Notifier:
                     c_level = int(c.get('level', 1))
                     c_dept = c.get('department', 'TI').upper()
                     
-                    if failures >= 30:
-                        # Nível 3 (Diretoria): todos os contatos ativos recebem
-                        destinatarios.append(c['email'])
-                    elif failures >= 15:
-                        # Nível 2 (Supervisão): nível 1 e 2 recebem (TI & Negócio)
+                    if failures >= 240:
+                        # Nível 4 (Escalação Máxima 12h): níveis 1, 2, 3 e 4 recebem (nível <= 4)
+                        if c_level <= 4:
+                            destinatarios.append(c['email'])
+                    elif failures >= 50:
+                        # Nível 3 (Diretoria 2.5h): níveis 1, 2 e 3 recebem (nível <= 3)
+                        if c_level <= 3:
+                            destinatarios.append(c['email'])
+                    elif failures >= 20:
+                        # Nível 2 (Supervisão 1h): níveis 1 e 2 recebem (nível <= 2)
                         if c_level <= 2:
                             destinatarios.append(c['email'])
-                    else:
-                        # Nível 1 (Operacional): apenas nível 1 de TI recebe
+                    elif failures >= 5:
+                        # Nível 1 (Operacional 15 min): apenas nível 1 de TI recebe
                         if c_level == 1 and c_dept == 'TI':
                             destinatarios.append(c['email'])
 

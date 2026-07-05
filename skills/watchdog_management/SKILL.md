@@ -20,7 +20,7 @@ Esta skill define as melhores práticas e instruções de comissionamento, autom
 ## ⚙️ Cron e Execução
 A tarefa cron é definida no crontab do root ou usuário dedicado na máquina de produção (`ssh peixe`):
 ```cron
-*/5 * * * * /home/bruno/watchdog-agrocenter/scripts/run_watchdog.sh
+*/3 * * * * /home/bruno/watchdog-agrocenter/scripts/run_watchdog.sh
 ```
 Certifique-se de que o script `run_watchdog.sh` possui permissões `+x` e executa utilizando o Python da `venv` correspondente.
 

@@ -133,17 +133,17 @@ sudo ./scripts/setup_alpine.sh
 O comissionamento automático instala os agendamentos no Crontab. Caso queira configurá-los manualmente (`crontab -e`), utilize:
 
 ```cron
-# 1. Checagem regular de integridade do Agrocenter (A cada 5 minutos)
-*/5 * * * * /home/brunoconter/watchdog-agrocenter/scripts/run_watchdog.sh > /dev/null 2>&1
+# 1. Checagem regular de integridade do Agrocenter (A cada 3 minutos)
+*/3 * * * * /home/bruno/watchdog-agrocenter/scripts/run_watchdog.sh > /dev/null 2>&1
 
 # 2. Relatório Diário de Expediente (Diariamente às 18:00h)
-0 18 * * * cd /home/brunoconter/watchdog-agrocenter && ./venv/bin/python3 src/watchdog/watchdog_cli.py --daily-report > /dev/null 2>&1
+0 18 * * * cd /home/bruno/watchdog-agrocenter && ./venv/bin/python3 src/watchdog/watchdog_cli.py --daily-report > /dev/null 2>&1
 
 # 3. Relatório Mensal de SLA consolidado (Todo dia 30 às 18:00h)
-0 18 30 * * cd /home/brunoconter/watchdog-agrocenter && ./venv/bin/python3 src/watchdog/watchdog_cli.py --monthly-report > /dev/null 2>&1
+0 18 30 * * cd /home/bruno/watchdog-agrocenter && ./venv/bin/python3 src/watchdog/watchdog_cli.py --monthly-report > /dev/null 2>&1
 
 # 4. Monitoramento e Keepalive do Dashboard Flask (A cada 1 minuto)
-*/1 * * * * /home/brunoconter/watchdog-agrocenter/scripts/keepalive_dashboard.sh > /dev/null 2>&1
+*/1 * * * * /home/bruno/watchdog-agrocenter/scripts/keepalive_dashboard.sh > /dev/null 2>&1
 ```
 
 ---

@@ -50,7 +50,7 @@ def test_send_email_alert_success(mock_smtp_class, temp_contacts, temp_template)
         "status_code": "502",
         "response_time_ms": "120",
         "timestamp": "04/07/2026 17:00:00",
-        "consecutive_failures": "3",
+        "consecutive_failures": "5",
         "max_failures": "3",
         "error_message": "Bad Gateway",
         "agrocenter_url": "https://prd-agrocenter.cvale.com.br"

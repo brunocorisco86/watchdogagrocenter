@@ -18,7 +18,7 @@ chmod +x scripts/setup_alpine.sh
 
 ## ⏱️ Agendamento do Cron
 
-Para configurar a tarefa periódica para rodar a cada **5 minutos** (ou o intervalo que você preferir), siga as etapas abaixo:
+Para configurar a tarefa periódica para rodar a cada **3 minutos** (ou o intervalo que você preferir), siga as etapas abaixo:
 
 ### 1. Editar o Crontab
 Abra o agendador de tarefas cron do seu usuário atual:
@@ -32,13 +32,13 @@ crontab -e
 Insira a seguinte linha no final do arquivo (certifique-se de usar caminhos absolutos correspondentes à instalação no Raspberry Pi):
 
 ```cron
-# Rodar o Watchdog do Agrocenter a cada 5 minutos e registrar os logs de execução
-*/5 * * * * /home/brunoconter/Documentos/1_C.VALE/2\ -\ PROJETOS/11_WATCHDOG_AGROCENTER/scripts/run_watchdog.sh
+# Rodar o Watchdog do Agrocenter a cada 3 minutos e registrar os logs de execução
+*/3 * * * * /home/brunoconter/Documentos/1_C.VALE/2\ -\ PROJETOS/11_WATCHDOG_AGROCENTER/scripts/run_watchdog.sh
 ```
 
 > [!IMPORTANT]  
 > Se o caminho do seu repositório contiver espaços (como em `1_C.VALE/2 - PROJETOS/`), certifique-se de escapar o espaço usando a barra invertida `\` (como mostrado acima) ou envolva o caminho completo entre aspas:
-> `*/5 * * * * "/home/brunoconter/Documentos/1_C.VALE/2 - PROJETOS/11_WATCHDOG_AGROCENTER/scripts/run_watchdog.sh"`
+> `*/3 * * * * "/home/brunoconter/Documentos/1_C.VALE/2 - PROJETOS/11_WATCHDOG_AGROCENTER/scripts/run_watchdog.sh"`
 
 ### 3. Verificar o Agendamento
 Para listar e confirmar que o cron foi configurado corretamente, execute:
