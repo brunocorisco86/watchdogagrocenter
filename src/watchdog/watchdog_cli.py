@@ -43,7 +43,8 @@ def load_config():
         },
         'contacts_path': os.path.join(base_dir, 'src/watchdog/contacts.json'),
         'template_path': os.path.join(base_dir, 'src/watchdog/email_template.html'),
-        'logs_dir': os.path.join(base_dir, 'logs')
+        'logs_dir': os.path.join(base_dir, 'logs'),
+        'impersonate_browser': os.getenv('CURL_IMPERSONATE_BROWSER', 'chrome')
     }
 
 def log_to_file(logs_dir, message):
@@ -115,7 +116,7 @@ def test_isp_connectivity():
             continue
     return False
 
-def test_http_service(url, timeout):
+def test_http_service(url, timeout, impersonate_profile='chrome'):
     """
     Realiza o teste HTTP com sistema de retry (3 tentativas) e fallback
     de DNS para 1.1.1.1/8.8.8.8 no caso de erros de conexão/DNS.
@@ -134,11 +135,26 @@ def test_http_service(url, timeout):
     retries = 3
     sleep_seconds = 2
     
+    user_agents_map = {
+        'chrome': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
+        'firefox': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:109.0) Gecko/20100101 Firefox/120.0',
+        'safari': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 14_2_1) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.2 Safari/605.1.15',
+        'edge': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36 Edg/120.0.0.0'
+    }
+    
     for attempt in range(1, retries + 1):
         start_time = time.time()
+        current_profile = 'requests'
         try:
             if HAS_CURL_CFFI:
-                response = impersonate_requests.get(url, timeout=timeout, headers=headers, impersonate="chrome")
+                profiles = [impersonate_profile, "firefox", "safari", "edge"]
+                profiles = list(dict.fromkeys([p for p in profiles if p]))
+                current_profile = profiles[(attempt - 1) % len(profiles)]
+                
+                req_headers = headers.copy()
+                req_headers['User-Agent'] = user_agents_map.get(current_profile, headers['User-Agent'])
+                
+                response = impersonate_requests.get(url, timeout=timeout, headers=req_headers, impersonate=current_profile)
             else:
                 response = requests.get(url, timeout=timeout, headers=headers)
             elapsed_ms = int((time.time() - start_time) * 1000)
@@ -152,6 +168,9 @@ def test_http_service(url, timeout):
             if response.status_code >= 400:
                 content_lower = response.text.lower()
                 if any(x in content_lower for x in ["access denied", "reference #", "akamai"]):
+                    if attempt < retries:
+                        print(f"[WAF Bypass] Tentativa {attempt} com perfil '{current_profile}' bloqueada pela Akamai. Rotacionando perfil...")
+                        raise requests.exceptions.RequestException("WAF Blocked")
                     return False, response.status_code, elapsed_ms, "Bloqueio de Firewall (Akamai WAF)"
                 return False, response.status_code, elapsed_ms, f"Erro HTTP Status Code: {response.status_code}"
                 
@@ -160,6 +179,9 @@ def test_http_service(url, timeout):
             # 3. Verificar páginas de erro disfarçadas ou bloqueios Akamai
             if any(x in content_lower for x in ["access denied", "reference #", "akamai"]):
                 if "loading..." not in content_lower:
+                    if attempt < retries:
+                        print(f"[WAF Bypass] Tentativa {attempt} com perfil '{current_profile}' bloqueada pela Akamai (página de erro disfarçada). Rotacionando perfil...")
+                        raise requests.exceptions.RequestException("WAF Blocked")
                     return False, response.status_code, elapsed_ms, "Bloqueio de Firewall (Akamai WAF)"
                 
             # 4. Verificar falhas de backend/banco de dados
@@ -237,7 +259,11 @@ def run_check():
     )
 
     log_to_file(config['logs_dir'], "Iniciando verificação de rotina...")
-    is_healthy, status_code, elapsed_ms, error_msg = test_http_service(config['url'], config['timeout'])
+    is_healthy, status_code, elapsed_ms, error_msg = test_http_service(
+        config['url'], 
+        config['timeout'],
+        impersonate_profile=config.get('impersonate_browser', 'chrome')
+    )
     
     # Salva no histórico SQLite
     db.add_monitor_log(status_code, elapsed_ms, is_healthy, error_msg)
