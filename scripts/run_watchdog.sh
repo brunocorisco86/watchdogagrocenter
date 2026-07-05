@@ -1,7 +1,8 @@
 #!/bin/sh
 
-# Caminho absoluto para a raiz do projeto (ajuste se necessário para a sua estrutura no Raspberry Pi)
-PROJECT_DIR="/home/brunoconter/Documentos/1_C.VALE/2 - PROJETOS/11_WATCHDOG_AGROCENTER"
+# Determina dinamicamente o caminho para a raiz do projeto baseado na localização do próprio script
+SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
+PROJECT_DIR="$(dirname "$SCRIPT_DIR")"
 
 # Navega para o diretório do projeto
 cd "$PROJECT_DIR" || { echo "Erro ao acessar o diretório $PROJECT_DIR"; exit 1; }
