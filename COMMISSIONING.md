@@ -45,13 +45,13 @@ AGROCENTER_URL=https://prd-agrocenter.cvale.com.br
 # SMTP CONFIGURATION (Para envio de e-mails)
 SMTP_SERVER=smtp.gmail.com
 SMTP_PORT=587
-SMTP_USER=brunocorisco@gmail.com
-SMTP_PASSWORD=fvjb hyik ekpw ecmy
+SMTP_USER=seu_usuario@cvale.com.br
+SMTP_PASSWORD=sua_senha_de_aplicativo_aqui
 SMTP_FROM=watchdog-agrocenter@cvale.com.br
 
 # TELEGRAM BOT CONFIGURATION
-TELEGRAM_BOT_TOKEN=8646226329:AAGaxxdE1HCwl3cBWGhJ4a2AcPp0I0vsnOk
-TELEGRAM_CHAT_ID=1959691903
+TELEGRAM_BOT_TOKEN=seu_telegram_bot_token_aqui
+TELEGRAM_CHAT_ID=seu_telegram_chat_id_aqui
 
 # CONFIGURAÇÕES DO MONITOR
 MAX_CONSECUTIVE_FAILURES=5
