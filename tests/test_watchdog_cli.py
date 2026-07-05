@@ -2,6 +2,8 @@ import pytest
 from unittest.mock import MagicMock, patch
 # Renomeamos o import para evitar que o Pytest tente executar 'test_http_service' diretamente
 from src.watchdog.watchdog_cli import test_http_service as run_http_check, test_isp_connectivity
+from src.watchdog import watchdog_cli
+watchdog_cli.HAS_CURL_CFFI = False
 
 @patch("requests.get")
 def test_http_service_healthy(mock_get):

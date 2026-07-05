@@ -6,6 +6,13 @@ from datetime import datetime
 from dotenv import load_dotenv
 import urllib3
 
+try:
+    from curl_cffi import requests as impersonate_requests
+    HAS_CURL_CFFI = True
+except ImportError:
+    impersonate_requests = requests
+    HAS_CURL_CFFI = False
+
 # Desativa avisos de requisições HTTPS inseguras (usado nas validações por IP direto)
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
@@ -130,7 +137,10 @@ def test_http_service(url, timeout):
     for attempt in range(1, retries + 1):
         start_time = time.time()
         try:
-            response = requests.get(url, timeout=timeout, headers=headers)
+            if HAS_CURL_CFFI:
+                response = impersonate_requests.get(url, timeout=timeout, headers=headers, impersonate="chrome")
+            else:
+                response = requests.get(url, timeout=timeout, headers=headers)
             elapsed_ms = int((time.time() - start_time) * 1000)
             
             # 1. Validação de Metadados de Cabeçalhos HTTP
