@@ -118,8 +118,22 @@ document.addEventListener('DOMContentLoaded', () => {
         const ctx = document.getElementById('latencyChart');
         if (!ctx) return;
 
+        // Atualiza dinamicamente o título do gráfico com base no filtro
+        const chartTitleElement = document.querySelector('.chart-title');
+        if (chartTitleElement) {
+            const labelMap = {
+                '1h': 'ÚLTIMA 1 HORA',
+                '6h': 'ÚLTIMAS 6 HORAS',
+                '1d': 'ÚLTIMO 1 DIA',
+                '1w': 'ÚLTIMA 1 SEMANA',
+                '30d': 'ÚLTIMO MÊS'
+            };
+            const periodLabel = labelMap[currentPeriod] || 'ÚLTIMAS 6 HORAS';
+            chartTitleElement.textContent = `[SÉRIE TEMPORAL: LATÊNCIA DO PORTAL (${periodLabel})]`;
+        }
+
         try {
-            const response = await fetch('/api/latency-6h');
+            const response = await fetch(`/api/latency-6h?period=${currentPeriod}`);
             let data = await response.json();
 
             if (!Array.isArray(data)) {

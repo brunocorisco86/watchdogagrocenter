@@ -143,9 +143,17 @@ class DatabaseManager:
             conn.execute(query, (now, incident_id))
             conn.commit()
 
-    def get_latency_history_6h(self):
-        """Retorna os registros de latência das últimas 6 horas para série temporal"""
-        limit_time = (datetime.now() - timedelta(hours=6)).isoformat().replace('T', ' ')
+    def get_latency_history_6h(self, period_filter='6h'):
+        """Retorna os registros de latência de acordo com o período para a série temporal"""
+        filter_map = {
+            '1h': timedelta(hours=1),
+            '6h': timedelta(hours=6),
+            '1d': timedelta(days=1),
+            '1w': timedelta(days=7),
+            '30d': timedelta(days=30)
+        }
+        delta = filter_map.get(period_filter, timedelta(hours=6))
+        limit_time = (datetime.now() - delta).isoformat().replace('T', ' ')
         query = """
             SELECT timestamp, response_time_ms, is_healthy 
             FROM monitor_logs 
@@ -156,6 +164,7 @@ class DatabaseManager:
             cursor = conn.cursor()
             cursor.execute(query, (limit_time,))
             return [dict(row) for row in cursor.fetchall()]
+
 
     def get_kpis(self, period_filter='30d'):
         """Retorna estatísticas filtradas por período para exibir no dashboard"""

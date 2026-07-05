@@ -80,9 +80,11 @@ def api_system_logs():
 
 @app.route('/api/latency-6h')
 def api_latency_6h():
-    """Retorna os dados de latência das últimas 6 horas para alimentar o gráfico"""
-    history = db.get_latency_history_6h()
+    """Retorna os dados de latência do período escolhido para alimentar o gráfico"""
+    period = request.args.get('period', '6h')
+    history = db.get_latency_history_6h(period)
     return jsonify(history)
+
 
 @app.route('/api/trigger', methods=['POST'])
 def trigger_check():
