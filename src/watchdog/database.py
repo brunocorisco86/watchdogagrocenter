@@ -90,7 +90,7 @@ class DatabaseManager:
         with self._get_connection() as conn:
             conn.execute(query, (now, status_code, response_time_ms, int(is_healthy), error_message, check_type))
             conn.commit()
-        self.prune_logs()
+        # self.prune_logs()  # Desativado a pedido do usuário para não perder histórico no SQLite
 
     def get_latest_logs(self, limit=50):
         query = 'SELECT * FROM monitor_logs ORDER BY timestamp DESC LIMIT ?'
@@ -145,12 +145,8 @@ class DatabaseManager:
             conn.commit()
 
     def prune_logs(self):
-        """Deleta os logs mais antigos que 1 dia para economizar memória"""
-        limit_time = (datetime.now() - timedelta(days=1)).isoformat().replace('T', ' ')
-        query = "DELETE FROM monitor_logs WHERE timestamp < ?"
-        with self._get_connection() as conn:
-            conn.execute(query, (limit_time,))
-            conn.commit()
+        """Desativado a pedido do usuário para preservar todo o histórico do SQLite para sempre"""
+        pass
 
     def get_latency_history_6h(self):
         """Retorna os registros de latência das últimas 6 horas para série temporal"""

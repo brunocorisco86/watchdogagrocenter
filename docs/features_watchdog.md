@@ -32,7 +32,7 @@ Mecanismos internos do motor de monitoramento de alta disponibilidade da C.Vale.
 ---
 
 ### [MOTOR 5: AUTO-PRUNING CONCORRENTE]
-- A cada inserção bem-sucedida, varre e expurga registros antigos com > 24 horas (Pruning).
+- (Desativado) Anteriormente expurgava registros com > 24 horas. Desativado por solicitação do usuário para preservar todo o histórico do banco de dados SQLite para sempre.
 
 ---
 
