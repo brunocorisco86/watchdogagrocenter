@@ -12,8 +12,8 @@ apk update
 apk upgrade
 
 # 2. Instalar dependências minimalistas
-echo "-> Instalando dependências de runtime (Python, SQLite, Git)..."
-apk add python3 py3-pip sqlite sqlite-libs git bash tzdata
+echo "-> Instalando dependências de runtime (Python, SQLite, Git, curl, lsof)..."
+apk add python3 py3-pip sqlite sqlite-libs git bash tzdata curl lsof
 
 # 3. Configurar fuso horário (ex: America/Sao_Paulo)
 echo "-> Configurando fuso horário..."
@@ -56,11 +56,21 @@ JOB_CHECK="*/5 * * * * $PWD_DIR/scripts/run_watchdog.sh > /dev/null 2>&1"
 JOB_DAILY="0 18 * * * cd $PWD_DIR && ./venv/bin/python3 src/watchdog/watchdog_cli.py --daily-report > /dev/null 2>&1"
 JOB_MONTHLY="0 18 30 * * cd $PWD_DIR && ./venv/bin/python3 src/watchdog/watchdog_cli.py --monthly-report > /dev/null 2>&1"
 JOB_KEEPALIVE="*/1 * * * * $PWD_DIR/scripts/keepalive_dashboard.sh > /dev/null 2>&1"
+JOB_REBOOT="@reboot sleep 10 && $PWD_DIR/scripts/keepalive_dashboard.sh > /dev/null 2>&1"
 
 if [ -f "$CRON_PATH" ]; then
-    for JOB in "$JOB_CHECK" "$JOB_DAILY" "$JOB_MONTHLY" "$JOB_KEEPALIVE"; do
+    for JOB in "$JOB_CHECK" "$JOB_DAILY" "$JOB_MONTHLY" "$JOB_KEEPALIVE" "$JOB_REBOOT"; do
         # Extrai termo unico do cron job para busca
         KEYWORD=$(echo "$JOB" | awk '{print $6}')
+        # Se for reboot, a busca do keyword funciona de forma diferente
+        if echo "$JOB" | grep -q "@reboot"; then
+            KEYWORD="keepalive_dashboard.sh"
+            if grep -Fq "@reboot" "$CRON_PATH" && grep -Fq "$KEYWORD" "$CRON_PATH"; then
+                echo "-> Tarefa de reboot ja configurada no cron."
+                continue
+            fi
+        fi
+        
         if grep -Fq "$KEYWORD" "$CRON_PATH"; then
             echo "-> Tarefa com '$KEYWORD' ja configurada no cron."
         else
@@ -76,7 +86,9 @@ else
     echo "$JOB_DAILY"
     echo "$JOB_MONTHLY"
     echo "$JOB_KEEPALIVE"
+    echo "$JOB_REBOOT"
 fi
+
 
 echo "=== COMISSIONAMENTO CONCLUÍDO COM SUCESSO! ==="
 echo "Por favor, configure as variáveis de ambiente no arquivo '.env' na raiz do projeto antes do primeiro teste."

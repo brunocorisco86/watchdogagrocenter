@@ -158,12 +158,40 @@ cd /home/brunoconter/watchdog-agrocenter
 ./venv/bin/python3 src/dashboard/app.py
 ```
 
-### Resiliência Automática (Recomendado):
-O script de **keepalive** configurado no Cron (Passo 5) monitora constantemente a porta `5080`. Se o processo Flask cair ou a porta travar, ele se recupera automaticamente e inicia o serviço no background. Isso garante o funcionamento ininterrupto mesmo após quedas de energia no Raspberry Pi.
+### Resiliência Automática via Crontab (Simplificado)
+O script de **keepalive** configurado no Cron (Passo 5) monitora constantemente a porta `5080`. Se o processo Flask cair ou travar, ele executa uma autorrecuperação em background usando `setsid` para desvincular o processo de qualquer terminal. A tarefa de `@reboot` garante o início imediato após reinicializações.
 
-### Execução em Background Manual:
-Para deixar o Dashboard rodando permanentemente no Alpine Linux, você pode usar o utilitário `nohup` ou integrá-lo ao gerenciador OpenRC. Exemplo rápido com `nohup`:
-```bash
-nohup ./venv/bin/python3 src/dashboard/app.py > /home/brunoconter/watchdog-agrocenter/logs/flask.log 2>&1 &
-```
-Acesse de qualquer computador da rede local através de `http://<IP_DO_RASPBERRY>:5080`.
+### Resiliência Avançada via Serviços do Sistema (Recomendado para Produção)
+Para maior robustez, criamos arquivos de serviço nativos que gerenciam o ciclo de vida do Dashboard, incluindo reinicialização instantânea em caso de crash e inicialização no boot.
+
+#### Opção A: Alpine Linux (OpenRC)
+1. Copie o script de inicialização para a pasta de serviços:
+   ```bash
+   sudo cp scripts/watchdog-dashboard.initd /etc/init.d/watchdog-dashboard
+   sudo chmod +x /etc/init.d/watchdog-dashboard
+   ```
+2. Adicione ao runlevel padrão e inicie o serviço:
+   ```bash
+   sudo rc-update add watchdog-dashboard default
+   sudo rc-service watchdog-dashboard start
+   ```
+
+#### Opção B: Servidores Linux Gerais (Systemd - Debian, Ubuntu, Pop!_OS, Raspberry Pi OS)
+1. Copie o arquivo de serviço para a pasta do systemd:
+   ```bash
+   sudo cp scripts/watchdog-dashboard.service /etc/systemd/system/watchdog-dashboard.service
+   ```
+2. Recarregue os daemons do systemd, ative e inicie o serviço:
+   ```bash
+   sudo systemctl daemon-reload
+   sudo systemctl enable watchdog-dashboard
+   sudo systemctl start watchdog-dashboard
+   ```
+3. Para inspecionar logs ou status:
+   ```bash
+   sudo systemctl status watchdog-dashboard
+   journalctl -u watchdog-dashboard -n 50 --no-pager
+   ```
+
+Acesse o Dashboard de qualquer computador na rede local através de `http://<IP_DO_SERVIDOR>:5080`.
+

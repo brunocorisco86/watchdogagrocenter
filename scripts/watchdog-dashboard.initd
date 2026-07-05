@@ -1,0 +1,20 @@
+#!/sbin/openrc-run
+
+name="watchdog-dashboard"
+description="C.Vale Watchdog Agrocenter Dashboard"
+
+# Ajuste estes caminhos de acordo com seu diretório de instalação
+command="/home/brunoconter/watchdog-agrocenter/venv/bin/python3"
+command_args="src/dashboard/app.py"
+directory="/home/brunoconter/watchdog-agrocenter"
+
+command_background="yes"
+pidfile="/run/${RC_SVCNAME}.pid"
+
+depend() {
+    need net
+}
+
+start_pre() {
+    export FLASK_ENV=production
+}

@@ -1,0 +1,15 @@
+[Unit]
+Description=C.Vale Watchdog Agrocenter Dashboard
+After=network.target
+
+[Service]
+Type=simple
+User=brunoconter
+WorkingDirectory=/home/brunoconter/Documentos/1_C.VALE/2 - PROJETOS/11_WATCHDOG_AGROCENTER
+ExecStart=/home/brunoconter/Documentos/1_C.VALE/2 - PROJETOS/11_WATCHDOG_AGROCENTER/venv/bin/python3 src/dashboard/app.py
+Restart=always
+RestartSec=5
+Environment=FLASK_ENV=production
+
+[Install]
+WantedBy=multi-user.target
