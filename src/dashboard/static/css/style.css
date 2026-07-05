@@ -95,6 +95,18 @@ body {
     box-shadow: 0 0 15px rgba(59, 130, 246, 0.6);
 }
 
+.brand-img-agrocenter {
+    height: 40px;
+    width: auto;
+    transition: all 0.3s ease;
+    filter: drop-shadow(0 0 8px rgba(59, 130, 246, 0.4));
+}
+
+.brand-img-agrocenter:hover {
+    transform: scale(1.03);
+    filter: drop-shadow(0 0 12px rgba(59, 130, 246, 0.7));
+}
+
 .brand-text h1 {
     font-size: 1.5rem;
     font-weight: 700;

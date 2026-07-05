@@ -148,6 +148,30 @@ class Notifier:
             with open(template_path, 'r', encoding='utf-8') as f:
                 template_html = f.read()
 
+            # Carrega logos e converte para Base64 para embutir inline no e-mail
+            import base64
+            base_dir = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+            assets_dir = os.path.join(base_dir, 'assets')
+            
+            cvale_path = os.path.join(assets_dir, 'logo_cvale.png')
+            agro_path = os.path.join(assets_dir, 'agro_center.svg')
+            
+            cvale_base64 = ""
+            if os.path.exists(cvale_path):
+                try:
+                    with open(cvale_path, 'rb') as img_f:
+                        cvale_base64 = base64.b64encode(img_f.read()).decode('utf-8')
+                except Exception as e:
+                    print(f"Erro ao carregar logo C.Vale: {e}")
+                    
+            agro_base64 = ""
+            if os.path.exists(agro_path):
+                try:
+                    with open(agro_path, 'rb') as img_f:
+                        agro_base64 = base64.b64encode(img_f.read()).decode('utf-8')
+                except Exception as e:
+                    print(f"Erro ao carregar logo Agrocenter: {e}")
+
             # Preenche os placeholders no HTML usando .replace para evitar KeyError com CSS do template
             html_content = template_html
             replacements = {
@@ -161,7 +185,9 @@ class Notifier:
                 '{consecutive_failures}': str(failures),
                 '{max_failures}': template_vars.get('max_failures', '3'),
                 '{error_message}': template_vars.get('error_message', 'Erro Desconhecido'),
-                '{agrocenter_url}': template_vars.get('agrocenter_url', '')
+                '{agrocenter_url}': template_vars.get('agrocenter_url', ''),
+                '{cvale_logo_base64}': cvale_base64,
+                '{agrocenter_logo_base64}': agro_base64
             }
             for placeholder, value in replacements.items():
                 html_content = html_content.replace(placeholder, str(value))
