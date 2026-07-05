@@ -67,46 +67,12 @@ class Notifier:
                 with open(contacts_path, 'r', encoding='utf-8') as f:
                     contacts = json.load(f)
                 
-                is_resolution = "restabelecido" in text.lower() or "normalizado" in text.lower() or "resolvido" in text.lower() or consecutive_failures == 0
-                
-                # Obtém os limiares dinâmicos
-                thresholds = self._get_thresholds()
-                
                 for c in contacts:
                     t_id = c.get('telegram_id')
                     if t_id and c.get('enabled', True):
                         t_id_str = str(t_id).strip()
-                        if not t_id_str:
-                            continue
-                            
-                        # Política de Escalação Telegram
-                        if is_resolution:
-                            if t_id_str not in destinatarios:
-                                destinatarios.append(t_id_str)
-                        else:
-                            c_level = int(c.get('level', 1))
-                            c_dept = c.get('department', 'TI').upper()
-                            
-                            if consecutive_failures >= thresholds[4]:
-                                # Nível 4 (Escalação Máxima 12h): Níveis 1, 2, 3 e 4 ativos
-                                if c_level <= 4:
-                                    if t_id_str not in destinatarios:
-                                        destinatarios.append(t_id_str)
-                            elif consecutive_failures >= thresholds[3]:
-                                # Nível 3 (Diretoria 2.5h): Níveis 1, 2 e 3 ativos
-                                if c_level <= 3:
-                                    if t_id_str not in destinatarios:
-                                        destinatarios.append(t_id_str)
-                            elif consecutive_failures >= thresholds[2]:
-                                # Nível 2 (Supervisão 1h): Níveis 1 e 2 ativos
-                                if c_level <= 2:
-                                    if t_id_str not in destinatarios:
-                                        destinatarios.append(t_id_str)
-                            elif consecutive_failures >= thresholds[1]:
-                                # Nível 1 (Operacional 15 min): Apenas Nível 1 TI ativo
-                                if c_level == 1 and c_dept == 'TI':
-                                    if t_id_str not in destinatarios:
-                                        destinatarios.append(t_id_str)
+                        if t_id_str and t_id_str not in destinatarios:
+                            destinatarios.append(t_id_str)
             except Exception as e:
                 print(f"Erro ao ler contatos adicionais para Telegram: {e}")
 
@@ -152,42 +118,14 @@ class Notifier:
 
             # Filtra destinatários baseado nas falhas consecutivas e área
             failures = int(template_vars.get('consecutive_failures', 5))
-            is_resolution = template_vars.get('incident_status') == 'RESOLVIDO'
-            
-            # Obtém os limiares dinâmicos
-            thresholds = self._get_thresholds()
             
             destinatarios = []
             for c in contacts:
-                if not c.get('enabled', True):
-                    continue
-                
-                if is_resolution:
-                    # Notificações de restabelecimento vão para todos os contatos ativos
+                if c.get('enabled', True):
                     destinatarios.append(c['email'])
-                else:
-                    c_level = int(c.get('level', 1))
-                    c_dept = c.get('department', 'TI').upper()
-                    
-                    if failures >= thresholds[4]:
-                        # Nível 4 (Escalação Máxima 12h): níveis 1, 2, 3 e 4 recebem (nível <= 4)
-                        if c_level <= 4:
-                            destinatarios.append(c['email'])
-                    elif failures >= thresholds[3]:
-                        # Nível 3 (Diretoria 2.5h): níveis 1, 2 e 3 recebem (nível <= 3)
-                        if c_level <= 3:
-                            destinatarios.append(c['email'])
-                    elif failures >= thresholds[2]:
-                        # Nível 2 (Supervisão 1h): níveis 1 e 2 recebem (nível <= 2)
-                        if c_level <= 2:
-                            destinatarios.append(c['email'])
-                    elif failures >= thresholds[1]:
-                        # Nível 1 (Operacional 15 min): apenas nível 1 de TI recebe
-                        if c_level == 1 and c_dept == 'TI':
-                            destinatarios.append(c['email'])
 
             if not destinatarios:
-                print("Nenhum destinatário elegível no nível de falhas atual.")
+                print("Nenhum destinatário de e-mail ativo cadastrado.")
                 return False
 
             # 2. Carrega e preenche o template de e-mail
