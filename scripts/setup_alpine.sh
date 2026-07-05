@@ -60,23 +60,45 @@ JOB_REBOOT="@reboot sleep 10 && $PWD_DIR/scripts/keepalive_dashboard.sh > /dev/n
 
 if [ -f "$CRON_PATH" ]; then
     for JOB in "$JOB_CHECK" "$JOB_DAILY" "$JOB_MONTHLY" "$JOB_KEEPALIVE" "$JOB_REBOOT"; do
-        # Extrai termo unico do cron job para busca
-        KEYWORD=$(echo "$JOB" | awk '{print $6}')
-        # Se for reboot, a busca do keyword funciona de forma diferente
-        if echo "$JOB" | grep -q "@reboot"; then
-            KEYWORD="keepalive_dashboard.sh"
-            if grep -Fq "@reboot" "$CRON_PATH" && grep -Fq "$KEYWORD" "$CRON_PATH"; then
+        # Determinar termo único ou expressão regular para busca no crontab
+        if echo "$JOB" | grep -q -- "--daily-report"; then
+            if grep -Fq "watchdog_cli.py --daily-report" "$CRON_PATH"; then
+                echo "-> Tarefa diaria ja configurada no cron."
+                continue
+            fi
+        elif echo "$JOB" | grep -q -- "--monthly-report"; then
+            if grep -Fq "watchdog_cli.py --monthly-report" "$CRON_PATH"; then
+                echo "-> Tarefa mensal ja configurada no cron."
+                continue
+            fi
+        elif echo "$JOB" | grep -q "@reboot" && echo "$JOB" | grep -q "keepalive_dashboard.sh"; then
+            if grep -q "@reboot" "$CRON_PATH" && grep -q "keepalive_dashboard.sh" "$CRON_PATH" && grep -E "@reboot.*keepalive_dashboard\.sh" "$CRON_PATH" > /dev/null 2>&1; then
                 echo "-> Tarefa de reboot ja configurada no cron."
                 continue
             fi
-        fi
-        
-        if grep -Fq "$KEYWORD" "$CRON_PATH"; then
-            echo "-> Tarefa com '$KEYWORD' ja configurada no cron."
         else
-            echo "-> Adicionando ao cron: $JOB"
-            echo "$JOB" >> "$CRON_PATH"
+            # Para os demais, extrai o script específico ou padrão para verificação
+            if echo "$JOB" | grep -q "run_watchdog.sh"; then
+                SEARCH="run_watchdog.sh"
+            elif echo "$JOB" | grep -q "keepalive_dashboard.sh"; then
+                # Verifica se é a tarefa periódica de keepalive (que no crontab não contém @reboot)
+                if grep -v "@reboot" "$CRON_PATH" | grep -Fq "keepalive_dashboard.sh"; then
+                    echo "-> Tarefa keepalive periodica ja configurada no cron."
+                    continue
+                fi
+                SEARCH="keepalive_dashboard.sh"
+            else
+                SEARCH=$(echo "$JOB" | awk '{print $6}')
+            fi
+
+            if grep -Fq "$SEARCH" "$CRON_PATH"; then
+                echo "-> Tarefa com '$SEARCH' ja configurada no cron."
+                continue
+            fi
         fi
+
+        echo "-> Adicionando ao cron: $JOB"
+        echo "$JOB" >> "$CRON_PATH"
     done
     # Reinicia o crond para carregar a nova configuração
     rc-service crond restart || killall -HUP crond || echo "Nota: Serviço cron reiniciado."
