@@ -359,10 +359,10 @@ document.addEventListener('DOMContentLoaded', () => {
         
         const options = document.querySelectorAll('#contact-level option');
         if (options.length === 4) {
-            options[0].textContent = `Nível 1 (Após ${formatLongText(settingsCache.level1_minutes)} off / ${l1_fail} ${l1_fail === 1 ? 'falha' : 'falhas'})`;
-            options[1].textContent = `Nível 2 (Após ${formatLongText(settingsCache.level2_minutes)} off / ${l2_fail} ${l2_fail === 1 ? 'falha' : 'falhas'})`;
-            options[2].textContent = `Nível 3 (Após ${formatLongText(settingsCache.level3_minutes)} off / ${l3_fail} ${l3_fail === 1 ? 'falha' : 'falhas'})`;
-            options[3].textContent = `Nível 4 (Após ${formatLongText(settingsCache.level4_minutes)} off / ${l4_fail} ${l4_fail === 1 ? 'falha' : 'falhas'})`;
+            options[0].textContent = `Nível 1 - Operacional TI (Após ${formatLongText(settingsCache.level1_minutes)} off / ${l1_fail} ${l1_fail === 1 ? 'falha' : 'falhas'})`;
+            options[1].textContent = `Nível 2 - Analista / Coordenação (Após ${formatLongText(settingsCache.level2_minutes)} off / ${l2_fail} ${l2_fail === 1 ? 'falha' : 'falhas'})`;
+            options[2].textContent = `Nível 3 - Gerência (Após ${formatLongText(settingsCache.level3_minutes)} off / ${l3_fail} ${l3_fail === 1 ? 'falha' : 'falhas'})`;
+            options[3].textContent = `Nível 4 - Diretoria (Após ${formatLongText(settingsCache.level4_minutes)} off / ${l4_fail} ${l4_fail === 1 ? 'falha' : 'falhas'})`;
         }
     }
 
@@ -390,10 +390,10 @@ document.addEventListener('DOMContentLoaded', () => {
                     
                     // Coluna Nível dinâmico
                     const levelTd = document.createElement('td');
-                    let levelText = `Nível 1 (${formatMinutesText(settingsCache.level1_minutes)} off)`;
-                    if (c.level === 2) levelText = `Nível 2 (${formatMinutesText(settingsCache.level2_minutes)} off)`;
-                    else if (c.level === 3) levelText = `Nível 3 (${formatMinutesText(settingsCache.level3_minutes)} off)`;
-                    else if (c.level === 4) levelText = `Nível 4 (${formatMinutesText(settingsCache.level4_minutes)} off)`;
+                    let levelText = `Nível 1 - Operacional TI (${formatMinutesText(settingsCache.level1_minutes)} off)`;
+                    if (c.level === 2) levelText = `Nível 2 - Analista / Coordenação (${formatMinutesText(settingsCache.level2_minutes)} off)`;
+                    else if (c.level === 3) levelText = `Nível 3 - Gerência (${formatMinutesText(settingsCache.level3_minutes)} off)`;
+                    else if (c.level === 4) levelText = `Nível 4 - Diretoria (${formatMinutesText(settingsCache.level4_minutes)} off)`;
                     levelTd.textContent = levelText;
                     
                     // Coluna Departamento

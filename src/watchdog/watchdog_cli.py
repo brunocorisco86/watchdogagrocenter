@@ -334,10 +334,10 @@ def run_check():
                 return f"{minutes} minutos"
 
             limiares = {
-                l1_fail: ("NÍVEL 1 (TI)", format_time_off(l1_min), "Operacional (TI)"),
-                l2_fail: ("NÍVEL 2 (Supervisão)", format_time_off(l2_min), "Supervisão (TI & Negócio)"),
-                l3_fail: ("NÍVEL 3 (Diretoria)", format_time_off(l3_min), "Diretoria (Estratégico)"),
-                l4_fail: ("NÍVEL 4 (Escalação Máxima)", format_time_off(l4_min), "Escalação Máxima (Todos os Níveis)")
+                l1_fail: ("NÍVEL 1 (Operacional TI)", format_time_off(l1_min), "Operacional TI"),
+                l2_fail: ("NÍVEL 2 (Analista / Coordenação)", format_time_off(l2_min), "Analista / Coordenação"),
+                l3_fail: ("NÍVEL 3 (Gerência)", format_time_off(l3_min), "Gerência"),
+                l4_fail: ("NÍVEL 4 (Diretoria)", format_time_off(l4_min), "Diretoria")
             }
             
             if new_failures in limiares:

@@ -120,7 +120,7 @@ def api_contacts():
             return jsonify({"error": "Nome e e-mail são obrigatórios"}), 400
             
         if level not in [1, 2, 3, 4]:
-            return jsonify({"error": "O nível de acionamento deve ser 1 (Operacional), 2 (Supervisão), 3 (Diretoria) ou 4 (Escalação Máxima)"}), 400
+            return jsonify({"error": "O nível de acionamento deve ser 1 (Operacional TI), 2 (Analista / Coordenação), 3 (Gerência) ou 4 (Diretoria)"}), 400
             
         if department not in ['TI', 'NEGOCIO']:
             return jsonify({"error": "O departamento deve ser 'TI' ou 'NEGOCIO'"}), 400
@@ -196,7 +196,7 @@ def api_update_contact():
         return jsonify({"error": "Nome, e-mail e e-mail original são obrigatórios"}), 400
         
     if level not in [1, 2, 3, 4]:
-        return jsonify({"error": "O nível de acionamento deve ser 1 (Operacional), 2 (Supervisão), 3 (Diretoria) ou 4 (Escalação Máxima)"}), 400
+        return jsonify({"error": "O nível de acionamento deve ser 1 (Operacional TI), 2 (Analista / Coordenação), 3 (Gerência) ou 4 (Diretoria)"}), 400
         
     if department not in ['TI', 'NEGOCIO']:
         return jsonify({"error": "O departamento deve ser 'TI' ou 'NEGOCIO'"}), 400

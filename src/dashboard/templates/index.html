@@ -219,9 +219,9 @@
                         <div class="term-line output-success" style="margin-top: 5px;">Mapeamento de níveis de contato e notificações configurado:</div>
                         <div style="margin-top: 8px;">
                             <span style="color: #60a5fa;">■ Nível 1 (Operacional TI)</span>: Dispara com <strong>{{ settings.l1_time }} off</strong> ({{ settings.l1_fail }} {% if settings.l1_fail == 1 %}falha{% else %}falhas{% endif %} consecutivas). Alerta via Telegram enviado para TI.<br>
-                            <span style="color: #fbbf24;">■ Nível 2 (Supervisão TI & Negócio)</span>: Dispara com <strong>{{ settings.l2_time }} off</strong> ({{ settings.l2_fail }} {% if settings.l2_fail == 1 %}falha{% else %}falhas{% endif %} consecutivas). Alerta via Telegram e e-mail enviado para TI e Negócio.<br>
-                            <span style="color: #f87171;">■ Nível 3 (Diretoria)</span>: Dispara com <strong>{{ settings.l3_time }} off</strong> ({{ settings.l3_fail }} {% if settings.l3_fail == 1 %}falha{% else %}falhas{% endif %} consecutivas). E-mail e Telegram enviados para a alta diretoria.<br>
-                            <span style="color: #ec4899; text-shadow: 0 0 5px rgba(236,72,153,0.5);">■ Nível 4 (Escalação Máxima)</span>: Dispara com <strong>{{ settings.l4_time }} off</strong> ({{ settings.l4_fail }} {% if settings.l4_fail == 1 %}falha{% else %}falhas{% endif %} consecutivas). Disparo global de resiliência e alertas persistentes a todos os cadastrados.
+                            <span style="color: #fbbf24;">■ Nível 2 (Analista / Coordenação)</span>: Dispara com <strong>{{ settings.l2_time }} off</strong> ({{ settings.l2_fail }} {% if settings.l2_fail == 1 %}falha{% else %}falhas{% endif %} consecutivas). Alerta via Telegram e e-mail enviado para TI e Negócio.<br>
+                            <span style="color: #f87171;">■ Nível 3 (Gerência)</span>: Dispara com <strong>{{ settings.l3_time }} off</strong> ({{ settings.l3_fail }} {% if settings.l3_fail == 1 %}falha{% else %}falhas{% endif %} consecutivas). E-mail e Telegram enviados para a alta diretoria.<br>
+                            <span style="color: #ec4899; text-shadow: 0 0 5px rgba(236,72,153,0.5);">■ Nível 4 (Diretoria)</span>: Dispara com <strong>{{ settings.l4_time }} off</strong> ({{ settings.l4_fail }} {% if settings.l4_fail == 1 %}falha{% else %}falhas{% endif %} consecutivas). Disparo global de resiliência e alertas persistentes a todos os cadastrados.
                         </div>
                     </div>
                 </div>
@@ -247,10 +247,10 @@
                         <div class="form-group">
                             <label for="contact-level">Nível de Acionamento:</label>
                             <select id="contact-level" class="form-select-hacker" required>
-                                <option value="1">Nível 1 (Após {{ settings.l1_time }} off / {{ settings.l1_fail }} {% if settings.l1_fail == 1 %}falha{% else %}falhas{% endif %})</option>
-                                <option value="2">Nível 2 (Após {{ settings.l2_time }} off / {{ settings.l2_fail }} {% if settings.l2_fail == 1 %}falha{% else %}falhas{% endif %})</option>
-                                <option value="3">Nível 3 (Após {{ settings.l3_time }} off / {{ settings.l3_fail }} {% if settings.l3_fail == 1 %}falha{% else %}falhas{% endif %})</option>
-                                <option value="4">Nível 4 (Após {{ settings.l4_time }} off / {{ settings.l4_fail }} {% if settings.l4_fail == 1 %}falha{% else %}falhas{% endif %})</option>
+                                <option value="1">Nível 1 - Operacional TI (Após {{ settings.l1_time }} off / {{ settings.l1_fail }} {% if settings.l1_fail == 1 %}falha{% else %}falhas{% endif %})</option>
+                                <option value="2">Nível 2 - Analista / Coordenação (Após {{ settings.l2_time }} off / {{ settings.l2_fail }} {% if settings.l2_fail == 1 %}falha{% else %}falhas{% endif %})</option>
+                                <option value="3">Nível 3 - Gerência (Após {{ settings.l3_time }} off / {{ settings.l3_fail }} {% if settings.l3_fail == 1 %}falha{% else %}falhas{% endif %})</option>
+                                <option value="4">Nível 4 - Diretoria (Após {{ settings.l4_time }} off / {{ settings.l4_fail }} {% if settings.l4_fail == 1 %}falha{% else %}falhas{% endif %})</option>
                             </select>
                         </div>
                         <div class="form-group">
@@ -400,7 +400,7 @@
                     </div>
 
                     <div class="form-group-settings">
-                        <label for="settings-level2">Nível 2 (Supervisão TI/Negócio):</label>
+                        <label for="settings-level2">Nível 2 (Analista / Coordenação):</label>
                         <div class="input-with-unit">
                             <input type="number" id="settings-level2" min="1" required>
                             <span>minutos</span>
@@ -409,7 +409,7 @@
                     </div>
 
                     <div class="form-group-settings">
-                        <label for="settings-level3">Nível 3 (Diretoria):</label>
+                        <label for="settings-level3">Nível 3 (Gerência):</label>
                         <div class="input-with-unit">
                             <input type="number" id="settings-level3" min="1" required>
                             <span>minutos</span>
@@ -418,7 +418,7 @@
                     </div>
 
                     <div class="form-group-settings">
-                        <label for="settings-level4">Nível 4 (Escalação Máxima):</label>
+                        <label for="settings-level4">Nível 4 (Diretoria):</label>
                         <div class="input-with-unit">
                             <input type="number" id="settings-level4" min="1" required>
                             <span>minutos</span>
