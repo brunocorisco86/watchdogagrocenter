@@ -148,20 +148,23 @@ class Notifier:
             with open(template_path, 'r', encoding='utf-8') as f:
                 template_html = f.read()
 
-            # Preenche os placeholders no HTML
-            html_content = template_html.format(
-                alert_class=template_vars.get('alert_class', 'critical'),
-                alert_summary=template_vars.get('alert_summary', 'Alerta de Indisponibilidade'),
-                incident_status=template_vars.get('incident_status', 'CRÍTICO'),
-                badge_class=template_vars.get('badge_class', 'badge-danger'),
-                status_code=template_vars.get('status_code', 'N/A'),
-                response_time_ms=template_vars.get('response_time_ms', 'N/A'),
-                timestamp=template_vars.get('timestamp', 'N/A'),
-                consecutive_failures=str(failures),
-                max_failures=template_vars.get('max_failures', '3'),
-                error_message=template_vars.get('error_message', 'Erro Desconhecido'),
-                agrocenter_url=template_vars.get('agrocenter_url', '')
-            )
+            # Preenche os placeholders no HTML usando .replace para evitar KeyError com CSS do template
+            html_content = template_html
+            replacements = {
+                '{alert_class}': template_vars.get('alert_class', 'critical'),
+                '{alert_summary}': template_vars.get('alert_summary', 'Alerta de Indisponibilidade'),
+                '{incident_status}': template_vars.get('incident_status', 'CRÍTICO'),
+                '{badge_class}': template_vars.get('badge_class', 'badge-danger'),
+                '{status_code}': template_vars.get('status_code', 'N/A'),
+                '{response_time_ms}': template_vars.get('response_time_ms', 'N/A'),
+                '{timestamp}': template_vars.get('timestamp', 'N/A'),
+                '{consecutive_failures}': str(failures),
+                '{max_failures}': template_vars.get('max_failures', '3'),
+                '{error_message}': template_vars.get('error_message', 'Erro Desconhecido'),
+                '{agrocenter_url}': template_vars.get('agrocenter_url', '')
+            }
+            for placeholder, value in replacements.items():
+                html_content = html_content.replace(placeholder, str(value))
 
             # 3. Envia o e-mail
             server = smtplib.SMTP(self.smtp_config['server'], int(self.smtp_config.get('port', 587)))
@@ -214,8 +217,10 @@ class Notifier:
             with open(template_path, 'r', encoding='utf-8') as f:
                 template_html = f.read()
 
-            # Preenche os placeholders no HTML de forma flexível
-            html_content = template_html.format(**template_vars)
+            # Preenche os placeholders no HTML de forma flexível usando .replace para evitar KeyError com CSS do template
+            html_content = template_html
+            for key, val in template_vars.items():
+                html_content = html_content.replace(f"{{{key}}}", str(val))
 
             # 3. Envia o e-mail
             server = smtplib.SMTP(self.smtp_config['server'], int(self.smtp_config.get('port', 587)))

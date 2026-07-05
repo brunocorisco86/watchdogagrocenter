@@ -47,12 +47,12 @@ def test_email(notifier, config):
     template_vars = {
         'alert_class': 'healthy',
         'alert_summary': "Esta é uma mensagem de verificação manual dos servidores de e-mail.",
-        'incident_status': 'HOMOLOGAÇÃO',
+        'incident_status': 'HOMOLOGAÇÃO - NÍVEL 4',
         'badge_class': 'badge-resolved',
         'status_code': '200',
         'response_time_ms': '100',
         'timestamp': datetime.now().strftime('%d/%m/%Y %H:%M:%S'),
-        'consecutive_failures': '0',
+        'consecutive_failures': '240',
         'max_failures': str(config['max_failures']),
         'error_message': 'Teste de Conexão Ativo',
         'agrocenter_url': config['url']
