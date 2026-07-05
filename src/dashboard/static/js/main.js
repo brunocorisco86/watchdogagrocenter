@@ -663,6 +663,162 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
+    // === CONTROLE DA ABA DE DOCUMENTAÇÕES ===
+    const btnToggleDocs = document.getElementById('btn-toggle-docs');
+    const dashboardTabContent = document.getElementById('dashboard-tab-content');
+    const docsTabContent = document.getElementById('docs-tab-content');
+    
+    // Armazena o HTML inicial da arquitetura (Terminal 3) para podermos restaurá-lo
+    const defaultArchTerminalHtml = document.getElementById('docs-terminal-body') ? document.getElementById('docs-terminal-body').innerHTML : '';
+    const defaultArchTerminalTitle = document.getElementById('docs-terminal-title') ? document.getElementById('docs-terminal-title').textContent : '';
+
+    if (btnToggleDocs && dashboardTabContent && docsTabContent) {
+        btnToggleDocs.addEventListener('click', () => {
+            const isDocsHidden = docsTabContent.classList.contains('hidden');
+            if (isDocsHidden) {
+                // Ir para a aba de documentação
+                dashboardTabContent.classList.add('hidden');
+                docsTabContent.classList.remove('hidden');
+                btnToggleDocs.classList.add('active-tab-btn');
+                btnToggleDocs.title = "Voltar para o Painel Principal";
+                appendTerminalLine('pi@cvale-watchdog:~$ docs --view', 'output-prompt');
+                appendTerminalLine('Aba de documentações ativada com sucesso.', 'output-success');
+            } else {
+                // Voltar para o painel principal
+                docsTabContent.classList.add('hidden');
+                dashboardTabContent.classList.remove('hidden');
+                btnToggleDocs.classList.remove('active-tab-btn');
+                btnToggleDocs.title = "Visualizar Documentação (docs/)";
+                appendTerminalLine('pi@cvale-watchdog:~$ docs --close', 'output-prompt');
+                appendTerminalLine('Aba de documentações fechada. Retornando ao dashboard.', 'output-success');
+            }
+        });
+    }
+
+    const docButtons = document.querySelectorAll('.doc-select-btn');
+    const docsTerminalTitle = document.getElementById('docs-terminal-title');
+    const docsTerminalBody = document.getElementById('docs-terminal-body');
+
+    function escapeHtml(text) {
+        return text
+            .replace(/&/g, "&amp;")
+            .replace(/</g, "&lt;")
+            .replace(/>/g, "&gt;")
+            .replace(/"/g, "&quot;")
+            .replace(/'/g, "&#039;");
+    }
+
+    function formatMarkdownToRetroTerminal(mdText) {
+        const lines = mdText.split('\n');
+        let formattedHtml = '';
+        let insideCodeBlock = false;
+        
+        lines.forEach(line => {
+            const trimmed = line.trim();
+            
+            // Código/Code blocks toggles
+            if (trimmed.startsWith('```')) {
+                insideCodeBlock = !insideCodeBlock;
+                return;
+            }
+            
+            if (insideCodeBlock) {
+                formattedHtml += `<div class="term-line output-success" style="font-family: var(--font-mono); margin-left: 10px; white-space: pre;">${escapeHtml(line)}</div>`;
+            } else if (trimmed.startsWith('#')) {
+                // Headers
+                const level = (line.match(/#/g) || []).length;
+                const cleanText = line.replace(/#/g, '').trim();
+                let sizeStyle = 'font-weight: bold; margin-top: 15px; margin-bottom: 5px;';
+                if (level === 1) sizeStyle += ' color: var(--blue-glow); font-size: 1.1rem; border-bottom: 1px dashed rgba(59, 130, 246, 0.4); padding-bottom: 2px;';
+                else if (level === 2) sizeStyle += ' color: #60a5fa; font-size: 0.95rem;';
+                else sizeStyle += ' color: #93c5fd; font-size: 0.85rem;';
+                
+                formattedHtml += `<div class="term-line" style="${sizeStyle}">[ ${cleanText} ]</div>`;
+            } else if (trimmed.startsWith('-') || trimmed.startsWith('*') || trimmed.startsWith('+') || /^\d+\./.test(trimmed)) {
+                // Lists
+                formattedHtml += `<div class="term-line output-system" style="margin-left: 15px;">${escapeHtml(line)}</div>`;
+            } else if (trimmed.startsWith('>')) {
+                // Blockquotes/Alerts
+                const cleanQuote = line.replace(/^>\s*/, '').trim();
+                formattedHtml += `<div class="term-line" style="color: #a7f3d0; background-color: rgba(16, 185, 129, 0.05); padding: 5px; border-left: 3px solid #10b981; margin: 5px 0 5px 10px; font-style: italic;">${escapeHtml(cleanQuote)}</div>`;
+            } else if (trimmed === '') {
+                formattedHtml += '<div class="term-line" style="height: 8px;"></div>';
+            } else {
+                // Normal line
+                formattedHtml += `<div class="term-line" style="color: var(--text-primary); opacity: 0.95;">${escapeHtml(line)}</div>`;
+            }
+        });
+        
+        return formattedHtml;
+    }
+
+    docButtons.forEach(btn => {
+        btn.addEventListener('click', async () => {
+            // Remove classe active de todos
+            docButtons.forEach(b => b.classList.remove('active-doc-btn'));
+            btn.classList.add('active-doc-btn');
+            
+            const docPath = btn.getAttribute('data-doc');
+            
+            if (docPath === 'architecture') {
+                // Restaurar Arquitetura Padrão (ASCII Art)
+                if (docsTerminalTitle) docsTerminalTitle.textContent = defaultArchTerminalTitle;
+                if (docsTerminalBody) docsTerminalBody.innerHTML = defaultArchTerminalHtml;
+                return;
+            }
+            
+            // Caso seja um documento markdown
+            const filename = docPath.split('/').pop();
+            if (docsTerminalTitle) {
+                docsTerminalTitle.textContent = `[DOCUMENTO: ${filename.toUpperCase()}]`;
+            }
+            
+            if (docsTerminalBody) {
+                docsTerminalBody.innerHTML = `
+                    <div class="term-line output-system">pi@cvale-watchdog:~$ cat ${docPath}</div>
+                    <div class="term-line output-success">Carregando conteúdo do arquivo ${filename}...</div>
+                    <div class="term-line output-prompt" style="margin-top: 10px; margin-bottom: 10px;">> LENDO BUFFER DE MEMÓRIA...</div>
+                    <div id="doc-loading" class="term-line" style="color: var(--text-secondary);">Aguardando resposta do servidor...</div>
+                `;
+            }
+            
+            try {
+                const response = await fetch(`/api/docs/${docPath}`);
+                const data = await response.json();
+                
+                if (response.ok && docsTerminalBody) {
+                    const formattedHtml = formatMarkdownToRetroTerminal(data.content);
+                    docsTerminalBody.innerHTML = `
+                        <div class="term-line output-system">pi@cvale-watchdog:~$ cat ${docPath}</div>
+                        <div class="term-line output-success">Documento ${filename} carregado com sucesso.</div>
+                        <hr style="border: none; border-top: 1px dashed rgba(59, 130, 246, 0.2); margin: 10px 0;">
+                        <div class="doc-markdown-content" style="padding: 5px;">
+                            ${formattedHtml}
+                        </div>
+                        <hr style="border: none; border-top: 1px dashed rgba(59, 130, 246, 0.2); margin: 10px 0;">
+                        <div class="term-line output-system" style="margin-top: 10px;">pi@cvale-watchdog:~$ <span class="blink-cursor">_</span></div>
+                    `;
+                    docsTerminalBody.scrollTop = 0;
+                } else {
+                    if (docsTerminalBody) {
+                        docsTerminalBody.innerHTML = `
+                            <div class="term-line output-system">pi@cvale-watchdog:~$ cat ${docPath}</div>
+                            <div class="term-line output-error">ERRO: Não foi possível carregar o arquivo. ${data.error || ''}</div>
+                        `;
+                    }
+                }
+            } catch (err) {
+                console.error("Erro ao carregar documentação: ", err);
+                if (docsTerminalBody) {
+                    docsTerminalBody.innerHTML = `
+                        <div class="term-line output-system">pi@cvale-watchdog:~$ cat ${docPath}</div>
+                        <div class="term-line output-error">ERRO: Falha de conectividade HTTP com o servidor do dashboard.</div>
+                    `;
+                }
+            }
+        });
+    });
+
     // Inicialização geral
     updateDashboardData();
     loadContacts();

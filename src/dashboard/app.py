@@ -263,6 +263,30 @@ def api_settings():
         except Exception as e:
             return jsonify({"error": f"Erro ao salvar configurações: {str(e)}"}), 500
 
+@app.route('/api/docs/<path:filename>')
+def api_get_doc(filename):
+    # Security check: prevent directory traversal
+    if '..' in filename or filename.startswith('/') or filename.startswith('.'):
+        return jsonify({"error": "Acesso não autorizado"}), 400
+        
+    # Suffix safety
+    if not filename.endswith('.md'):
+        return jsonify({"error": "Formato de arquivo inválido"}), 400
+        
+    doc_path = os.path.join(base_dir, filename)
+    if not os.path.exists(doc_path):
+        return jsonify({"error": f"Arquivo não encontrado: {filename}"}), 404
+        
+    try:
+        with open(doc_path, 'r', encoding='utf-8') as f:
+            content = f.read()
+        return jsonify({
+            "filename": os.path.basename(filename),
+            "content": content
+        })
+    except Exception as e:
+        return jsonify({"error": f"Erro ao ler documentação: {str(e)}"}), 500
+
 if __name__ == '__main__':
     port = int(os.getenv('FLASK_PORT', 5080))
     host = os.getenv('FLASK_HOST', '0.0.0.0')

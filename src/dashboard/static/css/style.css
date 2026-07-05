@@ -1092,3 +1092,37 @@ body {
     text-align: center;
     animation: fadeIn 0.2s ease;
 }
+
+/* Documentation Tab Custom Styles */
+.settings-gear-btn.active-tab-btn {
+    color: var(--blue-glow);
+    text-shadow: 0 0 10px rgba(59, 130, 246, 0.8);
+    transform: scale(1.1);
+}
+
+.doc-select-btn {
+    background-color: transparent;
+    color: var(--text-secondary);
+    border: 1px solid rgba(59, 130, 246, 0.3);
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    padding: 0.4rem 0.8rem;
+    cursor: pointer;
+    border-radius: 4px;
+    transition: all 0.2s ease;
+}
+
+.doc-select-btn:hover {
+    color: var(--blue-glow);
+    border-color: var(--blue-glow);
+    box-shadow: 0 0 10px rgba(59, 130, 246, 0.2);
+}
+
+.doc-select-btn.active-doc-btn {
+    color: var(--blue-glow);
+    border-color: var(--blue-glow);
+    background-color: rgba(59, 130, 246, 0.1);
+    box-shadow: 0 0 15px rgba(59, 130, 246, 0.3);
+    font-weight: bold;
+}
+
