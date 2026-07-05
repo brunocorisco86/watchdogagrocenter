@@ -347,6 +347,7 @@ body {
     flex: 1;
     padding: 1.25rem;
     overflow-y: auto;
+    max-height: 350px; /* Limita a altura máxima para manter a página compacta */
     font-family: var(--font-mono);
     font-size: 0.85rem;
     line-height: 1.6;
