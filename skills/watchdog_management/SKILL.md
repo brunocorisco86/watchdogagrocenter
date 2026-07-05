@@ -22,14 +22,15 @@ A tarefa cron é definida no crontab do root ou usuário dedicado na máquina de
 ```cron
 */3 * * * * /home/bruno/watchdog-agrocenter/scripts/run_watchdog.sh
 ```
-Certifique-se de que o script `run_watchdog.sh` possui permissões `+x` e executa utilizando o Python da `venv` correspondente.
+Certifique-se de que o script `run_watchdog.sh` possui permissões `+x` e executa dinamicamente o Python da `venv` correspondente. O fluxo de alertas respeita a escala de incidentes baseada no tempo off: Nível 1 (15m/5 falhas), Nível 2 (1h/20 falhas), Nível 3 (2.5h/50 falhas) e Nível 4 (12h/240 falhas).
 
-## 🛡️ Validação de Premissas HTTP
+## 🛡️ Validação de Premissas HTTP & WAF Bypass
 Quando monitorar a API do Agrocenter, siga estas diretrizes:
 - **Verificação Básica**: Código de status HTTP (`< 400`).
+- **Bypass de TLS Fingerprinting (Akamai WAF)**: Em caso de bloqueio WAF (HTTP 403), o motor executa requisições impersonadas de TLS do Chrome/Firefox usando `curl_cffi` para contornar o bloqueio de assinatura de handshake da Akamai.
 - **Verificação de Latência**: A requisição deve ser concluída antes do `timeout` configurado (padrão 10s).
 - **Verificação de Conteúdo**:
-  - Procurar por strings de firewall/desafio (ex: `cloudflare`, `ray id`). Caso encontradas, classificar como falha/bloqueio.
+  - Procurar por strings de firewall/desafio (ex: `Akamai WAF`, `Bloqueio de Firewall`). Caso encontradas, classificar como falha de segurança/bloqueio.
   - Procurar por erros de banco (ex: `database connection failed`, `sql error`).
   - Validar a presença de palavras-chave da marca (ex: `c.vale`, `agrocenter`). A ausência delas indica falha de resolução DNS, sequestro de rota ou página padrão do provedor de hospedagem.
 

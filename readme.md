@@ -109,3 +109,6 @@ O manual aborda:
 | Scripts de Comissionamento (Alpine Linux) | 100% | Concluído |
 | Download do Logo Oficial C.Vale nos `assets` | 100% | Concluído |
 | Testes Unitários e Integrados | 100% | Concluído |
+| Frequência de Checagem a cada 3 min | 100% | Concluído |
+| Novo Nível 4 de Alerta (12h) | 100% | Concluído |
+| Integração de Logos (C.Vale & Agrocenter) no e-mail e site | 100% | Concluído |
