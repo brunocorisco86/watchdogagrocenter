@@ -14,13 +14,13 @@ Esta skill define as melhores práticas e instruções de comissionamento, autom
 2. **Dependências do OS**:
    - `python3`, `py3-pip`, `sqlite`, `git`, `bash`, `tzdata`, `crond`.
 3. **Persistência de Logs**:
-   - Direcione os logs para `/var/log/watchdog/` ou mantenha local no projeto `/home/brunoconter/watchdog-agrocenter/logs/` caso esteja rodando em modo `sys` com escrita livre.
+   - Direcione os logs para `/var/log/watchdog/` ou mantenha local no projeto `/home/bruno/watchdog-agrocenter/logs/` caso esteja rodando em modo `sys` com escrita livre.
    - Em Alpine no modo `diskless`, logs muito dinâmicos devem ser enviados a um syslog externo ou gravados em tmpfs para poupar o cartão SD.
 
 ## ⚙️ Cron e Execução
-A tarefa cron é definida no crontab do root ou usuário dedicado:
+A tarefa cron é definida no crontab do root ou usuário dedicado na máquina de produção (`ssh peixe`):
 ```cron
-*/5 * * * * /home/brunoconter/watchdog-agrocenter/scripts/run_watchdog.sh
+*/5 * * * * /home/bruno/watchdog-agrocenter/scripts/run_watchdog.sh
 ```
 Certifique-se de que o script `run_watchdog.sh` possui permissões `+x` e executa utilizando o Python da `venv` correspondente.
 
@@ -38,8 +38,10 @@ Quando monitorar a API do Agrocenter, siga estas diretrizes:
    - Edições de código, criação de novas rotinas, desenvolvimento do Dashboard Flask.
    - Testes unitários na pasta `tests/`.
    - `git add`, `git commit` e `git push` para o repositório remoto.
-2. **Máquina de Produção (Raspberry Pi - LAN)**:
-   - Git Pull na pasta do projeto.
+2. **Máquina de Produção (Raspberry Pi - LAN - ssh root@192.168.1.99 / ssh peixe)**:
+   - Conecte via SSH usando `ssh root@192.168.1.99` ou simplesmente pelo alias `ssh peixe`.
+   - O projeto em produção está localizado no diretório `/home/bruno/watchdog-agrocenter`.
+   - Execute o Git Pull na pasta do projeto.
    - Ativação do venv: `. venv/bin/activate`.
    - Execução manual de teste rápido para atestar funcionamento: `python3 src/watchdog/watchdog_cli.py`.
-   - Logs são monitorados em tempo real via terminal ou através do Dashboard Flask do watchdog exposto localmente.
+   - Logs são monitorados em tempo real via terminal ou através do Dashboard Flask do watchdog exposto localmente na porta `5080`.
