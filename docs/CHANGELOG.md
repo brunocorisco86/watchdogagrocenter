@@ -44,7 +44,7 @@ A estrutura deste projeto rege-se pelos três pilares da solução: **Comunicaç
 
 - **Banco de Dados SQLite (`database.py`)**:
   - Modelagem do banco contendo as tabelas `monitor_logs` e `incidents` (quedas ativas e resolvidas).
-  - Rotina de **Pruning Automático**: limpeza em tempo de gravação que apaga permanentemente registros de log com mais de 24 horas (1 dia) para poupar hardware do Raspberry Pi.
+  - Modelagem e retenção completa: persistência permanente de todos os testes sem deleção ou expurgos para auditoria de longo prazo.
   - Métodos parametrizados para busca de KPIs com filtros dinâmicos de período (`1h`, `6h`, `1d`, `1w`, `30d`).
 
 - **Dashboard Web Flask (`app.py` & templates)**:

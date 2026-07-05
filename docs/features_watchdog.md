@@ -31,14 +31,10 @@ Mecanismos internos do motor de monitoramento de alta disponibilidade da C.Vale.
 
 ---
 
-### [MOTOR 5: AUTO-PRUNING CONCORRENTE]
-- (Desativado) Anteriormente expurgava registros com > 24 horas. Desativado por solicitação do usuário para preservar todo o histórico do banco de dados SQLite para sempre.
-
----
-
-### [MOTOR 6: ESTRUTURA DO BANCO DE DADOS & MER]
+### [MOTOR 5: ESTRUTURA DO BANCO DE DADOS & MER]
 - Mapeado no SQLite local (database.db) e base JSON (contacts.json) com schemas otimizados:
   * `monitor_logs` (id PK, timestamp, status_code, response_time_ms, is_healthy, error_message, check_type)
   * `incidents`    (id PK, start_timestamp, end_timestamp, consecutive_failures, telegram_sent, email_sent, status)
   * `contacts.json` (email PK, name, telegram_id, level, department, enabled)
 - Relacionamento: `monitor_logs` [1] ───► [0..1] `incidents` [1] ───► [0..*] `contacts` (alertados conforme falhas)
+

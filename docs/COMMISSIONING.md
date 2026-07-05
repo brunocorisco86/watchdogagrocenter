@@ -105,11 +105,11 @@ Execute o script de diagnóstico de mensageria para confirmar se o bot do Telegr
 *Selecione a opção **3 (Testar AMBOS)** e verifique se as mensagens de homologação chegam no seu celular e caixa de entrada.*
 
 ### Passo 3.2: Execução dos Testes Unitários e de Integração
-Rode a suíte de testes do Pytest para validar se o código do banco de dados, da pruna de logs, do core do watchdog e da classificação WAF/Akamai opera em 100% de conformidade:
+Rode a suíte de testes do Pytest para validar se o código do banco de dados, do core do watchdog e da classificação WAF/Akamai opera em 100% de conformidade:
 ```bash
 ./scripts/run_tests.sh
 ```
-*Certifique-se de que os 16 casos de teste do pytest retornam com status **PASSED**.*
+*Certifique-se de que os casos de teste do pytest retornam com status **PASSED**.*
 
 ---
 

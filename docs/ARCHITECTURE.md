@@ -65,11 +65,11 @@ Caso o resolvedor de DNS local (Pi-hole, Unbound ou DNS interno da filial) apres
 - **Falha de ISP (Internet Local Caída)**: O Watchdog faz um teste inicial enviando uma requisição `HEAD` rápida para sites globais (Cloudflare/Google). Se esses sites estiverem inacessíveis, presume-se que a internet do Raspberry Pi caiu. O log é gravado no banco SQLite como `"Falha de Conectividade Local (Sem Internet - ISP Offline)"`, mas **nenhum e-mail ou alerta de Telegram é disparado**.
 - **Falha Remota (Agrocenter Fora do Ar)**: Se a internet local estiver ativa mas o Agrocenter não responder ou violar as assinaturas, o sistema inicia o ciclo de abertura de incidente e escalação.
 
-### 3.3. Banco de Dados e Pruning Automático (SQLite)
+### 3.3. Banco de Dados (SQLite)
 Usamos o SQLite em modo concorrente. O banco armazena logs detalhados e o controle de incidentes.
 - A tabela `settings` armazena os limites de tempo de cada nível dinamicamente, permitindo a customização das regras de SLA diretamente pelo site.
-- A data e a hora limite do período de pruning e das buscas de KPIs são calculadas em Python e passadas como parâmetros nas queries para evitar qualquer conflito de timezone entre o fuso do sistema operacional e o SQLite.
-- A função `add_monitor_log` apaga logs mais antigos que 24 horas a cada execução (`DELETE FROM monitor_logs WHERE timestamp < ?`).
+- A data e a hora limite das buscas de KPIs são calculadas em Python e passadas como parâmetros nas queries para evitar qualquer conflito de timezone entre o fuso do sistema operacional e o SQLite.
+- Mantemos todo o histórico de logs brutos e de incidentes de indisponibilidade gravados indefinidamente na base de dados, permitindo consultas históricas completas sem expurgos automáticos.
 
 ### 3.4. Escalação por Níveis de Acionamento e Contatos
 A lista de destinatários em `contacts.json` contém campos de controle como:

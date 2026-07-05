@@ -51,38 +51,7 @@ def test_add_monitor_log(temp_db):
     assert row[5] == ""  # error_message
     conn.close()
 
-def test_prune_logs(temp_db):
-    """Testa a exclusão automática de registros de monitoramento com mais de 24 horas"""
-    conn = sqlite3.connect(temp_db.db_path)
-    cursor = conn.cursor()
-    
-    # Injeta log antigo (25 horas atrás)
-    old_time = (datetime.now() - timedelta(hours=25)).isoformat().replace('T', ' ')
-    cursor.execute(
-        "INSERT INTO monitor_logs (timestamp, status_code, response_time_ms, is_healthy, error_message, check_type) VALUES (?, ?, ?, ?, ?, ?)",
-        (old_time, 200, 100, 1, "", "HTTP")
-    )
-    
-    # Injeta log recente (1 hora atrás)
-    recent_time = (datetime.now() - timedelta(hours=1)).isoformat().replace('T', ' ')
-    cursor.execute(
-        "INSERT INTO monitor_logs (timestamp, status_code, response_time_ms, is_healthy, error_message, check_type) VALUES (?, ?, ?, ?, ?, ?)",
-        (recent_time, 200, 100, 1, "", "HTTP")
-    )
-    conn.commit()
-    conn.close()
-    
-    # Executa pruning via inserção de novo log
-    temp_db.add_monitor_log(200, 120, True, "")
-    
-    # Verifica que o log antigo foi apagado e o recente persistiu
-    conn = sqlite3.connect(temp_db.db_path)
-    cursor = conn.cursor()
-    cursor.execute("SELECT timestamp FROM monitor_logs")
-    rows = [r[0] for r in cursor.fetchall()]
-    assert old_time not in rows
-    assert recent_time in rows
-    conn.close()
+
 
 def test_incident_lifecycle(temp_db):
     """Testa o ciclo de criação, incremento e resolução de um incidente"""
