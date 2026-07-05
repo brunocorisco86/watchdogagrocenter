@@ -331,9 +331,10 @@ document.addEventListener('DOMContentLoaded', () => {
                     
                     // Coluna Nível
                     const levelTd = document.createElement('td');
-                    let levelText = "Nível 1 (Imediato)";
-                    if (c.level === 2) levelText = "Nível 2 (~1h)";
-                    else if (c.level === 3) levelText = "Nível 3 (~2.5h)";
+                    let levelText = "Nível 1 (15m off)";
+                    if (c.level === 2) levelText = "Nível 2 (1h off)";
+                    else if (c.level === 3) levelText = "Nível 3 (2.5h off)";
+                    else if (c.level === 4) levelText = "Nível 4 (12h off)";
                     levelTd.textContent = levelText;
                     
                     // Coluna Departamento

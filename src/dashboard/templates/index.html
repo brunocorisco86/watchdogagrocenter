@@ -203,6 +203,28 @@
                     </table>
                 </div>
 
+                <!-- Mini-terminal explicativo dos níveis de mensageria -->
+                <div class="terminal-wrapper" style="margin-top: 1.5rem; margin-bottom: 1.5rem; max-width: 100%;">
+                    <div class="terminal-header" style="background-color: #121020; border-bottom: 1px solid rgba(139, 92, 246, 0.3);">
+                        <span class="terminal-title" style="color: #a78bfa; text-shadow: 0 0 8px rgba(139, 92, 246, 0.5);">[TERMINAL 2.5: REGRAS DE MENSAGERIA & ESCALAÇÃO (SLA)]</span>
+                        <div class="terminal-buttons">
+                            <span class="term-btn close"></span>
+                            <span class="term-btn minimize"></span>
+                            <span class="term-btn expand"></span>
+                        </div>
+                    </div>
+                    <div class="terminal-body" style="font-size: 0.8rem; line-height: 1.4rem; border: 1px solid rgba(139, 92, 246, 0.2); padding: 15px; font-family: var(--font-mono);">
+                        <div class="term-line output-system">pi@cvale-watchdog:~$ show-alert-levels --frequency=3m</div>
+                        <div class="term-line output-success" style="margin-top: 5px;">Mapeamento de níveis de contato e notificações configurado:</div>
+                        <div style="margin-top: 8px;">
+                            <span style="color: #60a5fa;">■ Nível 1 (Operacional TI)</span>: Dispara com <strong>15 minutos off</strong> (5 falhas consecutivas). Alerta via Telegram enviado para TI.<br>
+                            <span style="color: #fbbf24;">■ Nível 2 (Supervisão TI & Negócio)</span>: Dispara com <strong>1 hora off</strong> (20 falhas consecutivas). Alerta via Telegram e e-mail enviado para TI e Negócio.<br>
+                            <span style="color: #f87171;">■ Nível 3 (Diretoria)</span>: Dispara com <strong>2.5 horas off</strong> (50 falhas consecutivas). E-mail e Telegram enviados para a alta diretoria.<br>
+                            <span style="color: #ec4899; text-shadow: 0 0 5px rgba(236,72,153,0.5);">■ Nível 4 (Escalação Máxima)</span>: Dispara com <strong>12 horas off</strong> (240 falhas consecutivas). Disparo global de resiliência e alertas persistentes a todos os cadastrados.
+                        </div>
+                    </div>
+                </div>
+
                 <!-- Formulário de cadastro de novo contato -->
                 <form class="contacts-form" id="contacts-form">
                     <h4 id="form-title">+ NOVO DESTINATÁRIO</h4>
@@ -224,9 +246,10 @@
                         <div class="form-group">
                             <label for="contact-level">Nível de Acionamento:</label>
                             <select id="contact-level" class="form-select-hacker" required>
-                                <option value="1">Nível 1 (Acionamento Imediato)</option>
-                                <option value="2">Nível 2 (Após 15 falhas / ~1h)</option>
-                                <option value="3">Nível 3 (Após 30 falhas / ~2.5h)</option>
+                                <option value="1">Nível 1 (Após 15 min off / 5 falhas)</option>
+                                <option value="2">Nível 2 (Após 1h off / 20 falhas)</option>
+                                <option value="3">Nível 3 (Após 2.5h off / 50 falhas)</option>
+                                <option value="4">Nível 4 (Após 12h off / 240 falhas)</option>
                             </select>
                         </div>
                         <div class="form-group">
