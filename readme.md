@@ -35,6 +35,16 @@ Watchdog minimalista, resiliente e de baixo consumo de recursos, projetado para 
 
 ---
 
+## 🛠️ Stack Tecnológica
+
+- **Backend Daemon (Monitor)**: Python 3.12 (com bibliotecas nativas `urllib.request`, `socket`, `smtplib`).
+- **Banco de Dados**: SQLite3 (para persistência de logs, incidentes e limiares dinâmicos de SLA).
+- **Interface Web**: Flask 3.0 (Python micro-framework) + HTML5 + CSS3 Vanilla (tema hacker) + JS Vanilla (ES6) + Chart.js (gráficos).
+- **Hospedagem & Produção**: Raspberry Pi 3B rodando **Alpine Linux** (modo RAM diskless) e agendamento via **Busybox Crontab**.
+- **Testes**: Pytest.
+
+---
+
 ## 🛠️ Configuração do Ambiente de Desenvolvimento
 
 ### 1. Requisitos Prévios
