@@ -68,7 +68,7 @@ FLASK_HOST=0.0.0.0
 ---
 
 ### Passo 2.3: Configuração Inicial de Destinatários (`contacts.json`)
-O arquivo [src/watchdog/contacts.json](src/watchdog/contacts.json) armazena os destinatários de e-mail e Telegram adicionais. Por padrão ele inicia com seus dados:
+O arquivo [src/watchdog/contacts.json](../src/watchdog/contacts.json) armazena os destinatários de e-mail e Telegram adicionais. Por padrão ele inicia com seus dados:
 ```json
 [
   {
@@ -95,7 +95,7 @@ Você pode editar este arquivo manualmente ou, após o comissionamento do Flask,
 
 ## 🧪 3. Execução de Testes e Diagnósticos (Garantia de Qualidade)
 
-Antes de colocar o script em execução automática no Crontab, execute as rotinas de diagnósticos descritas no [README de scripts](scripts/README.md):
+Antes de colocar o script em execução automática no Crontab, execute as rotinas de diagnósticos descritas no [README de scripts](../scripts/README.md):
 
 ### Passo 3.1: Diagnóstico de Alertas
 Execute o script de diagnóstico de mensageria para confirmar se o bot do Telegram e a credencial SMTP do Gmail conseguem enviar dados com sucesso:

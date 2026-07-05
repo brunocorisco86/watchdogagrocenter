@@ -14,7 +14,7 @@ Watchdog minimalista, resiliente e de baixo consumo de recursos, projetado para 
 2. **Processos Otimizados**
    - Lógica de incidentes persistentes para evitar disparos repetidos.
    - Banco de dados SQLite local mapeando logs de teste e incidentes.
-   - MER detalhado no arquivo [idea.md](file:///home/brunoconter/Documentos/1_C.VALE/2%20-%20PROJETOS/11_WATCHDOG_AGROCENTER/idea.md).
+   - MER detalhado no arquivo [idea.md](docs/idea.md).
 
 3. **Tecnologia Habilitadora**
    - Sistema otimizado para rodar de forma extremamente leve em **Alpine Linux** (ideal para o Raspberry Pi 3B com consumo de RAM inferior a 50MB).
@@ -24,14 +24,14 @@ Watchdog minimalista, resiliente e de baixo consumo de recursos, projetado para 
 
 ## 📂 Estrutura do Repositório
 
-- [COMMISSIONING.md](file:///home/brunoconter/Documentos/1_C.VALE/2%20-%20PROJETOS/11_WATCHDOG_AGROCENTER/COMMISSIONING.md) - Manual passo a passo de implantação e comissionamento.
-- [ARCHITECTURE.md](file:///home/brunoconter/Documentos/1_C.VALE/2%20-%20PROJETOS/11_WATCHDOG_AGROCENTER/ARCHITECTURE.md) - Detalhamento da arquitetura física e lógica.
-- [CHANGELOG.md](file:///home/brunoconter/Documentos/1_C.VALE/2%20-%20PROJETOS/11_WATCHDOG_AGROCENTER/CHANGELOG.md) - Histórico de versões e lançamentos.
-- [idea.md](file:///home/brunoconter/Documentos/1_C.VALE/2%20-%20PROJETOS/11_WATCHDOG_AGROCENTER/idea.md) - Fluxo de processos original e MER.
-- [src/watchdog/](file:///home/brunoconter/Documentos/1_C.VALE/2%20-%20PROJETOS/11_WATCHDOG_AGROCENTER/src/watchdog/) - Código-fonte do monitor, banco de dados e envio de notificações.
-- [src/dashboard/](file:///home/brunoconter/Documentos/1_C.VALE/2%20-%20PROJETOS/11_WATCHDOG_AGROCENTER/src/dashboard/) - Aplicação Web Flask com o mini-terminal nerd de monitoramento.
-- [scripts/](file:///home/brunoconter/Documentos/1_C.VALE/2%20-%20PROJETOS/11_WATCHDOG_AGROCENTER/scripts/) - Scripts de instalação no Alpine Linux e execução no cron.
-- [logs/](file:///home/brunoconter/Documentos/1_C.VALE/2%20-%20PROJETOS/11_WATCHDOG_AGROCENTER/logs/) - Registros de execução local.
+- [COMMISSIONING.md](docs/COMMISSIONING.md) - Manual passo a passo de implantação e comissionamento.
+- [ARCHITECTURE.md](docs/ARCHITECTURE.md) - Detalhamento da arquitetura física e lógica.
+- [CHANGELOG.md](docs/CHANGELOG.md) - Histórico de versões e lançamentos.
+- [idea.md](docs/idea.md) - Fluxo de processos original e MER.
+- [src/watchdog/](src/watchdog/) - Código-fonte do monitor, banco de dados e envio de notificações.
+- [src/dashboard/](src/dashboard/) - Aplicação Web Flask com o mini-terminal nerd de monitoramento.
+- [scripts/](scripts/) - Scripts de instalação no Alpine Linux e execução no cron.
+- [logs/](logs/) - Registros de execução local.
 
 ---
 
@@ -94,7 +94,7 @@ PYTHONPATH=. ./venv/bin/pytest -v
 
 Para implantar e ativar o Watchdog Agrocenter em produção usando um Raspberry Pi 3B com Alpine Linux (ou qualquer outra distribuição Linux), consulte o nosso manual de comissionamento completo passo a passo:
 
-👉 **[COMMISSIONING.md](file:///home/brunoconter/Documentos/1_C.VALE/2%20-%20PROJETOS/11_WATCHDOG_AGROCENTER/COMMISSIONING.md)**
+👉 **[COMMISSIONING.md](docs/COMMISSIONING.md)**
 
 O manual aborda:
 - Requisitos de Hardware e Instalação Diskless do Alpine Linux.

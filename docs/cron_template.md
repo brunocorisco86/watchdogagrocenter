@@ -109,6 +109,6 @@ tail -f logs/watchdog.log
 ## 🍓 Nota específica para Alpine Linux (Modo Produção)
 
 No Alpine Linux, o serviço `crond` gerencia os agendamentos.
-Se você utilizou o script [setup_alpine.sh](file:///home/brunoconter/Documentos/1_C.VALE/2%20-%20PROJETOS/11_WATCHDOG_AGROCENTER/scripts/setup_alpine.sh), o cron do **root** já foi configurado e o serviço habilitado de forma automática no boot.
+Se você utilizou o script [setup_alpine.sh](../scripts/setup_alpine.sh), o cron do **root** já foi configurado e o serviço habilitado de forma automática no boot.
 
 Para ver as execuções no Alpine, você pode inspecionar o arquivo local `/etc/crontabs/root`.
