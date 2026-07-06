@@ -1,7 +1,11 @@
 import os
 import sys
 import time
+import socket
+import struct
+import sqlite3
 import requests
+from urllib.parse import urlparse
 from datetime import datetime
 from dotenv import load_dotenv
 import urllib3
@@ -60,9 +64,6 @@ def resolve_dns_udp(domain, dns_server):
     Realiza uma consulta DNS UDP (tipo A) de forma nativa (sem dependências externas)
     para o servidor DNS informado (1.1.1.1 ou 8.8.8.8).
     """
-    import socket
-    import struct
-    
     # Cabeçalho DNS Query simples (ID=0x1234, Flags=0x0100, QDCOUNT=1)
     packet = struct.pack(">HHHHHH", 0x1234, 0x0100, 1, 0, 0, 0)
     for part in domain.split('.'):
@@ -121,10 +122,6 @@ def test_http_service(url, timeout, impersonate_profile='chrome'):
     Realiza o teste HTTP com sistema de retry (3 tentativas) e fallback
     de DNS para 1.1.1.1/8.8.8.8 no caso de erros de conexão/DNS.
     """
-    import urllib3
-    from urllib.parse import urlparse
-    urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
-    
     headers = {
         'User-Agent': 'C.Vale Watchdog Agent/1.0 (Raspberry Pi Dev)'
     }
@@ -164,7 +161,11 @@ def test_http_service(url, timeout, impersonate_profile='chrome'):
             if 'text/html' not in content_type:
                 return False, response.status_code, elapsed_ms, f"Tipo de conteúdo inválido nos metadados HTTP: '{content_type}'"
 
-            # 2. Status HTTP de Erro
+            # 2. Validação de Tamanho Mínimo (evitar falsos positivos em páginas de erro vazias)
+            if len(response.text) < 200:
+                return False, response.status_code, elapsed_ms, f"Resposta excessivamente curta ({len(response.text)} bytes)"
+
+            # 3. Status HTTP de Erro
             if response.status_code >= 400:
                 content_lower = response.text.lower()
                 if any(x in content_lower for x in ["access denied", "reference #", "akamai"]):
@@ -176,7 +177,7 @@ def test_http_service(url, timeout, impersonate_profile='chrome'):
                 
             content_lower = response.text.lower()
             
-            # 3. Verificar páginas de erro disfarçadas ou bloqueios Akamai
+            # 4. Verificar páginas de erro disfarçadas ou bloqueios Akamai
             if any(x in content_lower for x in ["access denied", "reference #", "akamai"]):
                 if "loading..." not in content_lower:
                     if attempt < retries:
@@ -184,25 +185,30 @@ def test_http_service(url, timeout, impersonate_profile='chrome'):
                         raise requests.exceptions.RequestException("WAF Blocked")
                     return False, response.status_code, elapsed_ms, "Bloqueio de Firewall (Akamai WAF)"
                 
-            # 4. Verificar falhas de backend/banco de dados
+            # 5. Verificar falhas de backend/banco de dados
             db_error_indicators = ["database connection failed", "sql error", "driver error", "internal server error", "fatal error"]
             for indicator in db_error_indicators:
                 if indicator in content_lower:
                     return False, response.status_code, elapsed_ms, f"Erro de banco/sistema exposto na resposta: '{indicator}'"
                     
-            # 5. Premissa de Presença e Assinatura do Portal React
+            # 6. Premissa de Presença e Assinatura do Portal React (Mínimo de 2 assinaturas)
             expected_keywords = [
                 'content="agro center"',
                 'eaware.io',
                 'assets/images/geral/simbolo.png',
-                'loading...',
-                'agrocenter'
+                'loading...'
             ]
-            has_keyword = any(kw in content_lower for kw in expected_keywords)
-            if not has_keyword:
-                return False, response.status_code, elapsed_ms, "Conteúdo retornado não condiz com o portal Agrocenter (possível falha de DNS ou sequestro de rota)"
+            has_main_keyword = 'agrocenter' in content_lower
+            has_secondary_keyword = any(kw in content_lower for kw in expected_keywords)
+
+            if not (has_main_keyword and has_secondary_keyword):
+                return False, response.status_code, elapsed_ms, "Conteúdo retornado não condiz com o portal Agrocenter (assinatura incompleta ou incorreta)"
 
             return True, response.status_code, elapsed_ms, ""
+
+        except requests.exceptions.SSLError as e:
+            elapsed_ms = int((time.time() - start_time) * 1000)
+            return False, 0, elapsed_ms, f"Erro de SSL/Certificado: {str(e)}"
             
         except (requests.exceptions.ConnectionError, requests.exceptions.Timeout):
             elapsed_ms = int((time.time() - start_time) * 1000)
@@ -427,7 +433,6 @@ def run_daily_report():
     kpis = db.get_kpis(period_filter='1d')
     
     # 2. Coleta a lista de incidentes que ocorreram nas últimas 24 horas
-    import sqlite3
     conn = sqlite3.connect(config['db_path'])
     conn.row_factory = sqlite3.Row
     cursor = conn.cursor()
@@ -594,7 +599,6 @@ def run_monthly_report():
     kpis = db.get_kpis(period_filter='30d')
     
     # 2. Coleta a lista de incidentes que ocorreram nos últimos 30 dias
-    import sqlite3
     conn = sqlite3.connect(config['db_path'])
     conn.row_factory = sqlite3.Row
     cursor = conn.cursor()
