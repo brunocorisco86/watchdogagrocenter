@@ -4,3 +4,4 @@ python-dotenv>=1.0.0
 aiogram>=3.3.0
 pytest>=8.0.0
 curl_cffi>=0.6.0
+Flask-Limiter>=3.3.0
