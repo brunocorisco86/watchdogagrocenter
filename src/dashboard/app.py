@@ -18,6 +18,21 @@ load_dotenv(os.path.join(base_dir, '.env'))
 DB_PATH = os.path.join(base_dir, os.getenv('SQLITE_DB_PATH', 'src/watchdog/database.db'))
 db = DatabaseManager(DB_PATH)
 
+@app.before_request
+def check_auth():
+    username = os.getenv('DASHBOARD_USERNAME')
+    password = os.getenv('DASHBOARD_PASSWORD')
+
+    # Se usuário e senha estiverem definidos, exige autenticação
+    if username and password:
+        auth = request.authorization
+        if not auth or auth.username != username or auth.password != password:
+            return (
+                'Não autorizado',
+                401,
+                {'WWW-Authenticate': 'Basic realm="Login Required"'}
+            )
+
 @app.route('/')
 def index():
     # Carrega KPIs padrão de 30 dias
