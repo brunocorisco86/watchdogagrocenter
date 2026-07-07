@@ -353,7 +353,7 @@
                     <div class="term-line output-success">Carregando mapa lógico C.Vale Agrocenter Watchdog...</div>
                     <pre class="ascii-art-block" id="docs-ascii-art" style="color: var(--blue-glow); font-family: var(--font-mono); margin: 0.5rem 0;">
 ┌─────────────────────────┐     ┌────────────────────────────────────────────────────────┐
-│  CRONTAB (A cada 5m)    │ ──► │  watchdog_cli.py (Resiliência & Validador de Premissas)│
+│  CRONTAB (A cada 3m)    │ ──► │  watchdog_cli.py (Resiliência & Validador de Premissas)│
 └─────────────────────────┘     └───────────────────────────┬────────────────────────────┘
                                                             │
                      ┌──────────────────────────────────────┴──────────────────────────────────────┐
@@ -376,9 +376,9 @@
                      │                                                                             │
                      │                                      ┌──────────────────────────────────────┤
                      │                                      ▼                                      ▼
-                     │                            [Falha persistente <15]                 [Falha grave >=15 e >=30]
+                     │                            [Falha persistente <20]                 [Falha grave >=20, 50, 240]
                      │                                      │                                      │
-                     │                             Notifica Nível 1 - TI                   Notifica Nível 2 e 3
+                     │                             Notifica Nível 1 - TI                Notifica Nível 2, 3 e 4
                      │                           (Suporte Técnico Plantão)              (Supervisão e Chefias TI/Neg)
                      │                                      │                                      │
                      └──────────────────────────────────────┼──────────────────────────────────────┘

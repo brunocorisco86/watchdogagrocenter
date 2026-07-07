@@ -18,7 +18,7 @@ O sistema é construído sobre três pilares de negócio:
 O diagrama abaixo ilustra o ciclo de vida de uma verificação e o fluxo de escalação multinível:
 
 ```text
-[ CRONTAB ] (A cada 5 minutos)
+[ CRONTAB ] (A cada 3 minutos)
     │
     ▼
 [ watchdog_cli.py ]

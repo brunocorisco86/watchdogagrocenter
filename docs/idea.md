@@ -84,7 +84,7 @@ erDiagram
   - `email` (TEXT PRIMARY KEY) - E-mail do contato.
   - `name` (TEXT) - Nome do contato.
   - `telegram_id` (TEXT) - ID do Telegram do contato (opcional).
-  - `level` (INTEGER) - Nível de acionamento (1: Imediato, 2: 15 falhas, 3: 30 falhas).
+  - `level` (INTEGER) - Nível de acionamento (1: 5 falhas, 2: 20 falhas, 3: 50 falhas, 4: 240 falhas).
   - `department` (TEXT) - Área do contato ('TI' ou 'NEGOCIO').
   - `enabled` (BOOLEAN) - Status ativo/inativo do contato.
 
@@ -92,7 +92,7 @@ erDiagram
 
 ## 3. Fluxo do Watchdog (Cron Execution)
 
-1. O **Cron** aciona o script `watchdog_cli.py` a cada 5 minutos.
+1. O **Cron** aciona o script `watchdog_cli.py` a cada 3 minutos.
 2. O script realiza a chamada HTTP para o Agrocenter.
 3. **Validação de Premissas**:
    - Status HTTP deve ser 200.
@@ -106,9 +106,10 @@ erDiagram
    - Se não houver incidente `ACTIVE`, cria um novo incidente. O Telegram principal de administração (definido no `.env`) recebe o alerta imediato de primeiro erro.
    - Se o incidente já existir, incrementa `consecutive_failures`.
    - **Regra de Escalação por Nível de Falhas**:
-     - **De 5 a 14 Falhas Consecutivas**: Dispara alertas (E-mail e Telegram) apenas para contatos ativos de **Nível 1 (Operacional)** do departamento **TI**.
-     - **De 15 a 29 Falhas Consecutivas (~1h a 2h)**: Dispara alertas para contatos de **Nível 1 e 2 (Supervisão)** de **TI e NEGÓCIO**.
-     - **A partir de 30 Falhas Consecutivas (~2.5h+)**: O incidente atinge gravidade crítica máxima. Dispara alertas para **todos os níveis**, incluindo contatos de **Nível 3 (Diretoria/Gestão/Chefe da TI)**.
+      - **De 5 a 19 Falhas Consecutivas (Nível 1 - 15 min)**: Dispara alertas (E-mail e Telegram) apenas para contatos ativos de **Nível 1 (Operacional)** do departamento **TI**.
+      - **De 20 a 49 Falhas Consecutivas (Nível 2 - 1h)**: Dispara alertas para contatos de **Nível 1 e 2 (Supervisão)** de **TI e NEGÓCIO**.
+      - **De 50 a 239 Falhas Consecutivas (Nível 3 - 2.5h)**: O incidente atinge gravidade crítica. Dispara alertas para contatos de **Nível 1, 2 e 3 (Diretoria/Gestão/Chefe da TI)**.
+      - **A partir de 240 Falhas Consecutivas (Nível 4 - 12h)**: O incidente atinge a escalação máxima. Dispara alertas para **todos os níveis cadastrados** (Nível 1, 2, 3 e 4).
 
 ---
 

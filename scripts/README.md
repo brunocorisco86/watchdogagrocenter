@@ -27,10 +27,10 @@ Com as credenciais homologadas e os testes de código passando, execute o script
 ```bash
 sudo ./scripts/setup_alpine.sh
 ```
-- **Objetivo**: Criar o ambiente virtual de produção, instalar dependências do `requirements.txt`, ativar o daemon do Cron local (`dcron`/`crond`) e agendar a checagem a cada 5 min.
+- **Objetivo**: Criar o ambiente virtual de produção, instalar dependências do `requirements.txt`, ativar o daemon do Cron local (`dcron`/`crond`) e agendar a checagem a cada 3 min.
 
 ### 4º Passo: Execução e Fallback do Crontab
-Este script é executado silenciosamente pelo crontab a cada 5 minutos e contém o tratamento para salvar a saída das verificações no log do sistema `/home/brunoconter/watchdog-agrocenter/logs/watchdog.log`:
+Este script é executado silenciosamente pelo crontab a cada 3 minutos e contém o tratamento para salvar a saída das verificações no log do sistema `/home/brunoconter/watchdog-agrocenter/logs/watchdog.log`:
 ```bash
 ./scripts/run_watchdog.sh
 ```
