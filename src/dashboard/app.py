@@ -2,6 +2,8 @@ import os
 import sys
 from flask import Flask, render_template, jsonify, redirect, url_for, request
 from dotenv import load_dotenv
+from flask_limiter import Limiter
+from flask_limiter.util import get_remote_address
 
 # Adiciona o diretório raiz ao path para poder importar src
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '../../')))
@@ -10,6 +12,14 @@ from src.watchdog.database import DatabaseManager
 from src.watchdog.watchdog_cli import run_check
 
 app = Flask(__name__)
+
+limiter = Limiter(
+    get_remote_address,
+    app=app,
+    default_limits=["100 per minute"],
+    headers_enabled=True,
+    storage_uri="memory://"
+)
 
 # Carrega configurações
 base_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), '../../'))
@@ -87,6 +97,7 @@ def api_latency_6h():
 
 
 @app.route('/api/trigger', methods=['POST'])
+@limiter.limit("10 per minute")
 def trigger_check():
     """Roda a verificação do watchdog manualmente"""
     try:
@@ -98,6 +109,7 @@ def trigger_check():
 CONTACTS_PATH = os.path.join(base_dir, 'src/watchdog/contacts.json')
 
 @app.route('/api/contacts', methods=['GET', 'POST'])
+@limiter.limit("10 per minute", methods=["POST"])
 def api_contacts():
     if request.method == 'GET':
         if not os.path.exists(CONTACTS_PATH):
@@ -156,6 +168,7 @@ def api_contacts():
             return jsonify({"error": f"Erro ao salvar contato: {str(e)}"}), 500
 
 @app.route('/api/contacts/delete', methods=['POST'])
+@limiter.limit("10 per minute")
 def api_delete_contact():
     data = request.json
     email = data.get('email')
@@ -185,6 +198,7 @@ def api_delete_contact():
         return jsonify({"error": f"Erro ao excluir contato: {str(e)}"}), 500
 
 @app.route('/api/contacts/update', methods=['POST'])
+@limiter.limit("10 per minute")
 def api_update_contact():
     data = request.json
     original_email = data.get('original_email')
@@ -241,6 +255,7 @@ def api_update_contact():
         return jsonify({"error": f"Erro ao atualizar contato: {str(e)}"}), 500
 
 @app.route('/api/settings', methods=['GET', 'POST'])
+@limiter.limit("10 per minute", methods=["POST"])
 def api_settings():
     if request.method == 'GET':
         try:
@@ -264,6 +279,21 @@ def api_settings():
             return jsonify({"error": "Valor de tempo inválido (deve ser número inteiro)"}), 400
         except Exception as e:
             return jsonify({"error": f"Erro ao salvar configurações: {str(e)}"}), 500
+
+@app.errorhandler(429)
+def ratelimit_handler(e):
+    # e.description will usually contain the limit string like '100 per 1 minute'
+    response = jsonify({
+        "error": "Too Many Requests",
+        "message": f"Rate limit exceeded: {e.description}"
+    })
+    response.status_code = 429
+    if hasattr(e, 'get_headers'):
+        for key, value in e.get_headers():
+            if key == 'Retry-After':
+                response.headers[key] = value
+    return response
+
 
 @app.route('/api/docs/<path:filename>')
 def api_get_doc(filename):
