@@ -7,11 +7,24 @@ document.addEventListener('DOMContentLoaded', () => {
     
     let currentPeriod = '30d';
     let latencyChart = null;
+    let filterOutliersEnabled = true;
 
     // Função para rolar os terminais para baixo
     const scrollToBottom = (element) => {
         if (element) {
             element.scrollTop = element.scrollHeight;
+        }
+    };
+
+    // Helper para cálculo de percentil/quantil
+    const quantile = (arr, q) => {
+        const pos = (arr.length - 1) * q;
+        const base = Math.floor(pos);
+        const rest = pos - base;
+        if (arr[base + 1] !== undefined) {
+            return arr[base] + rest * (arr[base + 1] - arr[base]);
+        } else {
+            return arr[base];
         }
     };
 
@@ -34,6 +47,26 @@ document.addEventListener('DOMContentLoaded', () => {
             await updateDashboardData();
         });
     });
+
+    // Event listener para o botão de toggle de outliers
+    const btnToggleOutliers = document.getElementById('btn-toggle-outliers');
+    if (btnToggleOutliers) {
+        btnToggleOutliers.addEventListener('click', async () => {
+            filterOutliersEnabled = !filterOutliersEnabled;
+            if (filterOutliersEnabled) {
+                btnToggleOutliers.classList.add('active');
+                btnToggleOutliers.textContent = '[ FILTRAR OUTLIERS: ATIVO ]';
+                appendTerminalLine('pi@cvale-watchdog:~$ watchdog --filter-outliers ENABLED', 'output-prompt');
+                appendTerminalLine('Ativando tratamento estatístico de outliers de latência...', 'output-system');
+            } else {
+                btnToggleOutliers.classList.remove('active');
+                btnToggleOutliers.textContent = '[ FILTRAR OUTLIERS: INATIVO ]';
+                appendTerminalLine('pi@cvale-watchdog:~$ watchdog --filter-outliers DISABLED', 'output-prompt');
+                appendTerminalLine('Desativando tratamento estatístico de outliers de latência...', 'output-system');
+            }
+            await updateLatencyChart();
+        });
+    }
 
     // Event listener para o gatilho manual do watchdog
     if (btnTrigger) {
@@ -143,6 +176,30 @@ document.addEventListener('DOMContentLoaded', () => {
             // Ordena os logs de forma cronológica garantida (do mais antigo para o mais recente)
             data.sort((a, b) => a.timestamp.localeCompare(b.timestamp));
 
+            // Filtro de Outliers por IQR (Interquartile Range)
+            let outlierThreshold = null;
+            let outliersCount = 0;
+            
+            if (filterOutliersEnabled) {
+                const healthyTimes = data
+                    .filter(item => item.is_healthy && item.response_time_ms != null)
+                    .map(item => item.response_time_ms);
+                
+                if (healthyTimes.length >= 4) {
+                    const sortedTimes = [...healthyTimes].sort((a, b) => a - b);
+                    const q1 = quantile(sortedTimes, 0.25);
+                    const q3 = quantile(sortedTimes, 0.75);
+                    const iqr = q3 - q1;
+                    // Define o limite superior como Q3 + 1.5 * IQR.
+                    // Estabelecemos um piso mínimo de 1500ms para evitar falsos positivos
+                    // (ex: considerar 200ms como outlier quando o normal é 100ms).
+                    outlierThreshold = Math.max(q3 + 1.5 * iqr, 1500);
+                } else {
+                    // Se não houver dados suficientes para calcular IQR, usa um limite arbitrário seguro (5000ms)
+                    outlierThreshold = 5000;
+                }
+            }
+
             // Extrai as labels (horas formatadas HH:MM) e dados (latência em ms)
             const labels = [];
             const values = [];
@@ -156,8 +213,18 @@ document.addEventListener('DOMContentLoaded', () => {
                 } catch {
                     labels.push(item.timestamp);
                 }
-                values.push(item.is_healthy ? item.response_time_ms : null);
+                
+                let val = item.is_healthy ? item.response_time_ms : null;
+                if (val !== null && outlierThreshold !== null && val > outlierThreshold) {
+                    outliersCount++;
+                    val = null; // Filtra o outlier ocultando o ponto no gráfico
+                }
+                values.push(val);
             });
+
+            if (filterOutliersEnabled) {
+                console.log(`[Outliers] Limiar calculado: ${outlierThreshold ? outlierThreshold.toFixed(1) : 'N/A'}ms. Outliers removidos: ${outliersCount}`);
+            }
 
             // Se o gráfico já existe, destrói para evitar sobreposição
             if (latencyChart) {
