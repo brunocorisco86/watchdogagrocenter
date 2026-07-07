@@ -88,3 +88,61 @@ def test_send_email_alert_no_config(temp_contacts, temp_template):
     )
     
     assert success is False
+
+@pytest.fixture
+def temp_contacts_with_levels(tmp_path):
+    """Gera um arquivo de contatos JSON temporário com níveis para testar filtragem"""
+    contacts_data = [
+        {"name": "L1 User", "email": "l1@cvale.com.br", "enabled": True, "level": 1},
+        {"name": "L2 User", "email": "l2@cvale.com.br", "enabled": True, "level": 2},
+        {"name": "L3 User", "email": "l3@cvale.com.br", "enabled": True, "level": 3},
+        {"name": "L4 User", "email": "l4@cvale.com.br", "enabled": True, "level": 4},
+        {"name": "Disabled L1 User", "email": "disabled_l1@cvale.com.br", "enabled": False, "level": 1}
+    ]
+    contacts_file = tmp_path / "contacts_levels_test.json"
+    with open(contacts_file, "w", encoding="utf-8") as f:
+        json.dump(contacts_data, f)
+    return str(contacts_file)
+
+@patch("smtplib.SMTP")
+def test_send_email_report_filtering(mock_smtp_class, temp_contacts_with_levels, temp_template):
+    """Testa se o relatório por e-mail filtra corretamente os destinatários com base nos níveis"""
+    mock_smtp_instance = MagicMock()
+    mock_smtp_class.return_value = mock_smtp_instance
+
+    smtp_config = {
+        "server": "smtp.gmail.com",
+        "port": "587",
+        "user": "brunocorisco@gmail.com",
+        "password": "mock_password"
+    }
+
+    notifier = Notifier(smtp_config=smtp_config)
+    
+    # 1. Testar enviando para os níveis 1 e 2
+    success = notifier.send_email_report(
+        subject="[TEST] Relatório Níveis 1 e 2",
+        template_vars={"alert_summary": "Summary", "error_message": "Msg"},
+        contacts_path=temp_contacts_with_levels,
+        template_path=temp_template,
+        target_levels=[1, 2]
+    )
+    
+    assert success is True
+    # Deve enviar 2 e-mails (l1@cvale.com.br e l2@cvale.com.br)
+    assert mock_smtp_instance.sendmail.call_count == 2
+    
+    # Reset mock para o próximo teste
+    mock_smtp_instance.reset_mock()
+    
+    # 2. Testar enviando sem filtro (todos habilitados: l1, l2, l3, l4)
+    success = notifier.send_email_report(
+        subject="[TEST] Relatório Sem Filtro",
+        template_vars={"alert_summary": "Summary", "error_message": "Msg"},
+        contacts_path=temp_contacts_with_levels,
+        template_path=temp_template
+    )
+    
+    assert success is True
+    # Deve enviar 4 e-mails (l1, l2, l3 e l4)
+    assert mock_smtp_instance.sendmail.call_count == 4

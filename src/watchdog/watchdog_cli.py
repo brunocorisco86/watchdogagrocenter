@@ -560,7 +560,8 @@ def run_daily_report():
         subject=subject,
         template_vars=template_vars,
         contacts_path=config['contacts_path'],
-        template_path=daily_template_path
+        template_path=daily_template_path,
+        target_levels=[1, 2]
     )
     
     # 6. Envia resumo via Telegram

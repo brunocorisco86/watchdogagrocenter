@@ -203,7 +203,7 @@ class Notifier:
             print(f"Erro ao enviar e-mail: {e}")
             return False
 
-    def send_email_report(self, subject, template_vars, contacts_path, template_path):
+    def send_email_report(self, subject, template_vars, contacts_path, template_path, target_levels=None):
         """Envia relatórios consolidados em HTML para a lista de contatos do contacts.json"""
         if not self.smtp_config.get('server') or not self.smtp_config.get('user'):
             print("SMTP não configurado no .env.")
@@ -218,7 +218,13 @@ class Notifier:
             with open(contacts_path, 'r', encoding='utf-8') as f:
                 contacts = json.load(f)
 
-            destinatarios = [c['email'] for c in contacts if c.get('enabled', False)]
+            if target_levels is not None:
+                destinatarios = [
+                    c['email'] for c in contacts 
+                    if c.get('enabled', False) and c.get('level') in target_levels
+                ]
+            else:
+                destinatarios = [c['email'] for c in contacts if c.get('enabled', False)]
             if not destinatarios:
                 print("Nenhum contato habilitado para envio de e-mail.")
                 return False
