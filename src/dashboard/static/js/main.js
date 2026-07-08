@@ -191,9 +191,9 @@ document.addEventListener('DOMContentLoaded', () => {
                     const q3 = quantile(sortedTimes, 0.75);
                     const iqr = q3 - q1;
                     // Define o limite superior como Q3 + 1.5 * IQR.
-                    // Estabelecemos um piso mínimo de 1500ms para evitar falsos positivos
+                    // Estabelecemos um piso mínimo de 1000ms para evitar falsos positivos
                     // (ex: considerar 200ms como outlier quando o normal é 100ms).
-                    outlierThreshold = Math.max(q3 + 1.5 * iqr, 1500);
+                    outlierThreshold = Math.max(q3 + 1.5 * iqr, 1000);
                 } else {
                     // Se não houver dados suficientes para calcular IQR, usa um limite arbitrário seguro (5000ms)
                     outlierThreshold = 5000;
@@ -903,6 +903,10 @@ document.addEventListener('DOMContentLoaded', () => {
     // Inicialização geral
     updateDashboardData();
     loadContacts();
+
+    // Mensagem inicial para confirmar que o filtro de outliers está ativo por padrão
+    appendTerminalLine('pi@cvale-watchdog:~$ watchdog --filter-outliers STATUS', 'output-prompt');
+    appendTerminalLine('Tratamento de outliers de latência ativado por padrão (IQR - Limiar mínimo 1000ms).', 'output-system');
 
     // Auto-atualização de logs e gráficos a cada 30 segundos
     setInterval(updateDashboardData, 30000);
