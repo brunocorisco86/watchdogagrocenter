@@ -15,8 +15,8 @@
       "_origin": "ast",
       "community": 9,
       "norm_label": "keepalive_dashboard.sh",
-      "id": "scripts_keepalive_dashboard",
-      "community_name": "keepalive_dashboard.sh"
+      "community_name": "keepalive_dashboard.sh",
+      "id": "scripts_keepalive_dashboard"
     },
     {
       "label": "keepalive_dashboard.sh script",
@@ -30,8 +30,8 @@
       "_origin": "ast",
       "community": 9,
       "norm_label": "keepalive_dashboard.sh script",
-      "id": "scripts_keepalive_dashboard_sh__entry",
-      "community_name": "keepalive_dashboard.sh"
+      "community_name": "keepalive_dashboard.sh",
+      "id": "scripts_keepalive_dashboard_sh__entry"
     },
     {
       "label": "log_resources.sh",
@@ -45,8 +45,8 @@
       "_origin": "ast",
       "community": 10,
       "norm_label": "log_resources.sh",
-      "id": "scripts_log_resources",
-      "community_name": "log_resources.sh"
+      "community_name": "log_resources.sh",
+      "id": "scripts_log_resources"
     },
     {
       "label": "log_resources.sh script",
@@ -60,8 +60,8 @@
       "_origin": "ast",
       "community": 10,
       "norm_label": "log_resources.sh script",
-      "id": "scripts_log_resources_sh__entry",
-      "community_name": "log_resources.sh"
+      "community_name": "log_resources.sh",
+      "id": "scripts_log_resources_sh__entry"
     },
     {
       "label": "run_tests.sh",
@@ -75,8 +75,8 @@
       "_origin": "ast",
       "community": 7,
       "norm_label": "run_tests.sh",
-      "id": "scripts_run_tests",
-      "community_name": "run_tests.sh"
+      "community_name": "run_tests.sh",
+      "id": "scripts_run_tests"
     },
     {
       "label": "run_tests.sh script",
@@ -90,8 +90,8 @@
       "_origin": "ast",
       "community": 7,
       "norm_label": "run_tests.sh script",
-      "id": "scripts_run_tests_sh__entry",
-      "community_name": "run_tests.sh"
+      "community_name": "run_tests.sh",
+      "id": "scripts_run_tests_sh__entry"
     },
     {
       "label": "PYTHONPATH",
@@ -105,8 +105,8 @@
       "_origin": "ast",
       "community": 7,
       "norm_label": "pythonpath",
-      "id": "scripts_run_tests_pythonpath",
-      "community_name": "run_tests.sh"
+      "community_name": "run_tests.sh",
+      "id": "scripts_run_tests_pythonpath"
     },
     {
       "label": "run_watchdog.sh",
@@ -120,8 +120,8 @@
       "_origin": "ast",
       "community": 11,
       "norm_label": "run_watchdog.sh",
-      "id": "scripts_run_watchdog",
-      "community_name": "run_watchdog.sh"
+      "community_name": "run_watchdog.sh",
+      "id": "scripts_run_watchdog"
     },
     {
       "label": "run_watchdog.sh script",
@@ -135,8 +135,8 @@
       "_origin": "ast",
       "community": 11,
       "norm_label": "run_watchdog.sh script",
-      "id": "scripts_run_watchdog_sh__entry",
-      "community_name": "run_watchdog.sh"
+      "community_name": "run_watchdog.sh",
+      "id": "scripts_run_watchdog_sh__entry"
     },
     {
       "label": "setup_alpine.sh",
@@ -150,8 +150,8 @@
       "_origin": "ast",
       "community": 12,
       "norm_label": "setup_alpine.sh",
-      "id": "scripts_setup_alpine",
-      "community_name": "setup_alpine.sh"
+      "community_name": "setup_alpine.sh",
+      "id": "scripts_setup_alpine"
     },
     {
       "label": "setup_alpine.sh script",
@@ -165,8 +165,8 @@
       "_origin": "ast",
       "community": 12,
       "norm_label": "setup_alpine.sh script",
-      "id": "scripts_setup_alpine_sh__entry",
-      "community_name": "setup_alpine.sh"
+      "community_name": "setup_alpine.sh",
+      "id": "scripts_setup_alpine_sh__entry"
     },
     {
       "label": "test_all_levels.py",
@@ -176,8 +176,8 @@
       "_origin": "ast",
       "community": 1,
       "norm_label": "test_all_levels.py",
-      "id": "scripts_test_all_levels",
-      "community_name": "Notifier"
+      "community_name": "Notifier",
+      "id": "scripts_test_all_levels"
     },
     {
       "label": "run_tests()",
@@ -187,8 +187,8 @@
       "_origin": "ast",
       "community": 1,
       "norm_label": "run_tests()",
-      "id": "scripts_test_all_levels_run_tests",
-      "community_name": "Notifier"
+      "community_name": "Notifier",
+      "id": "scripts_test_all_levels_run_tests"
     },
     {
       "label": "verify_notifications.py",
@@ -198,8 +198,8 @@
       "_origin": "ast",
       "community": 6,
       "norm_label": "verify_notifications.py",
-      "id": "scripts_verify_notifications",
-      "community_name": "verify_notifications.py"
+      "community_name": "verify_notifications.py",
+      "id": "scripts_verify_notifications"
     },
     {
       "label": "print_header()",
@@ -209,8 +209,8 @@
       "_origin": "ast",
       "community": 6,
       "norm_label": "print_header()",
-      "id": "scripts_verify_notifications_print_header",
-      "community_name": "verify_notifications.py"
+      "community_name": "verify_notifications.py",
+      "id": "scripts_verify_notifications_print_header"
     },
     {
       "label": "test_telegram()",
@@ -220,8 +220,8 @@
       "_origin": "ast",
       "community": 6,
       "norm_label": "test_telegram()",
-      "id": "scripts_verify_notifications_test_telegram",
-      "community_name": "verify_notifications.py"
+      "community_name": "verify_notifications.py",
+      "id": "scripts_verify_notifications_test_telegram"
     },
     {
       "label": "test_email()",
@@ -231,8 +231,8 @@
       "_origin": "ast",
       "community": 6,
       "norm_label": "test_email()",
-      "id": "scripts_verify_notifications_test_email",
-      "community_name": "verify_notifications.py"
+      "community_name": "verify_notifications.py",
+      "id": "scripts_verify_notifications_test_email"
     },
     {
       "label": "main()",
@@ -242,8 +242,8 @@
       "_origin": "ast",
       "community": 6,
       "norm_label": "main()",
-      "id": "scripts_verify_notifications_main",
-      "community_name": "verify_notifications.py"
+      "community_name": "verify_notifications.py",
+      "id": "scripts_verify_notifications_main"
     },
     {
       "label": "app.py",
@@ -253,8 +253,8 @@
       "_origin": "ast",
       "community": 2,
       "norm_label": "app.py",
-      "id": "src_dashboard_app",
-      "community_name": "app.py"
+      "community_name": "app.py",
+      "id": "src_dashboard_app"
     },
     {
       "label": "check_auth()",
@@ -264,8 +264,8 @@
       "_origin": "ast",
       "community": 2,
       "norm_label": "check_auth()",
-      "id": "src_dashboard_app_check_auth",
-      "community_name": "app.py"
+      "community_name": "app.py",
+      "id": "src_dashboard_app_check_auth"
     },
     {
       "label": "index()",
@@ -275,8 +275,8 @@
       "_origin": "ast",
       "community": 2,
       "norm_label": "index()",
-      "id": "src_dashboard_app_index",
-      "community_name": "app.py"
+      "community_name": "app.py",
+      "id": "src_dashboard_app_index"
     },
     {
       "label": "api_kpis()",
@@ -286,8 +286,8 @@
       "_origin": "ast",
       "community": 2,
       "norm_label": "api_kpis()",
-      "id": "src_dashboard_app_api_kpis",
-      "community_name": "app.py"
+      "community_name": "app.py",
+      "id": "src_dashboard_app_api_kpis"
     },
     {
       "label": "api_logs()",
@@ -297,8 +297,8 @@
       "_origin": "ast",
       "community": 2,
       "norm_label": "api_logs()",
-      "id": "src_dashboard_app_api_logs",
-      "community_name": "app.py"
+      "community_name": "app.py",
+      "id": "src_dashboard_app_api_logs"
     },
     {
       "label": "api_system_logs()",
@@ -308,8 +308,8 @@
       "_origin": "ast",
       "community": 2,
       "norm_label": "api_system_logs()",
-      "id": "src_dashboard_app_api_system_logs",
-      "community_name": "app.py"
+      "community_name": "app.py",
+      "id": "src_dashboard_app_api_system_logs"
     },
     {
       "label": "api_latency_6h()",
@@ -319,8 +319,8 @@
       "_origin": "ast",
       "community": 2,
       "norm_label": "api_latency_6h()",
-      "id": "src_dashboard_app_api_latency_6h",
-      "community_name": "app.py"
+      "community_name": "app.py",
+      "id": "src_dashboard_app_api_latency_6h"
     },
     {
       "label": "trigger_check()",
@@ -330,8 +330,8 @@
       "_origin": "ast",
       "community": 2,
       "norm_label": "trigger_check()",
-      "id": "src_dashboard_app_trigger_check",
-      "community_name": "app.py"
+      "community_name": "app.py",
+      "id": "src_dashboard_app_trigger_check"
     },
     {
       "label": "api_contacts()",
@@ -341,8 +341,8 @@
       "_origin": "ast",
       "community": 2,
       "norm_label": "api_contacts()",
-      "id": "src_dashboard_app_api_contacts",
-      "community_name": "app.py"
+      "community_name": "app.py",
+      "id": "src_dashboard_app_api_contacts"
     },
     {
       "label": "api_delete_contact()",
@@ -352,8 +352,8 @@
       "_origin": "ast",
       "community": 2,
       "norm_label": "api_delete_contact()",
-      "id": "src_dashboard_app_api_delete_contact",
-      "community_name": "app.py"
+      "community_name": "app.py",
+      "id": "src_dashboard_app_api_delete_contact"
     },
     {
       "label": "api_update_contact()",
@@ -363,8 +363,8 @@
       "_origin": "ast",
       "community": 2,
       "norm_label": "api_update_contact()",
-      "id": "src_dashboard_app_api_update_contact",
-      "community_name": "app.py"
+      "community_name": "app.py",
+      "id": "src_dashboard_app_api_update_contact"
     },
     {
       "label": "api_settings()",
@@ -374,8 +374,8 @@
       "_origin": "ast",
       "community": 2,
       "norm_label": "api_settings()",
-      "id": "src_dashboard_app_api_settings",
-      "community_name": "app.py"
+      "community_name": "app.py",
+      "id": "src_dashboard_app_api_settings"
     },
     {
       "label": "ratelimit_handler()",
@@ -385,8 +385,8 @@
       "_origin": "ast",
       "community": 2,
       "norm_label": "ratelimit_handler()",
-      "id": "src_dashboard_app_ratelimit_handler",
-      "community_name": "app.py"
+      "community_name": "app.py",
+      "id": "src_dashboard_app_ratelimit_handler"
     },
     {
       "label": "api_get_doc()",
@@ -396,8 +396,8 @@
       "_origin": "ast",
       "community": 2,
       "norm_label": "api_get_doc()",
-      "id": "src_dashboard_app_api_get_doc",
-      "community_name": "app.py"
+      "community_name": "app.py",
+      "id": "src_dashboard_app_api_get_doc"
     },
     {
       "label": "L\u00ea as \u00faltimas 50 linhas do arquivo de log f\u00edsico do sistema",
@@ -407,8 +407,8 @@
       "_origin": "ast",
       "community": 2,
       "norm_label": "le as ultimas 50 linhas do arquivo de log fisico do sistema",
-      "id": "src_dashboard_app_rationale_93",
-      "community_name": "app.py"
+      "community_name": "app.py",
+      "id": "src_dashboard_app_rationale_93"
     },
     {
       "label": "Retorna os dados de lat\u00eancia do per\u00edodo escolhido para alimentar o gr\u00e1fico",
@@ -418,8 +418,8 @@
       "_origin": "ast",
       "community": 2,
       "norm_label": "retorna os dados de latencia do periodo escolhido para alimentar o grafico",
-      "id": "src_dashboard_app_rationale_108",
-      "community_name": "app.py"
+      "community_name": "app.py",
+      "id": "src_dashboard_app_rationale_108"
     },
     {
       "label": "Roda a verifica\u00e7\u00e3o do watchdog manualmente",
@@ -429,8 +429,8 @@
       "_origin": "ast",
       "community": 2,
       "norm_label": "roda a verificacao do watchdog manualmente",
-      "id": "src_dashboard_app_rationale_117",
-      "community_name": "app.py"
+      "community_name": "app.py",
+      "id": "src_dashboard_app_rationale_117"
     },
     {
       "label": "main.js",
@@ -440,8 +440,8 @@
       "_origin": "ast",
       "community": 4,
       "norm_label": "main.js",
-      "id": "src_dashboard_static_js_main",
-      "community_name": "main.js"
+      "community_name": "main.js",
+      "id": "src_dashboard_static_js_main"
     },
     {
       "label": "appendTerminalLine()",
@@ -451,8 +451,8 @@
       "_origin": "ast",
       "community": 4,
       "norm_label": "appendterminalline()",
-      "id": "src_dashboard_static_js_main_appendterminalline",
-      "community_name": "main.js"
+      "community_name": "main.js",
+      "id": "src_dashboard_static_js_main_appendterminalline"
     },
     {
       "label": "updateSystemLogs()",
@@ -462,8 +462,8 @@
       "_origin": "ast",
       "community": 4,
       "norm_label": "updatesystemlogs()",
-      "id": "src_dashboard_static_js_main_updatesystemlogs",
-      "community_name": "main.js"
+      "community_name": "main.js",
+      "id": "src_dashboard_static_js_main_updatesystemlogs"
     },
     {
       "label": "updateLatencyChart()",
@@ -473,8 +473,8 @@
       "_origin": "ast",
       "community": 4,
       "norm_label": "updatelatencychart()",
-      "id": "src_dashboard_static_js_main_updatelatencychart",
-      "community_name": "main.js"
+      "community_name": "main.js",
+      "id": "src_dashboard_static_js_main_updatelatencychart"
     },
     {
       "label": "updateDashboardData()",
@@ -484,8 +484,8 @@
       "_origin": "ast",
       "community": 4,
       "norm_label": "updatedashboarddata()",
-      "id": "src_dashboard_static_js_main_updatedashboarddata",
-      "community_name": "main.js"
+      "community_name": "main.js",
+      "id": "src_dashboard_static_js_main_updatedashboarddata"
     },
     {
       "label": "formatMinutesText()",
@@ -495,8 +495,8 @@
       "_origin": "ast",
       "community": 4,
       "norm_label": "formatminutestext()",
-      "id": "src_dashboard_static_js_main_formatminutestext",
-      "community_name": "main.js"
+      "community_name": "main.js",
+      "id": "src_dashboard_static_js_main_formatminutestext"
     },
     {
       "label": "loadSettings()",
@@ -506,8 +506,8 @@
       "_origin": "ast",
       "community": 4,
       "norm_label": "loadsettings()",
-      "id": "src_dashboard_static_js_main_loadsettings",
-      "community_name": "main.js"
+      "community_name": "main.js",
+      "id": "src_dashboard_static_js_main_loadsettings"
     },
     {
       "label": "applySettingsToDOM()",
@@ -517,8 +517,8 @@
       "_origin": "ast",
       "community": 4,
       "norm_label": "applysettingstodom()",
-      "id": "src_dashboard_static_js_main_applysettingstodom",
-      "community_name": "main.js"
+      "community_name": "main.js",
+      "id": "src_dashboard_static_js_main_applysettingstodom"
     },
     {
       "label": "loadContacts()",
@@ -528,8 +528,8 @@
       "_origin": "ast",
       "community": 4,
       "norm_label": "loadcontacts()",
-      "id": "src_dashboard_static_js_main_loadcontacts",
-      "community_name": "main.js"
+      "community_name": "main.js",
+      "id": "src_dashboard_static_js_main_loadcontacts"
     },
     {
       "label": "editContact()",
@@ -539,8 +539,8 @@
       "_origin": "ast",
       "community": 4,
       "norm_label": "editcontact()",
-      "id": "src_dashboard_static_js_main_editcontact",
-      "community_name": "main.js"
+      "community_name": "main.js",
+      "id": "src_dashboard_static_js_main_editcontact"
     },
     {
       "label": "resetFormState()",
@@ -550,8 +550,8 @@
       "_origin": "ast",
       "community": 4,
       "norm_label": "resetformstate()",
-      "id": "src_dashboard_static_js_main_resetformstate",
-      "community_name": "main.js"
+      "community_name": "main.js",
+      "id": "src_dashboard_static_js_main_resetformstate"
     },
     {
       "label": "deleteContact()",
@@ -561,8 +561,8 @@
       "_origin": "ast",
       "community": 4,
       "norm_label": "deletecontact()",
-      "id": "src_dashboard_static_js_main_deletecontact",
-      "community_name": "main.js"
+      "community_name": "main.js",
+      "id": "src_dashboard_static_js_main_deletecontact"
     },
     {
       "label": "escapeHtml()",
@@ -572,8 +572,8 @@
       "_origin": "ast",
       "community": 4,
       "norm_label": "escapehtml()",
-      "id": "src_dashboard_static_js_main_escapehtml",
-      "community_name": "main.js"
+      "community_name": "main.js",
+      "id": "src_dashboard_static_js_main_escapehtml"
     },
     {
       "label": "formatMarkdownToRetroTerminal()",
@@ -583,8 +583,8 @@
       "_origin": "ast",
       "community": 4,
       "norm_label": "formatmarkdowntoretroterminal()",
-      "id": "src_dashboard_static_js_main_formatmarkdowntoretroterminal",
-      "community_name": "main.js"
+      "community_name": "main.js",
+      "id": "src_dashboard_static_js_main_formatmarkdowntoretroterminal"
     },
     {
       "label": "database.py",
@@ -594,8 +594,8 @@
       "_origin": "ast",
       "community": 5,
       "norm_label": "database.py",
-      "id": "src_watchdog_database",
-      "community_name": "test_database.py"
+      "community_name": "test_database.py",
+      "id": "src_watchdog_database"
     },
     {
       "label": "DatabaseManager",
@@ -605,8 +605,8 @@
       "_origin": "ast",
       "community": 3,
       "norm_label": "databasemanager",
-      "id": "src_watchdog_database_databasemanager",
-      "community_name": "DatabaseManager"
+      "community_name": "DatabaseManager",
+      "id": "src_watchdog_database_databasemanager"
     },
     {
       "label": ".__init__()",
@@ -616,8 +616,8 @@
       "_origin": "ast",
       "community": 3,
       "norm_label": ".__init__()",
-      "id": "src_watchdog_database_databasemanager_init",
-      "community_name": "DatabaseManager"
+      "community_name": "DatabaseManager",
+      "id": "src_watchdog_database_databasemanager_init"
     },
     {
       "label": "._get_connection()",
@@ -627,8 +627,8 @@
       "_origin": "ast",
       "community": 3,
       "norm_label": "._get_connection()",
-      "id": "src_watchdog_database_databasemanager_get_connection",
-      "community_name": "DatabaseManager"
+      "community_name": "DatabaseManager",
+      "id": "src_watchdog_database_databasemanager_get_connection"
     },
     {
       "label": "._init_db()",
@@ -638,8 +638,8 @@
       "_origin": "ast",
       "community": 3,
       "norm_label": "._init_db()",
-      "id": "src_watchdog_database_databasemanager_init_db",
-      "community_name": "DatabaseManager"
+      "community_name": "DatabaseManager",
+      "id": "src_watchdog_database_databasemanager_init_db"
     },
     {
       "label": ".get_setting()",
@@ -649,8 +649,8 @@
       "_origin": "ast",
       "community": 3,
       "norm_label": ".get_setting()",
-      "id": "src_watchdog_database_databasemanager_get_setting",
-      "community_name": "DatabaseManager"
+      "community_name": "DatabaseManager",
+      "id": "src_watchdog_database_databasemanager_get_setting"
     },
     {
       "label": ".get_all_settings()",
@@ -660,8 +660,8 @@
       "_origin": "ast",
       "community": 3,
       "norm_label": ".get_all_settings()",
-      "id": "src_watchdog_database_databasemanager_get_all_settings",
-      "community_name": "DatabaseManager"
+      "community_name": "DatabaseManager",
+      "id": "src_watchdog_database_databasemanager_get_all_settings"
     },
     {
       "label": ".update_settings()",
@@ -671,8 +671,8 @@
       "_origin": "ast",
       "community": 3,
       "norm_label": ".update_settings()",
-      "id": "src_watchdog_database_databasemanager_update_settings",
-      "community_name": "DatabaseManager"
+      "community_name": "DatabaseManager",
+      "id": "src_watchdog_database_databasemanager_update_settings"
     },
     {
       "label": ".add_monitor_log()",
@@ -682,8 +682,8 @@
       "_origin": "ast",
       "community": 3,
       "norm_label": ".add_monitor_log()",
-      "id": "src_watchdog_database_databasemanager_add_monitor_log",
-      "community_name": "DatabaseManager"
+      "community_name": "DatabaseManager",
+      "id": "src_watchdog_database_databasemanager_add_monitor_log"
     },
     {
       "label": ".get_latest_logs()",
@@ -693,8 +693,8 @@
       "_origin": "ast",
       "community": 3,
       "norm_label": ".get_latest_logs()",
-      "id": "src_watchdog_database_databasemanager_get_latest_logs",
-      "community_name": "DatabaseManager"
+      "community_name": "DatabaseManager",
+      "id": "src_watchdog_database_databasemanager_get_latest_logs"
     },
     {
       "label": ".get_active_incident()",
@@ -704,8 +704,8 @@
       "_origin": "ast",
       "community": 3,
       "norm_label": ".get_active_incident()",
-      "id": "src_watchdog_database_databasemanager_get_active_incident",
-      "community_name": "DatabaseManager"
+      "community_name": "DatabaseManager",
+      "id": "src_watchdog_database_databasemanager_get_active_incident"
     },
     {
       "label": ".create_incident()",
@@ -715,8 +715,8 @@
       "_origin": "ast",
       "community": 3,
       "norm_label": ".create_incident()",
-      "id": "src_watchdog_database_databasemanager_create_incident",
-      "community_name": "DatabaseManager"
+      "community_name": "DatabaseManager",
+      "id": "src_watchdog_database_databasemanager_create_incident"
     },
     {
       "label": ".update_incident_failures()",
@@ -726,8 +726,8 @@
       "_origin": "ast",
       "community": 3,
       "norm_label": ".update_incident_failures()",
-      "id": "src_watchdog_database_databasemanager_update_incident_failures",
-      "community_name": "DatabaseManager"
+      "community_name": "DatabaseManager",
+      "id": "src_watchdog_database_databasemanager_update_incident_failures"
     },
     {
       "label": ".mark_telegram_sent()",
@@ -737,8 +737,8 @@
       "_origin": "ast",
       "community": 3,
       "norm_label": ".mark_telegram_sent()",
-      "id": "src_watchdog_database_databasemanager_mark_telegram_sent",
-      "community_name": "DatabaseManager"
+      "community_name": "DatabaseManager",
+      "id": "src_watchdog_database_databasemanager_mark_telegram_sent"
     },
     {
       "label": ".mark_email_sent()",
@@ -748,8 +748,8 @@
       "_origin": "ast",
       "community": 3,
       "norm_label": ".mark_email_sent()",
-      "id": "src_watchdog_database_databasemanager_mark_email_sent",
-      "community_name": "DatabaseManager"
+      "community_name": "DatabaseManager",
+      "id": "src_watchdog_database_databasemanager_mark_email_sent"
     },
     {
       "label": ".resolve_incident()",
@@ -759,8 +759,8 @@
       "_origin": "ast",
       "community": 3,
       "norm_label": ".resolve_incident()",
-      "id": "src_watchdog_database_databasemanager_resolve_incident",
-      "community_name": "DatabaseManager"
+      "community_name": "DatabaseManager",
+      "id": "src_watchdog_database_databasemanager_resolve_incident"
     },
     {
       "label": ".get_latency_history_6h()",
@@ -770,8 +770,8 @@
       "_origin": "ast",
       "community": 3,
       "norm_label": ".get_latency_history_6h()",
-      "id": "src_watchdog_database_databasemanager_get_latency_history_6h",
-      "community_name": "DatabaseManager"
+      "community_name": "DatabaseManager",
+      "id": "src_watchdog_database_databasemanager_get_latency_history_6h"
     },
     {
       "label": ".get_kpis()",
@@ -781,8 +781,8 @@
       "_origin": "ast",
       "community": 3,
       "norm_label": ".get_kpis()",
-      "id": "src_watchdog_database_databasemanager_get_kpis",
-      "community_name": "DatabaseManager"
+      "community_name": "DatabaseManager",
+      "id": "src_watchdog_database_databasemanager_get_kpis"
     },
     {
       "label": "Retorna os registros de lat\u00eancia de acordo com o per\u00edodo para a s\u00e9rie temporal",
@@ -792,8 +792,8 @@
       "_origin": "ast",
       "community": 3,
       "norm_label": "retorna os registros de latencia de acordo com o periodo para a serie temporal",
-      "id": "src_watchdog_database_rationale_147",
-      "community_name": "DatabaseManager"
+      "community_name": "DatabaseManager",
+      "id": "src_watchdog_database_rationale_147"
     },
     {
       "label": "Retorna estat\u00edsticas filtradas por per\u00edodo para exibir no dashboard",
@@ -803,8 +803,8 @@
       "_origin": "ast",
       "community": 3,
       "norm_label": "retorna estatisticas filtradas por periodo para exibir no dashboard",
-      "id": "src_watchdog_database_rationale_170",
-      "community_name": "DatabaseManager"
+      "community_name": "DatabaseManager",
+      "id": "src_watchdog_database_rationale_170"
     },
     {
       "label": "notifier.py",
@@ -814,8 +814,8 @@
       "_origin": "ast",
       "community": 1,
       "norm_label": "notifier.py",
-      "id": "src_watchdog_notifier",
-      "community_name": "Notifier"
+      "community_name": "Notifier",
+      "id": "src_watchdog_notifier"
     },
     {
       "label": "Notifier",
@@ -825,8 +825,8 @@
       "_origin": "ast",
       "community": 1,
       "norm_label": "notifier",
-      "id": "src_watchdog_notifier_notifier",
-      "community_name": "Notifier"
+      "community_name": "Notifier",
+      "id": "src_watchdog_notifier_notifier"
     },
     {
       "label": ".__init__()",
@@ -836,8 +836,8 @@
       "_origin": "ast",
       "community": 1,
       "norm_label": ".__init__()",
-      "id": "src_watchdog_notifier_notifier_init",
-      "community_name": "Notifier"
+      "community_name": "Notifier",
+      "id": "src_watchdog_notifier_notifier_init"
     },
     {
       "label": "._get_thresholds()",
@@ -847,8 +847,8 @@
       "_origin": "ast",
       "community": 1,
       "norm_label": "._get_thresholds()",
-      "id": "src_watchdog_notifier_notifier_get_thresholds",
-      "community_name": "Notifier"
+      "community_name": "Notifier",
+      "id": "src_watchdog_notifier_notifier_get_thresholds"
     },
     {
       "label": "._send_telegram()",
@@ -858,8 +858,8 @@
       "_origin": "ast",
       "community": 1,
       "norm_label": "._send_telegram()",
-      "id": "src_watchdog_notifier_notifier_send_telegram",
-      "community_name": "Notifier"
+      "community_name": "Notifier",
+      "id": "src_watchdog_notifier_notifier_send_telegram"
     },
     {
       "label": ".send_telegram_alert()",
@@ -869,8 +869,8 @@
       "_origin": "ast",
       "community": 1,
       "norm_label": ".send_telegram_alert()",
-      "id": "src_watchdog_notifier_notifier_send_telegram_alert",
-      "community_name": "Notifier"
+      "community_name": "Notifier",
+      "id": "src_watchdog_notifier_notifier_send_telegram_alert"
     },
     {
       "label": ".send_email_alert()",
@@ -880,8 +880,8 @@
       "_origin": "ast",
       "community": 1,
       "norm_label": ".send_email_alert()",
-      "id": "src_watchdog_notifier_notifier_send_email_alert",
-      "community_name": "Notifier"
+      "community_name": "Notifier",
+      "id": "src_watchdog_notifier_notifier_send_email_alert"
     },
     {
       "label": ".send_email_report()",
@@ -891,8 +891,8 @@
       "_origin": "ast",
       "community": 1,
       "norm_label": ".send_email_report()",
-      "id": "src_watchdog_notifier_notifier_send_email_report",
-      "community_name": "Notifier"
+      "community_name": "Notifier",
+      "id": "src_watchdog_notifier_notifier_send_email_report"
     },
     {
       "label": "Dispara mensagem s\u00edncrona chamando a rotina ass\u00edncrona do aiogram",
@@ -902,8 +902,8 @@
       "_origin": "ast",
       "community": 1,
       "norm_label": "dispara mensagem sincrona chamando a rotina assincrona do aiogram",
-      "id": "src_watchdog_notifier_rationale_101",
-      "community_name": "Notifier"
+      "community_name": "Notifier",
+      "id": "src_watchdog_notifier_rationale_101"
     },
     {
       "label": "Envia e-mails para a lista de contatos definida no contacts.json conforme n\u00edvel",
@@ -913,8 +913,8 @@
       "_origin": "ast",
       "community": 1,
       "norm_label": "envia e-mails para a lista de contatos definida no contacts.json conforme nivel",
-      "id": "src_watchdog_notifier_rationale_105",
-      "community_name": "Notifier"
+      "community_name": "Notifier",
+      "id": "src_watchdog_notifier_rationale_105"
     },
     {
       "label": "Envia relat\u00f3rios consolidados em HTML para a lista de contatos do contacts.json",
@@ -924,8 +924,8 @@
       "_origin": "ast",
       "community": 1,
       "norm_label": "envia relatorios consolidados em html para a lista de contatos do contacts.json",
-      "id": "src_watchdog_notifier_rationale_207",
-      "community_name": "Notifier"
+      "community_name": "Notifier",
+      "id": "src_watchdog_notifier_rationale_207"
     },
     {
       "label": "watchdog_cli.py",
@@ -935,8 +935,8 @@
       "_origin": "ast",
       "community": 0,
       "norm_label": "watchdog_cli.py",
-      "id": "src_watchdog_watchdog_cli",
-      "community_name": "watchdog_cli.py"
+      "community_name": "watchdog_cli.py",
+      "id": "src_watchdog_watchdog_cli"
     },
     {
       "label": "load_config()",
@@ -946,8 +946,8 @@
       "_origin": "ast",
       "community": 0,
       "norm_label": "load_config()",
-      "id": "src_watchdog_watchdog_cli_load_config",
-      "community_name": "watchdog_cli.py"
+      "community_name": "watchdog_cli.py",
+      "id": "src_watchdog_watchdog_cli_load_config"
     },
     {
       "label": "log_to_file()",
@@ -957,8 +957,8 @@
       "_origin": "ast",
       "community": 0,
       "norm_label": "log_to_file()",
-      "id": "src_watchdog_watchdog_cli_log_to_file",
-      "community_name": "watchdog_cli.py"
+      "community_name": "watchdog_cli.py",
+      "id": "src_watchdog_watchdog_cli_log_to_file"
     },
     {
       "label": "resolve_dns_udp()",
@@ -968,8 +968,8 @@
       "_origin": "ast",
       "community": 0,
       "norm_label": "resolve_dns_udp()",
-      "id": "src_watchdog_watchdog_cli_resolve_dns_udp",
-      "community_name": "watchdog_cli.py"
+      "community_name": "watchdog_cli.py",
+      "id": "src_watchdog_watchdog_cli_resolve_dns_udp"
     },
     {
       "label": "test_isp_connectivity()",
@@ -979,8 +979,8 @@
       "_origin": "ast",
       "community": 0,
       "norm_label": "test_isp_connectivity()",
-      "id": "src_watchdog_watchdog_cli_test_isp_connectivity",
-      "community_name": "watchdog_cli.py"
+      "community_name": "watchdog_cli.py",
+      "id": "src_watchdog_watchdog_cli_test_isp_connectivity"
     },
     {
       "label": "test_http_service()",
@@ -990,8 +990,8 @@
       "_origin": "ast",
       "community": 0,
       "norm_label": "test_http_service()",
-      "id": "src_watchdog_watchdog_cli_test_http_service",
-      "community_name": "watchdog_cli.py"
+      "community_name": "watchdog_cli.py",
+      "id": "src_watchdog_watchdog_cli_test_http_service"
     },
     {
       "label": "run_check()",
@@ -1001,8 +1001,8 @@
       "_origin": "ast",
       "community": 0,
       "norm_label": "run_check()",
-      "id": "src_watchdog_watchdog_cli_run_check",
-      "community_name": "watchdog_cli.py"
+      "community_name": "watchdog_cli.py",
+      "id": "src_watchdog_watchdog_cli_run_check"
     },
     {
       "label": "run_daily_report()",
@@ -1012,8 +1012,8 @@
       "_origin": "ast",
       "community": 0,
       "norm_label": "run_daily_report()",
-      "id": "src_watchdog_watchdog_cli_run_daily_report",
-      "community_name": "watchdog_cli.py"
+      "community_name": "watchdog_cli.py",
+      "id": "src_watchdog_watchdog_cli_run_daily_report"
     },
     {
       "label": "run_monthly_report()",
@@ -1023,8 +1023,8 @@
       "_origin": "ast",
       "community": 0,
       "norm_label": "run_monthly_report()",
-      "id": "src_watchdog_watchdog_cli_run_monthly_report",
-      "community_name": "watchdog_cli.py"
+      "community_name": "watchdog_cli.py",
+      "id": "src_watchdog_watchdog_cli_run_monthly_report"
     },
     {
       "label": "Realiza uma consulta DNS UDP (tipo A) de forma nativa (sem depend\u00eancias externas",
@@ -1034,8 +1034,8 @@
       "_origin": "ast",
       "community": 0,
       "norm_label": "realiza uma consulta dns udp (tipo a) de forma nativa (sem dependencias externas",
-      "id": "src_watchdog_watchdog_cli_rationale_63",
-      "community_name": "watchdog_cli.py"
+      "community_name": "watchdog_cli.py",
+      "id": "src_watchdog_watchdog_cli_rationale_63"
     },
     {
       "label": "Testa a conectividade com a internet externa (ISP local) acessando     servi\u00e7os",
@@ -1045,8 +1045,8 @@
       "_origin": "ast",
       "community": 0,
       "norm_label": "testa a conectividade com a internet externa (isp local) acessando     servicos",
-      "id": "src_watchdog_watchdog_cli_rationale_104",
-      "community_name": "watchdog_cli.py"
+      "community_name": "watchdog_cli.py",
+      "id": "src_watchdog_watchdog_cli_rationale_104"
     },
     {
       "label": "Realiza o teste HTTP com sistema de retry (3 tentativas) e fallback     de DNS p",
@@ -1056,8 +1056,8 @@
       "_origin": "ast",
       "community": 0,
       "norm_label": "realiza o teste http com sistema de retry (3 tentativas) e fallback     de dns p",
-      "id": "src_watchdog_watchdog_cli_rationale_121",
-      "community_name": "watchdog_cli.py"
+      "community_name": "watchdog_cli.py",
+      "id": "src_watchdog_watchdog_cli_rationale_121"
     },
     {
       "label": "test_dashboard_auth.py",
@@ -1067,8 +1067,8 @@
       "_origin": "ast",
       "community": 2,
       "norm_label": "test_dashboard_auth.py",
-      "id": "tests_test_dashboard_auth",
-      "community_name": "app.py"
+      "community_name": "app.py",
+      "id": "tests_test_dashboard_auth"
     },
     {
       "label": "client()",
@@ -1078,8 +1078,8 @@
       "_origin": "ast",
       "community": 2,
       "norm_label": "client()",
-      "id": "tests_test_dashboard_auth_client",
-      "community_name": "app.py"
+      "community_name": "app.py",
+      "id": "tests_test_dashboard_auth_client"
     },
     {
       "label": "test_no_auth_env_vars()",
@@ -1089,8 +1089,8 @@
       "_origin": "ast",
       "community": 2,
       "norm_label": "test_no_auth_env_vars()",
-      "id": "tests_test_dashboard_auth_test_no_auth_env_vars",
-      "community_name": "app.py"
+      "community_name": "app.py",
+      "id": "tests_test_dashboard_auth_test_no_auth_env_vars"
     },
     {
       "label": "test_auth_env_vars_no_credentials()",
@@ -1100,8 +1100,8 @@
       "_origin": "ast",
       "community": 2,
       "norm_label": "test_auth_env_vars_no_credentials()",
-      "id": "tests_test_dashboard_auth_test_auth_env_vars_no_credentials",
-      "community_name": "app.py"
+      "community_name": "app.py",
+      "id": "tests_test_dashboard_auth_test_auth_env_vars_no_credentials"
     },
     {
       "label": "test_auth_env_vars_wrong_credentials()",
@@ -1111,8 +1111,8 @@
       "_origin": "ast",
       "community": 2,
       "norm_label": "test_auth_env_vars_wrong_credentials()",
-      "id": "tests_test_dashboard_auth_test_auth_env_vars_wrong_credentials",
-      "community_name": "app.py"
+      "community_name": "app.py",
+      "id": "tests_test_dashboard_auth_test_auth_env_vars_wrong_credentials"
     },
     {
       "label": "test_auth_env_vars_correct_credentials()",
@@ -1122,8 +1122,8 @@
       "_origin": "ast",
       "community": 2,
       "norm_label": "test_auth_env_vars_correct_credentials()",
-      "id": "tests_test_dashboard_auth_test_auth_env_vars_correct_credentials",
-      "community_name": "app.py"
+      "community_name": "app.py",
+      "id": "tests_test_dashboard_auth_test_auth_env_vars_correct_credentials"
     },
     {
       "label": "test_database.py",
@@ -1133,8 +1133,8 @@
       "_origin": "ast",
       "community": 5,
       "norm_label": "test_database.py",
-      "id": "tests_test_database",
-      "community_name": "test_database.py"
+      "community_name": "test_database.py",
+      "id": "tests_test_database"
     },
     {
       "label": "temp_db()",
@@ -1144,8 +1144,8 @@
       "_origin": "ast",
       "community": 5,
       "norm_label": "temp_db()",
-      "id": "tests_test_database_temp_db",
-      "community_name": "test_database.py"
+      "community_name": "test_database.py",
+      "id": "tests_test_database_temp_db"
     },
     {
       "label": "test_database_creation()",
@@ -1155,8 +1155,8 @@
       "_origin": "ast",
       "community": 5,
       "norm_label": "test_database_creation()",
-      "id": "tests_test_database_test_database_creation",
-      "community_name": "test_database.py"
+      "community_name": "test_database.py",
+      "id": "tests_test_database_test_database_creation"
     },
     {
       "label": "test_add_monitor_log()",
@@ -1166,8 +1166,8 @@
       "_origin": "ast",
       "community": 5,
       "norm_label": "test_add_monitor_log()",
-      "id": "tests_test_database_test_add_monitor_log",
-      "community_name": "test_database.py"
+      "community_name": "test_database.py",
+      "id": "tests_test_database_test_add_monitor_log"
     },
     {
       "label": "test_incident_lifecycle()",
@@ -1177,8 +1177,8 @@
       "_origin": "ast",
       "community": 5,
       "norm_label": "test_incident_lifecycle()",
-      "id": "tests_test_database_test_incident_lifecycle",
-      "community_name": "test_database.py"
+      "community_name": "test_database.py",
+      "id": "tests_test_database_test_incident_lifecycle"
     },
     {
       "label": "test_get_kpis_calculation()",
@@ -1188,8 +1188,8 @@
       "_origin": "ast",
       "community": 5,
       "norm_label": "test_get_kpis_calculation()",
-      "id": "tests_test_database_test_get_kpis_calculation",
-      "community_name": "test_database.py"
+      "community_name": "test_database.py",
+      "id": "tests_test_database_test_get_kpis_calculation"
     },
     {
       "label": "Gera um banco de dados SQLite tempor\u00e1rio para testes",
@@ -1199,8 +1199,8 @@
       "_origin": "ast",
       "community": 5,
       "norm_label": "gera um banco de dados sqlite temporario para testes",
-      "id": "tests_test_database_rationale_9",
-      "community_name": "test_database.py"
+      "community_name": "test_database.py",
+      "id": "tests_test_database_rationale_9"
     },
     {
       "label": "Verifica se as tabelas fundamentais foram criadas com as colunas corretas",
@@ -1210,8 +1210,8 @@
       "_origin": "ast",
       "community": 5,
       "norm_label": "verifica se as tabelas fundamentais foram criadas com as colunas corretas",
-      "id": "tests_test_database_rationale_14",
-      "community_name": "test_database.py"
+      "community_name": "test_database.py",
+      "id": "tests_test_database_rationale_14"
     },
     {
       "label": "Verifica a inser\u00e7\u00e3o e recupera\u00e7\u00e3o de logs de monitoramento",
@@ -1221,8 +1221,8 @@
       "_origin": "ast",
       "community": 5,
       "norm_label": "verifica a insercao e recuperacao de logs de monitoramento",
-      "id": "tests_test_database_rationale_40",
-      "community_name": "test_database.py"
+      "community_name": "test_database.py",
+      "id": "tests_test_database_rationale_40"
     },
     {
       "label": "Testa o ciclo de cria\u00e7\u00e3o, incremento e resolu\u00e7\u00e3o de um incidente",
@@ -1232,8 +1232,8 @@
       "_origin": "ast",
       "community": 5,
       "norm_label": "testa o ciclo de criacao, incremento e resolucao de um incidente",
-      "id": "tests_test_database_rationale_57",
-      "community_name": "test_database.py"
+      "community_name": "test_database.py",
+      "id": "tests_test_database_rationale_57"
     },
     {
       "label": "Testa os c\u00e1lculos de disponibilidade e lat\u00eancia do m\u00e9todo get_kpis",
@@ -1243,8 +1243,8 @@
       "_origin": "ast",
       "community": 5,
       "norm_label": "testa os calculos de disponibilidade e latencia do metodo get_kpis",
-      "id": "tests_test_database_rationale_88",
-      "community_name": "test_database.py"
+      "community_name": "test_database.py",
+      "id": "tests_test_database_rationale_88"
     },
     {
       "label": "test_integration_smtp.py",
@@ -1254,8 +1254,8 @@
       "_origin": "ast",
       "community": 8,
       "norm_label": "test_integration_smtp.py",
-      "id": "tests_test_integration_smtp",
-      "community_name": "test_google_smtp_authentication"
+      "community_name": "test_google_smtp_authentication",
+      "id": "tests_test_integration_smtp"
     },
     {
       "label": "test_google_smtp_authentication()",
@@ -1265,8 +1265,8 @@
       "_origin": "ast",
       "community": 8,
       "norm_label": "test_google_smtp_authentication()",
-      "id": "tests_test_integration_smtp_test_google_smtp_authentication",
-      "community_name": "test_google_smtp_authentication"
+      "community_name": "test_google_smtp_authentication",
+      "id": "tests_test_integration_smtp_test_google_smtp_authentication"
     },
     {
       "label": "Teste de Integra\u00e7\u00e3o Real: Conecta e autentica diretamente no SMTP do Google (smt",
@@ -1276,8 +1276,8 @@
       "_origin": "ast",
       "community": 8,
       "norm_label": "teste de integracao real: conecta e autentica diretamente no smtp do google (smt",
-      "id": "tests_test_integration_smtp_rationale_15",
-      "community_name": "test_google_smtp_authentication"
+      "community_name": "test_google_smtp_authentication",
+      "id": "tests_test_integration_smtp_rationale_15"
     },
     {
       "label": "test_notifier.py",
@@ -1287,8 +1287,8 @@
       "_origin": "ast",
       "community": 1,
       "norm_label": "test_notifier.py",
-      "id": "tests_test_notifier",
-      "community_name": "Notifier"
+      "community_name": "Notifier",
+      "id": "tests_test_notifier"
     },
     {
       "label": "temp_contacts()",
@@ -1298,8 +1298,8 @@
       "_origin": "ast",
       "community": 1,
       "norm_label": "temp_contacts()",
-      "id": "tests_test_notifier_temp_contacts",
-      "community_name": "Notifier"
+      "community_name": "Notifier",
+      "id": "tests_test_notifier_temp_contacts"
     },
     {
       "label": "temp_template()",
@@ -1309,8 +1309,8 @@
       "_origin": "ast",
       "community": 1,
       "norm_label": "temp_template()",
-      "id": "tests_test_notifier_temp_template",
-      "community_name": "Notifier"
+      "community_name": "Notifier",
+      "id": "tests_test_notifier_temp_template"
     },
     {
       "label": "test_send_email_alert_success()",
@@ -1320,8 +1320,8 @@
       "_origin": "ast",
       "community": 1,
       "norm_label": "test_send_email_alert_success()",
-      "id": "tests_test_notifier_test_send_email_alert_success",
-      "community_name": "Notifier"
+      "community_name": "Notifier",
+      "id": "tests_test_notifier_test_send_email_alert_success"
     },
     {
       "label": "test_send_email_alert_no_config()",
@@ -1331,8 +1331,8 @@
       "_origin": "ast",
       "community": 1,
       "norm_label": "test_send_email_alert_no_config()",
-      "id": "tests_test_notifier_test_send_email_alert_no_config",
-      "community_name": "Notifier"
+      "community_name": "Notifier",
+      "id": "tests_test_notifier_test_send_email_alert_no_config"
     },
     {
       "label": "temp_contacts_with_levels()",
@@ -1342,8 +1342,8 @@
       "_origin": "ast",
       "community": 1,
       "norm_label": "temp_contacts_with_levels()",
-      "id": "tests_test_notifier_temp_contacts_with_levels",
-      "community_name": "Notifier"
+      "community_name": "Notifier",
+      "id": "tests_test_notifier_temp_contacts_with_levels"
     },
     {
       "label": "test_send_email_report_filtering()",
@@ -1353,8 +1353,8 @@
       "_origin": "ast",
       "community": 1,
       "norm_label": "test_send_email_report_filtering()",
-      "id": "tests_test_notifier_test_send_email_report_filtering",
-      "community_name": "Notifier"
+      "community_name": "Notifier",
+      "id": "tests_test_notifier_test_send_email_report_filtering"
     },
     {
       "label": "Gera um arquivo de contatos JSON tempor\u00e1rio para testes",
@@ -1364,8 +1364,8 @@
       "_origin": "ast",
       "community": 1,
       "norm_label": "gera um arquivo de contatos json temporario para testes",
-      "id": "tests_test_notifier_rationale_9",
-      "community_name": "Notifier"
+      "community_name": "Notifier",
+      "id": "tests_test_notifier_rationale_9"
     },
     {
       "label": "Gera um arquivo de template de e-mail HTML tempor\u00e1rio para testes",
@@ -1375,8 +1375,8 @@
       "_origin": "ast",
       "community": 1,
       "norm_label": "gera um arquivo de template de e-mail html temporario para testes",
-      "id": "tests_test_notifier_rationale_21",
-      "community_name": "Notifier"
+      "community_name": "Notifier",
+      "id": "tests_test_notifier_rationale_21"
     },
     {
       "label": "Testa o envio de e-mail mockando a classe SMTP para garantir o fluxo l\u00f3gico corr",
@@ -1386,8 +1386,8 @@
       "_origin": "ast",
       "community": 1,
       "norm_label": "testa o envio de e-mail mockando a classe smtp para garantir o fluxo logico corr",
-      "id": "tests_test_notifier_rationale_30",
-      "community_name": "Notifier"
+      "community_name": "Notifier",
+      "id": "tests_test_notifier_rationale_30"
     },
     {
       "label": "Testa a falha graciosa caso o SMTP n\u00e3o esteja devidamente configurado",
@@ -1397,8 +1397,8 @@
       "_origin": "ast",
       "community": 1,
       "norm_label": "testa a falha graciosa caso o smtp nao esteja devidamente configurado",
-      "id": "tests_test_notifier_rationale_80",
-      "community_name": "Notifier"
+      "community_name": "Notifier",
+      "id": "tests_test_notifier_rationale_80"
     },
     {
       "label": "Gera um arquivo de contatos JSON tempor\u00e1rio com n\u00edveis para testar filtragem",
@@ -1408,8 +1408,8 @@
       "_origin": "ast",
       "community": 1,
       "norm_label": "gera um arquivo de contatos json temporario com niveis para testar filtragem",
-      "id": "tests_test_notifier_rationale_94",
-      "community_name": "Notifier"
+      "community_name": "Notifier",
+      "id": "tests_test_notifier_rationale_94"
     },
     {
       "label": "Testa se o relat\u00f3rio por e-mail filtra corretamente os destinat\u00e1rios com base no",
@@ -1419,8 +1419,8 @@
       "_origin": "ast",
       "community": 1,
       "norm_label": "testa se o relatorio por e-mail filtra corretamente os destinatarios com base no",
-      "id": "tests_test_notifier_rationale_109",
-      "community_name": "Notifier"
+      "community_name": "Notifier",
+      "id": "tests_test_notifier_rationale_109"
     },
     {
       "label": "test_watchdog_cli.py",
@@ -1430,8 +1430,8 @@
       "_origin": "ast",
       "community": 0,
       "norm_label": "test_watchdog_cli.py",
-      "id": "tests_test_watchdog_cli",
-      "community_name": "watchdog_cli.py"
+      "community_name": "watchdog_cli.py",
+      "id": "tests_test_watchdog_cli"
     },
     {
       "label": "test_http_service_healthy()",
@@ -1441,8 +1441,8 @@
       "_origin": "ast",
       "community": 0,
       "norm_label": "test_http_service_healthy()",
-      "id": "tests_test_watchdog_cli_test_http_service_healthy",
-      "community_name": "watchdog_cli.py"
+      "community_name": "watchdog_cli.py",
+      "id": "tests_test_watchdog_cli_test_http_service_healthy"
     },
     {
       "label": "test_http_service_invalid_metadata()",
@@ -1452,8 +1452,8 @@
       "_origin": "ast",
       "community": 0,
       "norm_label": "test_http_service_invalid_metadata()",
-      "id": "tests_test_watchdog_cli_test_http_service_invalid_metadata",
-      "community_name": "watchdog_cli.py"
+      "community_name": "watchdog_cli.py",
+      "id": "tests_test_watchdog_cli_test_http_service_invalid_metadata"
     },
     {
       "label": "test_http_service_akamai_block_status()",
@@ -1463,8 +1463,8 @@
       "_origin": "ast",
       "community": 0,
       "norm_label": "test_http_service_akamai_block_status()",
-      "id": "tests_test_watchdog_cli_test_http_service_akamai_block_status",
-      "community_name": "watchdog_cli.py"
+      "community_name": "watchdog_cli.py",
+      "id": "tests_test_watchdog_cli_test_http_service_akamai_block_status"
     },
     {
       "label": "test_http_service_db_exposure()",
@@ -1474,8 +1474,8 @@
       "_origin": "ast",
       "community": 0,
       "norm_label": "test_http_service_db_exposure()",
-      "id": "tests_test_watchdog_cli_test_http_service_db_exposure",
-      "community_name": "watchdog_cli.py"
+      "community_name": "watchdog_cli.py",
+      "id": "tests_test_watchdog_cli_test_http_service_db_exposure"
     },
     {
       "label": "test_http_service_signature_mismatch()",
@@ -1485,8 +1485,8 @@
       "_origin": "ast",
       "community": 0,
       "norm_label": "test_http_service_signature_mismatch()",
-      "id": "tests_test_watchdog_cli_test_http_service_signature_mismatch",
-      "community_name": "watchdog_cli.py"
+      "community_name": "watchdog_cli.py",
+      "id": "tests_test_watchdog_cli_test_http_service_signature_mismatch"
     },
     {
       "label": "test_http_service_ssl_error()",
@@ -1496,8 +1496,8 @@
       "_origin": "ast",
       "community": 0,
       "norm_label": "test_http_service_ssl_error()",
-      "id": "tests_test_watchdog_cli_test_http_service_ssl_error",
-      "community_name": "watchdog_cli.py"
+      "community_name": "watchdog_cli.py",
+      "id": "tests_test_watchdog_cli_test_http_service_ssl_error"
     },
     {
       "label": "test_http_service_too_short()",
@@ -1507,8 +1507,8 @@
       "_origin": "ast",
       "community": 0,
       "norm_label": "test_http_service_too_short()",
-      "id": "tests_test_watchdog_cli_test_http_service_too_short",
-      "community_name": "watchdog_cli.py"
+      "community_name": "watchdog_cli.py",
+      "id": "tests_test_watchdog_cli_test_http_service_too_short"
     },
     {
       "label": "test_http_service_incomplete_signature()",
@@ -1518,8 +1518,8 @@
       "_origin": "ast",
       "community": 0,
       "norm_label": "test_http_service_incomplete_signature()",
-      "id": "tests_test_watchdog_cli_test_http_service_incomplete_signature",
-      "community_name": "watchdog_cli.py"
+      "community_name": "watchdog_cli.py",
+      "id": "tests_test_watchdog_cli_test_http_service_incomplete_signature"
     },
     {
       "label": "test_http_service_healthy_long_enough()",
@@ -1529,8 +1529,8 @@
       "_origin": "ast",
       "community": 0,
       "norm_label": "test_http_service_healthy_long_enough()",
-      "id": "tests_test_watchdog_cli_test_http_service_healthy_long_enough",
-      "community_name": "watchdog_cli.py"
+      "community_name": "watchdog_cli.py",
+      "id": "tests_test_watchdog_cli_test_http_service_healthy_long_enough"
     },
     {
       "label": "test_isp_connectivity_online()",
@@ -1540,8 +1540,8 @@
       "_origin": "ast",
       "community": 0,
       "norm_label": "test_isp_connectivity_online()",
-      "id": "tests_test_watchdog_cli_test_isp_connectivity_online",
-      "community_name": "watchdog_cli.py"
+      "community_name": "watchdog_cli.py",
+      "id": "tests_test_watchdog_cli_test_isp_connectivity_online"
     },
     {
       "label": "test_isp_connectivity_offline()",
@@ -1551,8 +1551,8 @@
       "_origin": "ast",
       "community": 0,
       "norm_label": "test_isp_connectivity_offline()",
-      "id": "tests_test_watchdog_cli_test_isp_connectivity_offline",
-      "community_name": "watchdog_cli.py"
+      "community_name": "watchdog_cli.py",
+      "id": "tests_test_watchdog_cli_test_isp_connectivity_offline"
     },
     {
       "label": "Testa o caso em que o servi\u00e7o Agrocenter est\u00e1 100% saud\u00e1vel",
@@ -1562,8 +1562,8 @@
       "_origin": "ast",
       "community": 0,
       "norm_label": "testa o caso em que o servico agrocenter esta 100% saudavel",
-      "id": "tests_test_watchdog_cli_rationale_11",
-      "community_name": "watchdog_cli.py"
+      "community_name": "watchdog_cli.py",
+      "id": "tests_test_watchdog_cli_rationale_11"
     },
     {
       "label": "Testa falha de valida\u00e7\u00e3o quando o Content-Type retornado n\u00e3o \u00e9 HTML",
@@ -1573,8 +1573,8 @@
       "_origin": "ast",
       "community": 0,
       "norm_label": "testa falha de validacao quando o content-type retornado nao e html",
-      "id": "tests_test_watchdog_cli_rationale_26",
-      "community_name": "watchdog_cli.py"
+      "community_name": "watchdog_cli.py",
+      "id": "tests_test_watchdog_cli_rationale_26"
     },
     {
       "label": "Testa detec\u00e7\u00e3o de bloqueio do WAF Akamai via status code de erro e assinatura",
@@ -1584,8 +1584,8 @@
       "_origin": "ast",
       "community": 0,
       "norm_label": "testa deteccao de bloqueio do waf akamai via status code de erro e assinatura",
-      "id": "tests_test_watchdog_cli_rationale_40",
-      "community_name": "watchdog_cli.py"
+      "community_name": "watchdog_cli.py",
+      "id": "tests_test_watchdog_cli_rationale_40"
     },
     {
       "label": "Testa detec\u00e7\u00e3o de falha interna/banco de dados exposta na resposta HTML",
@@ -1595,8 +1595,8 @@
       "_origin": "ast",
       "community": 0,
       "norm_label": "testa deteccao de falha interna/banco de dados exposta na resposta html",
-      "id": "tests_test_watchdog_cli_rationale_54",
-      "community_name": "watchdog_cli.py"
+      "community_name": "watchdog_cli.py",
+      "id": "tests_test_watchdog_cli_rationale_54"
     },
     {
       "label": "Testa falha quando a resposta HTML n\u00e3o condiz com nenhuma assinatura do Agrocent",
@@ -1606,8 +1606,8 @@
       "_origin": "ast",
       "community": 0,
       "norm_label": "testa falha quando a resposta html nao condiz com nenhuma assinatura do agrocent",
-      "id": "tests_test_watchdog_cli_rationale_68",
-      "community_name": "watchdog_cli.py"
+      "community_name": "watchdog_cli.py",
+      "id": "tests_test_watchdog_cli_rationale_68"
     },
     {
       "label": "Testa detec\u00e7\u00e3o de erro de SSL",
@@ -1617,8 +1617,8 @@
       "_origin": "ast",
       "community": 0,
       "norm_label": "testa deteccao de erro de ssl",
-      "id": "tests_test_watchdog_cli_rationale_83",
-      "community_name": "watchdog_cli.py"
+      "community_name": "watchdog_cli.py",
+      "id": "tests_test_watchdog_cli_rationale_83"
     },
     {
       "label": "Testa falha quando a resposta \u00e9 excessivamente curta",
@@ -1628,8 +1628,8 @@
       "_origin": "ast",
       "community": 0,
       "norm_label": "testa falha quando a resposta e excessivamente curta",
-      "id": "tests_test_watchdog_cli_rationale_93",
-      "community_name": "watchdog_cli.py"
+      "community_name": "watchdog_cli.py",
+      "id": "tests_test_watchdog_cli_rationale_93"
     },
     {
       "label": "Testa falha quando apenas parte da assinatura est\u00e1 presente",
@@ -1639,8 +1639,8 @@
       "_origin": "ast",
       "community": 0,
       "norm_label": "testa falha quando apenas parte da assinatura esta presente",
-      "id": "tests_test_watchdog_cli_rationale_107",
-      "community_name": "watchdog_cli.py"
+      "community_name": "watchdog_cli.py",
+      "id": "tests_test_watchdog_cli_rationale_107"
     },
     {
       "label": "Testa sucesso com assinaturas completas e tamanho suficiente",
@@ -1650,8 +1650,8 @@
       "_origin": "ast",
       "community": 0,
       "norm_label": "testa sucesso com assinaturas completas e tamanho suficiente",
-      "id": "tests_test_watchdog_cli_rationale_122",
-      "community_name": "watchdog_cli.py"
+      "community_name": "watchdog_cli.py",
+      "id": "tests_test_watchdog_cli_rationale_122"
     },
     {
       "label": "Testa a checagem de ISP retornando online",
@@ -1661,8 +1661,8 @@
       "_origin": "ast",
       "community": 0,
       "norm_label": "testa a checagem de isp retornando online",
-      "id": "tests_test_watchdog_cli_rationale_136",
-      "community_name": "watchdog_cli.py"
+      "community_name": "watchdog_cli.py",
+      "id": "tests_test_watchdog_cli_rationale_136"
     },
     {
       "label": "Testa a checagem de ISP falhando por completo",
@@ -1672,8 +1672,8 @@
       "_origin": "ast",
       "community": 0,
       "norm_label": "testa a checagem de isp falhando por completo",
-      "id": "tests_test_watchdog_cli_rationale_145",
-      "community_name": "watchdog_cli.py"
+      "community_name": "watchdog_cli.py",
+      "id": "tests_test_watchdog_cli_rationale_145"
     }
   ],
   "links": [
@@ -3869,5 +3869,5 @@
     }
   ],
   "hyperedges": [],
-  "built_at_commit": "4c5f6cb4bff2867d2a51381b23c616f709570a7b"
+  "built_at_commit": "9b18bc0941889b4271fc186eea657d30093d3eda"
 }
