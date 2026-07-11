@@ -1,0 +1,339 @@
+{
+  "communities": {
+    "0": [
+      "src_watchdog_watchdog_cli",
+      "src_watchdog_watchdog_cli_load_config",
+      "src_watchdog_watchdog_cli_log_to_file",
+      "src_watchdog_watchdog_cli_rationale_104",
+      "src_watchdog_watchdog_cli_rationale_121",
+      "src_watchdog_watchdog_cli_rationale_63",
+      "src_watchdog_watchdog_cli_resolve_dns_udp",
+      "src_watchdog_watchdog_cli_run_check",
+      "src_watchdog_watchdog_cli_run_daily_report",
+      "src_watchdog_watchdog_cli_run_monthly_report",
+      "src_watchdog_watchdog_cli_test_http_service",
+      "src_watchdog_watchdog_cli_test_isp_connectivity",
+      "tests_test_watchdog_cli",
+      "tests_test_watchdog_cli_rationale_107",
+      "tests_test_watchdog_cli_rationale_11",
+      "tests_test_watchdog_cli_rationale_122",
+      "tests_test_watchdog_cli_rationale_136",
+      "tests_test_watchdog_cli_rationale_145",
+      "tests_test_watchdog_cli_rationale_26",
+      "tests_test_watchdog_cli_rationale_40",
+      "tests_test_watchdog_cli_rationale_54",
+      "tests_test_watchdog_cli_rationale_68",
+      "tests_test_watchdog_cli_rationale_83",
+      "tests_test_watchdog_cli_rationale_93",
+      "tests_test_watchdog_cli_test_http_service_akamai_block_status",
+      "tests_test_watchdog_cli_test_http_service_db_exposure",
+      "tests_test_watchdog_cli_test_http_service_healthy",
+      "tests_test_watchdog_cli_test_http_service_healthy_long_enough",
+      "tests_test_watchdog_cli_test_http_service_incomplete_signature",
+      "tests_test_watchdog_cli_test_http_service_invalid_metadata",
+      "tests_test_watchdog_cli_test_http_service_signature_mismatch",
+      "tests_test_watchdog_cli_test_http_service_ssl_error",
+      "tests_test_watchdog_cli_test_http_service_too_short",
+      "tests_test_watchdog_cli_test_isp_connectivity_offline",
+      "tests_test_watchdog_cli_test_isp_connectivity_online"
+    ],
+    "1": [
+      "scripts_test_all_levels",
+      "scripts_test_all_levels_run_tests",
+      "src_watchdog_notifier",
+      "src_watchdog_notifier_notifier",
+      "src_watchdog_notifier_notifier_get_thresholds",
+      "src_watchdog_notifier_notifier_init",
+      "src_watchdog_notifier_notifier_send_email_alert",
+      "src_watchdog_notifier_notifier_send_email_report",
+      "src_watchdog_notifier_notifier_send_telegram",
+      "src_watchdog_notifier_notifier_send_telegram_alert",
+      "src_watchdog_notifier_rationale_101",
+      "src_watchdog_notifier_rationale_105",
+      "src_watchdog_notifier_rationale_207",
+      "tests_test_notifier",
+      "tests_test_notifier_rationale_109",
+      "tests_test_notifier_rationale_21",
+      "tests_test_notifier_rationale_30",
+      "tests_test_notifier_rationale_80",
+      "tests_test_notifier_rationale_9",
+      "tests_test_notifier_rationale_94",
+      "tests_test_notifier_temp_contacts",
+      "tests_test_notifier_temp_contacts_with_levels",
+      "tests_test_notifier_temp_template",
+      "tests_test_notifier_test_send_email_alert_no_config",
+      "tests_test_notifier_test_send_email_alert_success",
+      "tests_test_notifier_test_send_email_report_filtering"
+    ],
+    "2": [
+      "src_dashboard_app",
+      "src_dashboard_app_api_contacts",
+      "src_dashboard_app_api_delete_contact",
+      "src_dashboard_app_api_get_doc",
+      "src_dashboard_app_api_kpis",
+      "src_dashboard_app_api_latency_6h",
+      "src_dashboard_app_api_logs",
+      "src_dashboard_app_api_settings",
+      "src_dashboard_app_api_system_logs",
+      "src_dashboard_app_api_update_contact",
+      "src_dashboard_app_check_auth",
+      "src_dashboard_app_index",
+      "src_dashboard_app_ratelimit_handler",
+      "src_dashboard_app_rationale_108",
+      "src_dashboard_app_rationale_117",
+      "src_dashboard_app_rationale_93",
+      "src_dashboard_app_trigger_check",
+      "tests_test_dashboard_auth",
+      "tests_test_dashboard_auth_client",
+      "tests_test_dashboard_auth_test_auth_env_vars_correct_credentials",
+      "tests_test_dashboard_auth_test_auth_env_vars_no_credentials",
+      "tests_test_dashboard_auth_test_auth_env_vars_wrong_credentials",
+      "tests_test_dashboard_auth_test_no_auth_env_vars"
+    ],
+    "3": [
+      "src_watchdog_database_databasemanager",
+      "src_watchdog_database_databasemanager_add_monitor_log",
+      "src_watchdog_database_databasemanager_create_incident",
+      "src_watchdog_database_databasemanager_get_active_incident",
+      "src_watchdog_database_databasemanager_get_all_settings",
+      "src_watchdog_database_databasemanager_get_connection",
+      "src_watchdog_database_databasemanager_get_kpis",
+      "src_watchdog_database_databasemanager_get_latency_history_6h",
+      "src_watchdog_database_databasemanager_get_latest_logs",
+      "src_watchdog_database_databasemanager_get_setting",
+      "src_watchdog_database_databasemanager_init",
+      "src_watchdog_database_databasemanager_init_db",
+      "src_watchdog_database_databasemanager_mark_email_sent",
+      "src_watchdog_database_databasemanager_mark_telegram_sent",
+      "src_watchdog_database_databasemanager_resolve_incident",
+      "src_watchdog_database_databasemanager_update_incident_failures",
+      "src_watchdog_database_databasemanager_update_settings",
+      "src_watchdog_database_rationale_147",
+      "src_watchdog_database_rationale_170"
+    ],
+    "4": [
+      "src_dashboard_static_js_main",
+      "src_dashboard_static_js_main_appendterminalline",
+      "src_dashboard_static_js_main_applysettingstodom",
+      "src_dashboard_static_js_main_deletecontact",
+      "src_dashboard_static_js_main_editcontact",
+      "src_dashboard_static_js_main_escapehtml",
+      "src_dashboard_static_js_main_formatmarkdowntoretroterminal",
+      "src_dashboard_static_js_main_formatminutestext",
+      "src_dashboard_static_js_main_loadcontacts",
+      "src_dashboard_static_js_main_loadsettings",
+      "src_dashboard_static_js_main_resetformstate",
+      "src_dashboard_static_js_main_updatedashboarddata",
+      "src_dashboard_static_js_main_updatelatencychart",
+      "src_dashboard_static_js_main_updatesystemlogs"
+    ],
+    "5": [
+      "src_watchdog_database",
+      "tests_test_database",
+      "tests_test_database_rationale_14",
+      "tests_test_database_rationale_40",
+      "tests_test_database_rationale_57",
+      "tests_test_database_rationale_88",
+      "tests_test_database_rationale_9",
+      "tests_test_database_temp_db",
+      "tests_test_database_test_add_monitor_log",
+      "tests_test_database_test_database_creation",
+      "tests_test_database_test_get_kpis_calculation",
+      "tests_test_database_test_incident_lifecycle"
+    ],
+    "6": [
+      "scripts_verify_notifications",
+      "scripts_verify_notifications_main",
+      "scripts_verify_notifications_print_header",
+      "scripts_verify_notifications_test_email",
+      "scripts_verify_notifications_test_telegram"
+    ],
+    "7": [
+      "scripts_run_tests",
+      "scripts_run_tests_pythonpath",
+      "scripts_run_tests_sh__entry"
+    ],
+    "8": [
+      "tests_test_integration_smtp",
+      "tests_test_integration_smtp_rationale_15",
+      "tests_test_integration_smtp_test_google_smtp_authentication"
+    ],
+    "9": [
+      "scripts_keepalive_dashboard",
+      "scripts_keepalive_dashboard_sh__entry"
+    ],
+    "10": [
+      "scripts_log_resources",
+      "scripts_log_resources_sh__entry"
+    ],
+    "11": [
+      "scripts_run_watchdog",
+      "scripts_run_watchdog_sh__entry"
+    ],
+    "12": [
+      "scripts_setup_alpine",
+      "scripts_setup_alpine_sh__entry"
+    ]
+  },
+  "cohesion": {
+    "0": 0.07899159663865546,
+    "1": 0.09846153846153846,
+    "2": 0.08695652173913043,
+    "3": 0.19883040935672514,
+    "4": 0.25274725274725274,
+    "5": 0.16666666666666666,
+    "6": 0.7,
+    "7": 0.6666666666666666,
+    "8": 0.6666666666666666,
+    "9": 1.0,
+    "10": 1.0,
+    "11": 1.0,
+    "12": 1.0
+  },
+  "gods": [
+    {
+      "id": "src_watchdog_database_databasemanager",
+      "label": "DatabaseManager",
+      "degree": 24
+    },
+    {
+      "id": "src_watchdog_notifier_notifier",
+      "label": "Notifier",
+      "degree": 19
+    },
+    {
+      "id": "src_watchdog_watchdog_cli_load_config",
+      "label": "load_config()",
+      "degree": 8
+    },
+    {
+      "id": "src_watchdog_watchdog_cli_run_check",
+      "label": "run_check()",
+      "degree": 8
+    },
+    {
+      "id": "scripts_verify_notifications_main",
+      "label": "main()",
+      "degree": 6
+    },
+    {
+      "id": "src_watchdog_watchdog_cli_test_isp_connectivity",
+      "label": "test_isp_connectivity()",
+      "degree": 6
+    },
+    {
+      "id": "src_watchdog_watchdog_cli_test_http_service",
+      "label": "test_http_service()",
+      "degree": 6
+    },
+    {
+      "id": "src_dashboard_static_js_main_loadcontacts",
+      "label": "loadContacts()",
+      "degree": 5
+    },
+    {
+      "id": "src_watchdog_watchdog_cli_run_daily_report",
+      "label": "run_daily_report()",
+      "degree": 5
+    },
+    {
+      "id": "src_watchdog_watchdog_cli_run_monthly_report",
+      "label": "run_monthly_report()",
+      "degree": 5
+    }
+  ],
+  "surprises": [
+    {
+      "source": "run_tests()",
+      "target": "load_config()",
+      "source_files": [
+        "scripts/test_all_levels.py",
+        "src/watchdog/watchdog_cli.py"
+      ],
+      "confidence": "EXTRACTED",
+      "relation": "calls",
+      "why": "connects across different repos/directories; bridges separate communities"
+    },
+    {
+      "source": "main()",
+      "target": "Notifier",
+      "source_files": [
+        "scripts/verify_notifications.py",
+        "src/watchdog/notifier.py"
+      ],
+      "confidence": "EXTRACTED",
+      "relation": "calls",
+      "why": "connects across different repos/directories; bridges separate communities"
+    },
+    {
+      "source": "main()",
+      "target": "load_config()",
+      "source_files": [
+        "scripts/verify_notifications.py",
+        "src/watchdog/watchdog_cli.py"
+      ],
+      "confidence": "EXTRACTED",
+      "relation": "calls",
+      "why": "connects across different repos/directories; bridges separate communities"
+    },
+    {
+      "source": "temp_db()",
+      "target": "DatabaseManager",
+      "source_files": [
+        "tests/test_database.py",
+        "src/watchdog/database.py"
+      ],
+      "confidence": "EXTRACTED",
+      "relation": "calls",
+      "why": "connects across different repos/directories; bridges separate communities"
+    },
+    {
+      "source": "run_tests()",
+      "target": "Notifier",
+      "source_files": [
+        "scripts/test_all_levels.py",
+        "src/watchdog/notifier.py"
+      ],
+      "confidence": "EXTRACTED",
+      "relation": "calls",
+      "why": "connects across different repos/directories"
+    }
+  ],
+  "questions": [
+    {
+      "type": "bridge_node",
+      "question": "Why does `DatabaseManager` connect `DatabaseManager` to `watchdog_cli.py`, `app.py`, `test_database.py`?",
+      "why": "High betweenness centrality (0.241) - this node is a cross-community bridge."
+    },
+    {
+      "type": "bridge_node",
+      "question": "Why does `Notifier` connect `Notifier` to `watchdog_cli.py`, `verify_notifications.py`?",
+      "why": "High betweenness centrality (0.200) - this node is a cross-community bridge."
+    },
+    {
+      "type": "bridge_node",
+      "question": "Why does `run_check()` connect `watchdog_cli.py` to `Notifier`, `app.py`, `DatabaseManager`?",
+      "why": "High betweenness centrality (0.060) - this node is a cross-community bridge."
+    },
+    {
+      "type": "isolated_nodes",
+      "question": "What connects `keepalive_dashboard.sh script`, `log_resources.sh script`, `run_tests.sh script` to the rest of the system?",
+      "why": "40 weakly-connected nodes found - possible documentation gaps or missing edges."
+    },
+    {
+      "type": "low_cohesion",
+      "question": "Should `watchdog_cli.py` be split into smaller, more focused modules?",
+      "why": "Cohesion score 0.07899159663865546 - nodes in this community are weakly interconnected."
+    },
+    {
+      "type": "low_cohesion",
+      "question": "Should `Notifier` be split into smaller, more focused modules?",
+      "why": "Cohesion score 0.09846153846153846 - nodes in this community are weakly interconnected."
+    },
+    {
+      "type": "low_cohesion",
+      "question": "Should `app.py` be split into smaller, more focused modules?",
+      "why": "Cohesion score 0.08695652173913043 - nodes in this community are weakly interconnected."
+    }
+  ]
+}

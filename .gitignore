@@ -47,3 +47,7 @@ src/watchdog/database.db
 .idea/
 .DS_Store
 Thumbs.db
+
+# Graphify cache
+graphify-out/cache/
+
