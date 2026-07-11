@@ -6,19 +6,22 @@ Watchdog minimalista, resiliente e de baixo consumo de recursos, projetado para 
 
 ## 🚀 Pilares da Solução
 
-1. **Comunicação Eficiente (Plataforma Centralizada)**
-   - Alertas rápidos de falha e restabelecimento enviados diretamente ao Telegram (usando `aiogram`).
-   - Escalação via e-mail corporativo em HTML (com tema Azul Cobalto e Branco) para contatos definidos em `contacts.json`.
-   - Dashboard Flask interativo que emula mini-terminais do Linux mostrando KPIs de integridade.
+Como o Agrocenter C.Vale suporta o fluxo de operações logísticas do campo, a prevenção de quedas de serviços é crucial para evitar interrupções de suprimentos. A solução proposta para as falhas na entrega de ração é baseada em três pilares estratégicos:
 
-2. **Processos Otimizados**
-   - Lógica de incidentes persistentes para evitar disparos repetidos.
-   - Banco de dados SQLite local mapeando logs de teste e incidentes.
+1. **Comunicação Eficiente (Plataforma Centralizada)**
+   - Alertas rápidos de integridade e restabelecimento enviados diretamente ao Telegram (usando `aiogram`).
+   - Escalação via e-mail corporativo em HTML (com tema Azul Cobalto e Branco) para contatos definidos em `contacts.json`.
+   - Dashboard Flask interativo que emula mini-terminais do Linux mostrando KPIs de integridade de forma centralizada.
+
+2. **Processos Otimizados (Redesenho de Fluxo e Confirmação de Pedidos)**
+   - Lógica de incidentes persistentes para evitar disparos repetidos e alarmes falsos durante o fluxo de pedidos.
+   - Banco de dados SQLite local mapeando logs de teste e incidentes, garantindo auditoria nas confirmações de pedidos de ração.
    - MER detalhado no arquivo [idea.md](docs/idea.md).
 
-3. **Tecnologia Habilitadora**
+3. **Tecnologia Habilitadora (TMS, Sensores de Nível nos Silos)**
+   - Preparação de canais para integração de telemetria (sensores de nível de ração nos silos) e controle logístico de frotas (TMS).
    - Sistema otimizado para rodar de forma extremamente leve em **Alpine Linux** (ideal para o Raspberry Pi 3B com consumo de RAM inferior a 50MB).
-   - Validador de premissas HTTP para identificar problemas reais de backend, firewall ou banco de dados offline, mesmo quando o servidor responde com código status 200.
+   - Validador de premissas HTTP para identificar problemas reais de backend, firewall ou banco de dados offline.
 
 ---
 
@@ -31,6 +34,8 @@ Watchdog minimalista, resiliente e de baixo consumo de recursos, projetado para 
 - [src/watchdog/](src/watchdog/) - Código-fonte do monitor, banco de dados e envio de notificações.
 - [src/dashboard/](src/dashboard/) - Aplicação Web Flask com o mini-terminal nerd de monitoramento.
 - [scripts/](scripts/) - Scripts de instalação no Alpine Linux e execução no cron.
+- [skills/](skills/) e [.agents/](.agents/) - Configurações de IA, workflows, regras e skills do agente (ex: Graphify).
+- [graphify-out/](graphify-out/) - Grafo de conhecimento gerado da estrutura de código do repositório.
 - [logs/](logs/) - Registros de execução local.
 
 ---
@@ -122,3 +127,21 @@ O manual aborda:
 | Frequência de Checagem a cada 3 min | 100% | Concluído |
 | Novo Nível 4 de Alerta (12h) | 100% | Concluído |
 | Integração de Logos (C.Vale & Agrocenter) no e-mail e site | 100% | Concluído |
+
+---
+
+## 🔍 Grafo de Conhecimento (Graphify)
+
+Este repositório possui uma base de conhecimento estruturada e indexada com a ferramenta **Graphify**. Ela analisa a AST (árvore de sintaxe abstrata) do código e mapeia as relações de dependências, comunidades de código e fluxos lógicos.
+
+### Como usar e interagir com o Grafo:
+Se você utiliza agentes de inteligência artificial compatíveis (como Claude Code, Cursor ou Google Antigravity), a skill instalada em `.agents/skills/graphify` permite responder a perguntas complexas sobre a arquitetura do projeto de forma nativa.
+
+*   **Verificar o Grafo:** O relatório descritivo completo está salvo em [graphify-out/GRAPH_REPORT.md](file:///home/brunoconter/Documentos/1_C.VALE/2%20-%20PROJETOS/11_WATCHDOG_AGROCENTER/graphify-out/GRAPH_REPORT.md).
+*   **Visualização Interativa:** Abra o arquivo [graphify-out/graph.html](file:///home/brunoconter/Documentos/1_C.VALE/2%20-%20PROJETOS/11_WATCHDOG_AGROCENTER/graphify-out/graph.html) no navegador para ver uma representação 3D das conexões e classes do projeto.
+*   **Atualizar o Grafo:** Sempre que alterar a estrutura lógica do código (novas classes, funções ou imports), atualize o grafo executando:
+    ```bash
+    venv/bin/graphify . --code-only --update
+    venv/bin/graphify cluster-only .
+    ```
+

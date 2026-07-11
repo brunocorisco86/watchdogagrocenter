@@ -6,21 +6,22 @@ Este projeto consiste em um sistema de Watchdog minimalista e resiliente para mo
 
 ## 1. Alinhamento com os Três Pilares
 
-O projeto está estruturado em torno dos três pilares estratégicos de resolução de falhas:
+O projeto está estruturado em torno dos três pilares estratégicos para mitigação de falhas na entrega de ração da cooperativa:
 
 1. **Comunicação Eficiente (Plataforma Centralizada)**
    - Notificações imediatas via **Telegram** (usando `aiogram`) para eventos de falha e restabelecimento.
-   - Escalação via **E-mail** (template em HTML personalizado nas cores Azul Cobalto e Branco) para uma lista de contatos persistente em caso de falhas consecutivas.
-   - Dashboard Flask simulando mini-terminais retrô (nerd) com KPIs de disponibilidade.
+   - Escalação via **E-mail** (template em HTML personalizado nas cores Azul Cobalto e Branco) para contatos de TI e Negócios.
+   - Dashboard Flask simulando mini-terminais retrô (nerd) com KPIs de disponibilidade para monitorar as APIs do Agrocenter C.Vale centralizadamente.
 
-2. **Processos Otimizados (Fluxo e Resiliência)**
-   - O Watchdog executa de forma periódica via **cron**.
-   - Armazenamento de métricas e histórico de incidentes em banco local **SQLite** de baixo overhead.
-   - Lógica de persistência de falhas para evitar alarmes falsos e escalonamento inteligente (notifica Telegram no primeiro erro, e-mail após *N* falhas consecutivas).
+2. **Processos Otimizados (Redesenho de Fluxo e Confirmação de Pedidos)**
+   - Lógica de incidentes persistentes para evitar alarmes falsos, prevenindo gargalos operacionais no processamento de pedidos.
+   - Banco de dados SQLite local mapeando logs de teste e incidentes, provendo trilhas de auditoria para as confirmações de pedidos de ração.
+   - Lógica de escalonamento inteligente multinível (de 15 min a 12h de indisponibilidade).
 
-3. **Tecnologia Habilitadora (Hardware e Sistemas)**
-   - Implementação focada em **Alpine Linux** rodando no **Raspberry Pi 3B** para garantir consumo mínimo de RAM e CPU.
-   - Monitoramento HTTP inteligente (validação de tempo de resposta, cabeçalhos, e conteúdo de backend, não apenas o status code 200).
+3. **Tecnologia Habilitadora (TMS, Sensores de Nível nos Silos)**
+   - Base e canais de comunicação preparados para monitoramento futuro e conexões com sistemas logísticos (TMS) e telemetria (sensores de nível de ração nos silos).
+   - Implementação focada em **Alpine Linux** rodando no **Raspberry Pi 3B** para consumo mínimo e imunidade a corrupções de cartão SD.
+   - Validador de premissas HTTP inteligente para identificar problemas de firewall, DNS ou banco de dados offline.
 
 ---
 
