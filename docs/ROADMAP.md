@@ -21,3 +21,12 @@ Planejamento estratégico de melhorias evolutivas e novas funcionalidades para o
 ## 📅 Longo Prazo (Próximo Semestre)
 - [ ] **Alta Disponibilidade Distribuída**: Rodar múltiplas instâncias do Watchdog CLI em diferentes servidores físicos na rede local para evitar que uma indisponibilidade na máquina local impeça a emissão de alertas.
 - [ ] **Visão Consolidada de SLAs**: Dashboard central de monitoramento em tempo real englobando outros sistemas internos de TI e Negócios da Cooperativa C.Vale.
+
+---
+
+## 🎯 Entregas Concluídas Recentemente
+- [x] **Frequência de Checagem de 3 Minutos**: Crontab e scripts configurados com intervalos de 3 minutos.
+- [x] **Nova Política de 4 Níveis de Alerta**: Nível 1 (15m/5 falhas), Nível 2 (1h/20 falhas), Nível 3 (2.5h/50 falhas) e Nível 4 (12h/240 falhas) integrados.
+- [x] **Identidade Visual Integrada (Logos)**: Template de e-mail com logos C.Vale e Agrocenter em Base64, e logo Agrocenter em SVG no cabeçalho do Dashboard.
+- [x] **Processo e Documentação de Rollback**: Criação do [ROLLBACK_PROCESS.md](file:///home/brunoconter/Documentos/1_C.VALE/2%20-%20PROJETOS/11_WATCHDOG_AGROCENTER/docs/ROLLBACK_PROCESS.md) detalhando reversão em produção.
+
