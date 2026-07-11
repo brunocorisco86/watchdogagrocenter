@@ -108,3 +108,38 @@ O projeto utiliza um conjunto de tecnologias de ponta, robustas e extremamente e
 - **Alpine Linux (V3.20)**: Sistema operacional minimalista rodando em modo RAM (diskless), garantindo imunidade a corrupções de cartão SD e consumo total de memória RAM inferior a 50MB.
 - **Werkzeug Server**: Servidor de aplicação integrado utilizado para o dashboard de monitoramento local na LAN interna.
 
+---
+
+## 🔍 5. Estrutura de Acoplamento e Grafo de Dependências (Análise Graphify)
+
+Através da indexação e análise da árvore de sintaxe abstrata (AST) feita com a ferramenta **Graphify**, mapeamos as relações do codebase para identificar acoplamentos estruturais, módulos centrais e interações entre os componentes.
+
+```mermaid
+graph TD
+    watchdog_cli["watchdog_cli.py (Monitor)"] --> DB["DatabaseManager (SQLite)"]
+    watchdog_cli --> Notifier["Notifier (Telegram/E-mail)"]
+    app["app.py (Flask Backend)"] --> DB
+    main_js["main.js (JS Frontend)"] --> app
+    test_db["test_database.py (Testes)"] --> DB
+    run_watchdog["run_watchdog.sh (Cron)"] -.-> watchdog_cli
+    
+    style DB fill:#003366,stroke:#336699,stroke-width:2px,color:#fff
+    style Notifier fill:#003366,stroke:#336699,stroke-width:2px,color:#fff
+```
+
+### 5.1. Abstrações Centrais (God Nodes)
+As duas classes que atuam como os hubs centrais (pontes de integração) do sistema são:
+1. **`DatabaseManager`** (24 conexões no grafo): Gerencia toda a persistência de logs, KPIs e incidentes. É o principal nó de acoplamento de dados do projeto, conectando o daemon de monitoramento (`watchdog_cli.py`), o painel Flask (`app.py`) e os testes unitários (`test_database.py`).
+2. **`Notifier`** (19 conexões no grafo): Ponto único de saída para todas as notificações. Encapsula o envio de e-mails (`smtplib`) e mensagens no Telegram (`aiogram`), sendo acionado pelo CLI ao detectar alterações de SLA e por scripts de diagnóstico.
+
+### 5.2. Comunidades Funcionais (Coesão)
+O grafo identificou comunidades lógicas de coesão, destacando:
+*   **Comunidade 0 (`watchdog_cli.py`)**: Concentra a lógica de ISP local, resolvedor DNS UDP nativo, validação de assinaturas de payload e o loop principal do daemon. Com uma coesão de 0.08, sinaliza que esta classe concentra muitas responsabilidades, sendo elegível para refatoração (ex: isolar o resolvedor DNS).
+*   **Comunidade 1 (`Notifier`)**: Engloba as regras de notificação, formatação de templates em HTML e testes de SMTP mockado.
+*   **Comunidade 2 (`app.py`) & Comunidade 3 (`DatabaseManager`)**: Agrupam as rotas REST do Flask de latência e saúde do sistema que servem dados brutos para o dashboard.
+*   **Comunidade 4 (`main.js`)**: Agrupa toda a reatividade do terminal retro-futurista (DOM, Fetch API, Chart.js e CRUD).
+
+### 5.3. Orquestração de Infraestrutura (Scripts Bash)
+Os scripts bash (`setup_alpine.sh`, `run_watchdog.sh`, `keepalive_dashboard.sh` e `log_resources.sh`) aparecem como nós fracamente conectados na análise estritamente Python. No entanto, eles realizam a amarração física da aplicação com o Alpine Linux no Raspberry Pi, garantindo a carga de variáveis de ambiente, ativação do ambiente virtual (`venv`) e a auto-recuperação do serviço de dashboard em produção.
+
+
